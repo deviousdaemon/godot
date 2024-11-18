@@ -68,6 +68,10 @@ class SpinBox : public Range {
 	double custom_arrow_step = 0.0;
 	bool use_custom_arrow_step = false;
 
+	//Stardusk
+	bool arrows_enabled = true;
+	//End
+
 	void _line_edit_input(const Ref<InputEvent> &p_event);
 
 	struct Drag {
@@ -169,6 +173,11 @@ public:
 	void apply();
 	void set_custom_arrow_step(const double p_custom_arrow_step);
 	double get_custom_arrow_step() const;
+
+	//Stardusk
+	void set_arrows_enabled(bool p_enabled);
+	bool are_arrows_enabled() const { return arrows_enabled; };
+	//End
 
 	SpinBox();
 };

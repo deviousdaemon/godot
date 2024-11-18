@@ -177,6 +177,9 @@ class CodeTextEditor : public VBoxContainer {
 	bool code_complete_enabled = true;
 	Timer *code_complete_timer = nullptr;
 	int code_complete_timer_line = 0;
+	
+	//From PR https://github.com/godotengine/godot/pull/97313, for toggling code editor zoom
+	bool zoom_shortcuts_enabled = true;
 
 	float zoom_factor = 1.0f;
 

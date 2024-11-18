@@ -832,6 +832,12 @@ public:
 
 	Size2 get_minimum_size() const override;
 
+	//Stardusk
+	void scroll_to_top();
+	void scroll_to_bottom();
+	void select_item_at_position(const Point2 &p_pos);
+	//End
+
 	Tree();
 	~Tree();
 };

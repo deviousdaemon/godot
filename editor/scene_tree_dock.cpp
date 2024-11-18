@@ -193,6 +193,12 @@ void SceneTreeDock::shortcut_input(const Ref<InputEvent> &p_event) {
 		_tool_selected(TOOL_MOVE_UP);
 	} else if (ED_IS_SHORTCUT("scene_tree/move_down", p_event)) {
 		_tool_selected(TOOL_MOVE_DOWN);
+	//Stardusk
+	} else if (ED_IS_SHORTCUT("scene_tree/move_to_top", p_event)) {
+		_tool_selected(TOOL_MOVE_TO_TOP);
+	} else if (ED_IS_SHORTCUT("scene_tree/move_to_bottom", p_event)) {
+		_tool_selected(TOOL_MOVE_TO_BOTTOM);
+	//End
 	} else if (ED_IS_SHORTCUT("scene_tree/reparent", p_event)) {
 		_tool_selected(TOOL_REPARENT);
 	} else if (ED_IS_SHORTCUT("scene_tree/reparent_to_new_node", p_event)) {
@@ -211,6 +217,9 @@ void SceneTreeDock::shortcut_input(const Ref<InputEvent> &p_event) {
 		_tool_selected(TOOL_SCENE_EDITABLE_CHILDREN);
 	} else if (ED_IS_SHORTCUT("scene_tree/delete", p_event)) {
 		_tool_selected(TOOL_ERASE);
+	//Stardusk
+	} else if (ED_IS_SHORTCUT("scene_tree/toggle_visibility", p_event)) {
+		_tool_selected(TOOL_TOGGLE_VISIBILITY);
 	} else {
 		Callable custom_callback = EditorContextMenuPluginManager::get_singleton()->match_custom_shortcut(EditorContextMenuPlugin::CONTEXT_SLOT_SCENE_TREE, p_event);
 		if (custom_callback.is_valid()) {
@@ -562,6 +571,85 @@ void SceneTreeDock::_tool_selected(int p_tool, bool p_confirm_override) {
 				tree->edit_selected();
 			}
 		} break;
+		//Stardusk
+		case TOOL_MOVE_TO_TOP:
+		case TOOL_MOVE_TO_BOTTOM: {
+			if (!profile_allow_editing) {
+				break;
+			}
+			if (editor_selection->get_selected_node_list().size() != 1) {
+				break;
+			}
+			if (scene_tree->get_selected() == edited_scene) {
+				accept->set_text(TTR("This operation can't be done on the tree root."));
+				accept->popup_centered();
+				break;
+			}
+			if (!_validate_no_foreign()){
+				break;
+			}
+			Node *selection = editor_selection->get_selected_node_list().front()->get();
+			if (selection->get_parent()->get_child_count() == 1) {
+				break;
+			}
+			ERR_FAIL_COND_MSG(selection->get_internal_mode() != INTERNAL_MODE_DISABLED, "Trying to move internal node, this is not supported.");
+			
+			ERR_FAIL_NULL(selection->get_parent());
+			Node *p_parent = selection->get_parent();
+			
+			int old_index = selection->get_index();
+			int new_index = p_tool == TOOL_MOVE_TO_TOP ? 0 : p_parent->get_child_count() - 1;
+
+			EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
+
+			Tree *tree = scene_tree->get_scene_tree();
+			TreeItem *selected_tree_item = tree->get_selected();
+			int selected_col = tree->get_selected_column();
+			float old_scroll = tree->get_vscroll_bar()->get_value();
+			Rect2 item_rect = tree->get_item_rect(selected_tree_item, selected_col);
+
+			undo_redo->create_action(TTR("Move Node in Parent"), UndoRedo::MERGE_DISABLE, p_parent);
+
+			undo_redo->add_do_method(p_parent, "move_child", selection, new_index);
+			undo_redo->add_do_method(tree, p_tool == TOOL_MOVE_TO_TOP ? "scroll_to_top" : "scroll_to_bottom");
+			undo_redo->add_do_method(tree, "call_deferred", "set_selected", selected_tree_item);
+			undo_redo->add_do_method(tree, "ensure_cursor_is_visible");
+
+			undo_redo->add_undo_method(p_parent, "move_child", selection, old_index);
+			undo_redo->add_undo_method(tree, "call_deferred", "select_item_at_position", item_rect.position + (item_rect.size / 2));
+			undo_redo->add_undo_method(tree, "ensure_cursor_is_visible");
+
+			undo_redo->commit_action();
+
+		} break;
+		case TOOL_TOGGLE_VISIBILITY: {
+			if (!profile_allow_editing) {
+				break;
+			}
+			if (editor_selection->get_selected_node_list().size() < 1) {
+				break;
+			}
+			if (!_validate_no_foreign()){
+				break;
+			}
+			for (Node *E: editor_selection->get_selected_node_list()) {
+				Node2D *node2d = Object::cast_to<Node2D>(E);
+				if (node2d != nullptr) {
+					node2d->set_visible(!node2d->is_visible());
+				}
+				Node3D *node3d = Object::cast_to<Node3D>(E);
+				if (node3d != nullptr) {
+					node3d->set_visible(!node3d->is_visible());
+				}
+				Control *control = Object::cast_to<Control>(E);
+				if (control != nullptr) {
+					control->set_visible(!control->is_visible());
+				}
+				
+			}
+
+		} break;
+		// End
 		case TOOL_REPARENT_TO_NEW_NODE:
 			if (!_validate_no_foreign()) {
 				break;
@@ -3811,10 +3899,38 @@ void SceneTreeDock::_tree_rmb(const Vector2 &p_menu_pos) {
 			menu->add_icon_shortcut(get_editor_theme_icon(SNAME("Reload")), ED_GET_SHORTCUT("scene_tree/change_node_type"), TOOL_REPLACE);
 		}
 
+		//Stardusk
+		bool can_toggle_visibility = false;
+		for (Node *E : selection) {
+			Node2D *node2d_test = Object::cast_to<Node2D>(E);
+			Node3D *node3d_test = Object::cast_to<Node3D>(E);
+			Control *control_test = Object::cast_to<Control>(E);
+			if (node2d_test || node3d_test || control_test) {
+				can_toggle_visibility = true;
+				break;
+			}
+		}
+		if (can_toggle_visibility) {
+			menu->add_separator();
+			menu->add_icon_shortcut(get_editor_theme_icon(SNAME("visibility_visible")), ED_GET_SHORTCUT("scene_tree/toggle_visibility"), TOOL_TOGGLE_VISIBILITY);
+			menu->set_item_text(menu->get_item_index(TOOL_TOGGLE_VISIBILITY), TTR("Toggle Visibility"));
+			//menu->add_item(TTR("Toggle Visibility"), TOOL_TOGGLE_VISIBILITY);
+		}
+		//End
+
 		if (scene_tree->get_selected() != edited_scene) {
 			menu->add_separator();
 			menu->add_icon_shortcut(get_editor_theme_icon(SNAME("MoveUp")), ED_GET_SHORTCUT("scene_tree/move_up"), TOOL_MOVE_UP);
 			menu->add_icon_shortcut(get_editor_theme_icon(SNAME("MoveDown")), ED_GET_SHORTCUT("scene_tree/move_down"), TOOL_MOVE_DOWN);
+			//Stardusk
+			if (selection.size() == 1) {
+				Node *selection_single = selection.front()->get();
+				if (selection_single->get_parent()->get_child_count() > 1 && selection_single->get_internal_mode() == INTERNAL_MODE_DISABLED) {
+					menu->add_icon_shortcut(get_editor_theme_icon(SNAME("MoveUp")), ED_GET_SHORTCUT("scene_tree/move_to_top"), TOOL_MOVE_TO_TOP);
+					menu->add_icon_shortcut(get_editor_theme_icon(SNAME("MoveDown")), ED_GET_SHORTCUT("scene_tree/move_to_bottom"), TOOL_MOVE_TO_BOTTOM);
+				}
+			}
+			//End
 			menu->add_icon_shortcut(get_editor_theme_icon(SNAME("Duplicate")), ED_GET_SHORTCUT("scene_tree/duplicate"), TOOL_DUPLICATE);
 			menu->add_icon_shortcut(get_editor_theme_icon(SNAME("Reparent")), ED_GET_SHORTCUT("scene_tree/reparent"), TOOL_REPARENT);
 			menu->add_icon_shortcut(get_editor_theme_icon(SNAME("ReparentToNewNode")), ED_GET_SHORTCUT("scene_tree/reparent_to_new_node"), TOOL_REPARENT_TO_NEW_NODE);
@@ -3853,6 +3969,7 @@ void SceneTreeDock::_tree_rmb(const Vector2 &p_menu_pos) {
 			menu->add_icon_shortcut(get_editor_theme_icon(SNAME("SceneUniqueName")), ED_GET_SHORTCUT("scene_tree/toggle_unique_name"), TOOL_TOGGLE_SCENE_UNIQUE_NAME);
 			menu->set_item_text(menu->get_item_index(TOOL_TOGGLE_SCENE_UNIQUE_NAME), node->is_unique_name_in_owner() ? TTR("Revoke Unique Name") : TTR("Access as Unique Name"));
 		}
+
 	}
 
 	if (selection.size() == 1) {
@@ -4610,12 +4727,19 @@ SceneTreeDock::SceneTreeDock(Node *p_scene_root, EditorSelection *p_editor_selec
 	ED_SHORTCUT("scene_tree/detach_script", TTR("Detach Script"));
 	ED_SHORTCUT("scene_tree/move_up", TTR("Move Up"), KeyModifierMask::CMD_OR_CTRL | Key::UP);
 	ED_SHORTCUT("scene_tree/move_down", TTR("Move Down"), KeyModifierMask::CMD_OR_CTRL | Key::DOWN);
+	//Stardusk
+	ED_SHORTCUT("scene_tree/move_to_top", TTR("Move To Top"));
+	ED_SHORTCUT("scene_tree/move_to_bottom", TTR("Move To Bottom"));
+	//End
 	ED_SHORTCUT("scene_tree/duplicate", TTR("Duplicate"), KeyModifierMask::CMD_OR_CTRL | Key::D);
 	ED_SHORTCUT("scene_tree/reparent", TTR("Reparent..."));
 	ED_SHORTCUT("scene_tree/reparent_to_new_node", TTR("Reparent to New Node..."));
 	ED_SHORTCUT("scene_tree/make_root", TTR("Make Scene Root"));
 	ED_SHORTCUT("scene_tree/save_branch_as_scene", TTR("Save Branch as Scene..."));
 	ED_SHORTCUT("scene_tree/copy_node_path", TTR("Copy Node Path"), KeyModifierMask::CMD_OR_CTRL | KeyModifierMask::SHIFT | Key::C);
+	//Stardusk
+	ED_SHORTCUT("scene_tree/toggle_visibility", TTR("Toggle Visibility"), KeyModifierMask::SHIFT | Key::H);
+
 	ED_SHORTCUT("scene_tree/show_in_file_system", TTR("Show in FileSystem"));
 	ED_SHORTCUT("scene_tree/toggle_unique_name", TTR("Toggle Access as Unique Name"));
 	ED_SHORTCUT("scene_tree/toggle_editable_children", TTR("Toggle Editable Children"));

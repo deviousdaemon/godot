@@ -3487,6 +3487,54 @@ void Tree::_go_down() {
 	accept_event();
 }
 
+//Stardusk
+void Tree::scroll_to_top() {
+	if (!selected_item) {
+		return;
+	}
+
+	if (get_root() == selected_item) {
+		ensure_cursor_is_visible();
+		return;
+	}
+
+	if (selected_item) {
+		selected_item->deselect(selected_col);
+	}
+
+	get_root()->select(selected_col);
+
+	ensure_cursor_is_visible();
+}
+
+void Tree::scroll_to_bottom() {
+	if (get_root()->get_child_count() < 1) {
+		return;
+	}
+
+	if (!selected_item) {
+		return;
+	}
+
+	if (selected_item == get_root()->get_prev_visible(true)) {
+		ensure_cursor_is_visible();
+		return;
+	}
+
+	selected_item = get_root()->get_prev_visible(true);
+	selected_item->select(selected_col);
+
+	ensure_cursor_is_visible();
+}
+void Tree::select_item_at_position(const Point2 &p_pos) {
+	TreeItem *p_item = get_item_at_position(p_pos);
+	if (!p_item) {
+		return;
+	}
+	set_selected(p_item, selected_col);
+}
+//End
+
 bool Tree::_scroll(bool p_horizontal, float p_pages) {
 	ScrollBar *scroll = p_horizontal ? (ScrollBar *)h_scroll : (ScrollBar *)v_scroll;
 
@@ -3591,7 +3639,22 @@ void Tree::gui_input(const Ref<InputEvent> &p_event) {
 		}
 
 		_go_down();
+	//Stardusk
+	} else if (p_event->is_action("ui_home") && p_event->is_pressed() && !is_command) {
+		if (!cursor_can_exit_tree) {
+			accept_event();
+		}
 
+		scroll_to_top();
+
+	} else if (p_event->is_action("ui_end") && p_event->is_pressed() && !is_command) {
+		if (!cursor_can_exit_tree) {
+			accept_event();
+		}
+
+		scroll_to_bottom();
+
+	//End
 	} else if (p_event->is_action("ui_page_down") && p_event->is_pressed()) {
 		if (!cursor_can_exit_tree) {
 			accept_event();
@@ -5914,6 +5977,12 @@ void Tree::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_allow_search", "allow"), &Tree::set_allow_search);
 	ClassDB::bind_method(D_METHOD("get_allow_search"), &Tree::get_allow_search);
+
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("scroll_to_top"), &Tree::scroll_to_top);
+	ClassDB::bind_method(D_METHOD("scroll_to_bottom"), &Tree::scroll_to_bottom);
+	ClassDB::bind_method(D_METHOD("select_item_at_position", "point"), &Tree::select_item_at_position);
+	//End
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "columns"), "set_columns", "get_columns");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "column_titles_visible"), "set_column_titles_visible", "are_column_titles_visible");
