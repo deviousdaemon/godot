@@ -3555,6 +3555,19 @@ void Image::optimize_channels() {
 	}
 }
 
+//Stardusk
+bool Image::is_invisible_t(int tolerance) const {
+	for (int y=0; y < height; y++) {
+		for (int x=0; x < width; x++) {
+			if (get_pixel(x, y).get_a8() >= tolerance){
+				return false;
+			}
+		}
+	}
+	return true;
+}
+//END
+
 void Image::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_width"), &Image::get_width);
 	ClassDB::bind_method(D_METHOD("get_height"), &Image::get_height);
@@ -3601,6 +3614,9 @@ void Image::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("detect_alpha"), &Image::detect_alpha);
 	ClassDB::bind_method(D_METHOD("is_invisible"), &Image::is_invisible);
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("is_invisible_t", "tolerance"), &Image::is_invisible_t);
+	//END
 
 	ClassDB::bind_method(D_METHOD("detect_used_channels", "source"), &Image::detect_used_channels, DEFVAL(COMPRESS_SOURCE_GENERIC));
 	ClassDB::bind_method(D_METHOD("compress", "mode", "source", "astc_format"), &Image::compress, DEFVAL(COMPRESS_SOURCE_GENERIC), DEFVAL(ASTC_FORMAT_4x4));

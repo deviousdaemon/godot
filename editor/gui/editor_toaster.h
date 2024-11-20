@@ -103,6 +103,8 @@ private:
 	void _repop_old();
 	void _popup_str(const String &p_message, Severity p_severity, const String &p_tooltip);
 	void _toast_theme_changed(Control *p_control);
+	//Stardusk
+	void _editor_settings_changed();
 
 protected:
 	static void _bind_methods();

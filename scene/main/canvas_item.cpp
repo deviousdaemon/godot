@@ -729,6 +729,39 @@ void CanvasItem::draw_rect(const Rect2 &p_rect, const Color &p_color, bool p_fil
 	}
 }
 
+//Stardusk
+void CanvasItem::draw_rect_with_thickness(const Rect2 &p_rect, const Color &p_color, int p_thickness) {
+	ERR_THREAD_GUARD;
+	ERR_DRAW_GUARD;
+	if (p_thickness < 1) { p_thickness = 1; }
+	
+	Rect2 rect = p_rect.abs();
+	
+	if (int(rect.size.x) * int(rect.size.y) == 1 || rect.size.x / 2.0 < float(p_thickness) || rect.size.y / 2.0 < float(p_thickness)) {
+		draw_rect(rect, p_color, true);
+		return;
+	}
+	
+	if (p_thickness == 1) {
+		draw_rect(rect, p_color, false, 1, false);
+		return;
+	} else {
+		rect.position += Vector2(1, 1);
+		rect.size -= Vector2(1, 1);
+		for (int i=0; i<p_thickness; i++) {
+			Rect2 d_rect;
+			if (i == 0) {
+				d_rect = rect;
+			} else {
+				d_rect = Rect2(Rect2(rect.position + (Vector2(1, 1) * i), rect.size - (Vector2(2, 2) * i)));
+			}
+			draw_rect(d_rect, p_color, false, 1, false);
+		}
+		return;
+	}
+}
+//END
+
 void CanvasItem::draw_circle(const Point2 &p_pos, real_t p_radius, const Color &p_color, bool p_filled, real_t p_width, bool p_antialiased) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
@@ -1205,6 +1238,9 @@ void CanvasItem::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("draw_multiline", "points", "color", "width", "antialiased"), &CanvasItem::draw_multiline, DEFVAL(-1.0), DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("draw_multiline_colors", "points", "colors", "width", "antialiased"), &CanvasItem::draw_multiline_colors, DEFVAL(-1.0), DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("draw_rect", "rect", "color", "filled", "width", "antialiased"), &CanvasItem::draw_rect, DEFVAL(true), DEFVAL(-1.0), DEFVAL(false));
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("draw_rect_with_thickness", "rect", "color", "thickness"), &CanvasItem::draw_rect_with_thickness, DEFVAL(1));
+	//END
 	ClassDB::bind_method(D_METHOD("draw_circle", "position", "radius", "color", "filled", "width", "antialiased"), &CanvasItem::draw_circle, DEFVAL(true), DEFVAL(-1.0), DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("draw_texture", "texture", "position", "modulate"), &CanvasItem::draw_texture, DEFVAL(Color(1, 1, 1, 1)));
 	ClassDB::bind_method(D_METHOD("draw_texture_rect", "texture", "rect", "tile", "modulate", "transpose"), &CanvasItem::draw_texture_rect, DEFVAL(Color(1, 1, 1, 1)), DEFVAL(false));

@@ -42,6 +42,12 @@ EditorToaster *EditorToaster::singleton = nullptr;
 
 void EditorToaster::_notification(int p_what) {
 	switch (p_what) {
+		//Stardusk
+		case NOTIFICATION_READY: {
+			bool p_enabled = EditorSettings::get_singleton()->get_setting("interface/editor/toaster_enabled");
+			_set_notifications_enabled(p_enabled);
+		} break;
+		//END
 		case NOTIFICATION_INTERNAL_PROCESS: {
 			double delta = get_process_delta_time();
 
@@ -518,6 +524,15 @@ EditorToaster *EditorToaster::get_singleton() {
 	return singleton;
 }
 
+//Stardusk
+void EditorToaster::_editor_settings_changed() {
+	bool p_enabled = EditorSettings::get_singleton()->get_setting("interface/editor/toaster_enabled");
+	if (p_enabled != vbox_container->is_visible()) {
+		_set_notifications_enabled(p_enabled);
+	}
+}
+//END
+
 EditorToaster::EditorToaster() {
 	set_notify_transform(true);
 
@@ -578,6 +593,10 @@ EditorToaster::EditorToaster() {
 	disable_notifications_button->set_flat(true);
 	disable_notifications_button->connect(SceneStringName(pressed), callable_mp(this, &EditorToaster::_set_notifications_enabled).bind(false));
 	disable_notifications_panel->add_child(disable_notifications_button);
+	
+	//Stardusk
+	EditorSettings::get_singleton()->connect("settings_changed", callable_mp(this, &EditorToaster::_editor_settings_changed));
+	//END
 
 	// Other
 	singleton = this;

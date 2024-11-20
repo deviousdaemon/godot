@@ -76,6 +76,11 @@ public:
 
 	StringName mouse_entered;
 	StringName mouse_exited;
+	//Stardusk
+	StringName mouse_left_clicked;
+	StringName mouse_middle_clicked;
+	StringName mouse_right_clicked;
+	//End
 	StringName mouse_shape_entered;
 	StringName mouse_shape_exited;
 	StringName focus_entered;

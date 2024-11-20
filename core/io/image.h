@@ -354,6 +354,9 @@ public:
 
 	AlphaMode detect_alpha() const;
 	bool is_invisible() const;
+	//Stardusk
+	bool is_invisible_t(int tolerance) const;
+	//END
 
 	static int get_format_pixel_size(Format p_format);
 	static int get_format_pixel_rshift(Format p_format);

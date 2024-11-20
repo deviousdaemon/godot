@@ -61,6 +61,11 @@ SceneStringNames::SceneStringNames() {
 
 	mouse_entered = StaticCString::create("mouse_entered");
 	mouse_exited = StaticCString::create("mouse_exited");
+	//Stardusk
+	mouse_left_clicked = StaticCString::create("mouse_left_clicked");
+	mouse_middle_clicked = StaticCString::create("mouse_middle_clicked");
+	mouse_right_clicked = StaticCString::create("mouse_right_clicked");
+	//End
 	mouse_shape_entered = StaticCString::create("mouse_shape_entered");
 	mouse_shape_exited = StaticCString::create("mouse_shape_exited");
 
