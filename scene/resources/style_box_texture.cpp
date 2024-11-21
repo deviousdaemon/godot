@@ -164,7 +164,11 @@ void StyleBoxTexture::draw(RID p_canvas_item, const Rect2 &p_rect) const {
 	if (texture.is_null()) {
 		return;
 	}
-
+	if (GDVIRTUAL_IS_OVERRIDDEN(_draw)) {
+		StyleBox::draw(p_canvas_item, p_rect);
+		return;
+	}
+	
 	Rect2 rect = p_rect;
 	Rect2 src_rect = region_rect;
 
