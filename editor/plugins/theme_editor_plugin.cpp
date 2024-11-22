@@ -2280,9 +2280,8 @@ ThemeTypeDialog::ThemeTypeDialog() {
 ///////////////////////
 
 Control *ThemeItemLabel::make_custom_tooltip(const String &p_text) const {
-	EditorHelpBit *help_bit = memnew(EditorHelpBit(p_text));
-	EditorHelpBitTooltip::show_tooltip(help_bit, const_cast<ThemeItemLabel *>(this));
-	return memnew(Control); // Make the standard tooltip invisible.
+	//Stardusk Fix blinking inspector tooltip? PR https://github.com/godotengine/godot/pull/95044
+	return EditorHelpBitTooltip::show_tooltip(p_text, const_cast<ThemeItemLabel *>(this));
 }
 
 VBoxContainer *ThemeTypeEditor::_create_item_list(Theme::DataType p_data_type) {

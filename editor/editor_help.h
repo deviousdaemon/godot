@@ -325,6 +325,8 @@ public:
 class EditorHelpBitTooltip : public PopupPanel {
 	GDCLASS(EditorHelpBitTooltip, PopupPanel);
 
+	//Stardusk Fix blinking inspector tooltip? PR https://github.com/godotengine/godot/pull/95044
+	static bool _is_tooltip_visible;
 	Timer *timer = nullptr;
 	int _pushing_input = 0;
 	bool _need_free = false;
@@ -332,13 +334,16 @@ class EditorHelpBitTooltip : public PopupPanel {
 	void _start_timer();
 	void _safe_queue_free();
 	void _target_gui_input(const Ref<InputEvent> &p_event);
+	//Stardusk Fix blinking inspector tooltip? PR https://github.com/godotengine/godot/pull/95044
+	static Control *_make_invisible_control();
 
 protected:
 	void _notification(int p_what);
 	virtual void _input_from_window(const Ref<InputEvent> &p_event) override;
 
 public:
-	static void show_tooltip(EditorHelpBit *p_help_bit, Control *p_target);
+	//Stardusk Fix blinking inspector tooltip? PR https://github.com/godotengine/godot/pull/95044
+	static Control *show_tooltip(const String &p_symbol, Control *p_target, const String &p_description = String());
 
 	void popup_under_cursor();
 
