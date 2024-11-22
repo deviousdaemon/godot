@@ -377,12 +377,16 @@ protected:
 	virtual void shortcut_input(const Ref<InputEvent> &p_key_event);
 	virtual void unhandled_input(const Ref<InputEvent> &p_event);
 	virtual void unhandled_key_input(const Ref<InputEvent> &p_key_event);
+	//Stardusk
+	virtual void post_ready();
 
 	GDVIRTUAL1(_process, double)
 	GDVIRTUAL1(_physics_process, double)
 	GDVIRTUAL0(_enter_tree)
 	GDVIRTUAL0(_exit_tree)
 	GDVIRTUAL0(_ready)
+	//Stardusk
+	GDVIRTUAL0(_post_ready)
 	GDVIRTUAL0RC(Vector<String>, _get_configuration_warnings)
 
 	GDVIRTUAL1(_input, Ref<InputEvent>)
@@ -397,6 +401,8 @@ public:
 		NOTIFICATION_EXIT_TREE = 11,
 		NOTIFICATION_MOVED_IN_PARENT = 12,
 		NOTIFICATION_READY = 13,
+		//Stardusk
+		NOTIFICATION_POST_READY = 4510, // Hey there, hacker!
 		NOTIFICATION_PAUSED = 14,
 		NOTIFICATION_UNPAUSED = 15,
 		NOTIFICATION_PHYSICS_PROCESS = 16,

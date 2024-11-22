@@ -221,8 +221,11 @@ void Node::_notification(int p_notification) {
 			if (GDVIRTUAL_IS_OVERRIDDEN(_physics_process)) {
 				set_physics_process(true);
 			}
-
+			
 			GDVIRTUAL_CALL(_ready);
+
+			//Stardusk
+			get_tree()->connect("process_frame", callable_mp(this, &Node::post_ready), CONNECT_ONE_SHOT);
 		} break;
 
 		case NOTIFICATION_POSTINITIALIZE: {
@@ -3573,6 +3576,14 @@ void Node::notify_thread_safe(int p_notification) {
 	}
 }
 
+//Stardusk
+void Node::post_ready() {
+	notification(NOTIFICATION_POST_READY);
+	GDVIRTUAL_CALL(_post_ready);
+	emit_signal(SceneStringName(post_ready));
+}
+//END
+
 void Node::_bind_methods() {
 	GLOBAL_DEF(PropertyInfo(Variant::INT, "editor/naming/node_name_num_separator", PROPERTY_HINT_ENUM, "None,Space,Underscore,Dash"), 0);
 	GLOBAL_DEF(PropertyInfo(Variant::INT, "editor/naming/node_name_casing", PROPERTY_HINT_ENUM, "PascalCase,camelCase,snake_case"), NAME_CASING_PASCAL_CASE);
@@ -3757,6 +3768,8 @@ void Node::_bind_methods() {
 	BIND_CONSTANT(NOTIFICATION_EXIT_TREE);
 	BIND_CONSTANT(NOTIFICATION_MOVED_IN_PARENT);
 	BIND_CONSTANT(NOTIFICATION_READY);
+	//Stardusk
+	BIND_CONSTANT(NOTIFICATION_POST_READY);
 	BIND_CONSTANT(NOTIFICATION_PAUSED);
 	BIND_CONSTANT(NOTIFICATION_UNPAUSED);
 	BIND_CONSTANT(NOTIFICATION_PHYSICS_PROCESS);
@@ -3831,6 +3844,8 @@ void Node::_bind_methods() {
 	BIND_ENUM_CONSTANT(AUTO_TRANSLATE_MODE_DISABLED);
 
 	ADD_SIGNAL(MethodInfo("ready"));
+	//Stardusk
+	ADD_SIGNAL(MethodInfo("post_ready"));
 	ADD_SIGNAL(MethodInfo("renamed"));
 	ADD_SIGNAL(MethodInfo("tree_entered"));
 	ADD_SIGNAL(MethodInfo("tree_exiting"));
@@ -3872,6 +3887,8 @@ void Node::_bind_methods() {
 	GDVIRTUAL_BIND(_enter_tree);
 	GDVIRTUAL_BIND(_exit_tree);
 	GDVIRTUAL_BIND(_ready);
+	//Stardusk
+	GDVIRTUAL_BIND(_post_ready);
 	GDVIRTUAL_BIND(_get_configuration_warnings);
 	GDVIRTUAL_BIND(_input, "event");
 	GDVIRTUAL_BIND(_shortcut_input, "event");
