@@ -558,6 +558,12 @@ void SpinBox::_set_step_no_signal(double p_step) {
 	set_block_signals(false);
 }
 
+void SpinBox::_validate_property(PropertyInfo &p_property) const {
+	if (p_property.name == "exp_edit") {
+		p_property.usage = PROPERTY_USAGE_NONE;
+	}
+}
+
 //Stardusk
 void SpinBox::set_arrows_enabled(bool p_enabled) {
 	arrows_enabled = p_enabled;
