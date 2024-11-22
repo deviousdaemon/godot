@@ -30,6 +30,8 @@
 
 #include "style_box_texture.h"
 
+#include "scene/main/canvas_item.h"
+
 float StyleBoxTexture::get_style_margin(Side p_side) const {
 	ERR_FAIL_INDEX_V((int)p_side, 4, 0.0);
 
@@ -165,7 +167,7 @@ void StyleBoxTexture::draw(RID p_canvas_item, const Rect2 &p_rect) const {
 		return;
 	}
 	if (GDVIRTUAL_IS_OVERRIDDEN(_draw)) {
-		StyleBox::draw(p_canvas_item, p_rect);
+		GDVIRTUAL_CALL(_draw, p_canvas_item, p_rect);
 		return;
 	}
 	

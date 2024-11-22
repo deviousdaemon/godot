@@ -51,6 +51,9 @@ protected:
 	GDVIRTUAL2C_REQUIRED(_draw, RID, Rect2)
 	GDVIRTUAL1RC(Rect2, _get_draw_rect, Rect2)
 	GDVIRTUAL0RC(Size2, _get_minimum_size)
+	//Stardusk
+	GDVIRTUAL0RC(Point2, _get_offset)
+	
 	GDVIRTUAL2RC(bool, _test_mask, Point2, Rect2)
 
 public:
@@ -62,7 +65,7 @@ public:
 	float get_content_margin(Side p_side) const;
 
 	float get_margin(Side p_side) const;
-	Point2 get_offset() const;
+	virtual Point2 get_offset() const;
 
 	virtual void draw(RID p_canvas_item, const Rect2 &p_rect) const;
 	virtual Rect2 get_draw_rect(const Rect2 &p_rect) const;

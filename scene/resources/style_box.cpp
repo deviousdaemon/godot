@@ -86,7 +86,14 @@ float StyleBox::get_margin(Side p_side) const {
 }
 
 Point2 StyleBox::get_offset() const {
-	return Point2(get_margin(SIDE_LEFT), get_margin(SIDE_TOP));
+	Point2 base_offset = Point2(get_margin(SIDE_LEFT), get_margin(SIDE_TOP));
+	Point2 custom_offset;
+	GDVIRTUAL_CALL(_get_offset, custom_offset);
+	
+	if (custom_offset.x > base_offset.x) {base_offset.x = custom_offset.x;}
+	if (custom_offset.y > base_offset.y) {base_offset.y = custom_offset.y;}
+	
+	return base_offset;
 }
 
 void StyleBox::draw(RID p_canvas_item, const Rect2 &p_rect) const {
@@ -135,6 +142,9 @@ void StyleBox::_bind_methods() {
 	GDVIRTUAL_BIND(_draw, "to_canvas_item", "rect")
 	GDVIRTUAL_BIND(_get_draw_rect, "rect")
 	GDVIRTUAL_BIND(_get_minimum_size)
+	//Stardusk
+	GDVIRTUAL_BIND(_get_offset)
+	
 	GDVIRTUAL_BIND(_test_mask, "point", "rect")
 }
 
