@@ -32,6 +32,9 @@
 
 #include "scene/resources/bit_map.h"
 
+#include "scene/main/canvas_item.h"
+
+
 Error CompressedTexture2D::_load_data(const String &p_path, int &r_width, int &r_height, Ref<Image> &image, bool &r_request_3d, bool &r_request_normal, bool &r_request_roughness, int &mipmap_limit, int p_size_limit) {
 	alpha_cache.unref();
 
@@ -212,6 +215,11 @@ RID CompressedTexture2D::get_rid() const {
 }
 
 void CompressedTexture2D::draw(RID p_canvas_item, const Point2 &p_pos, const Color &p_modulate, bool p_transpose) const {
+	//Stardusk
+	if (GDVIRTUAL_IS_OVERRIDDEN(_draw)) {
+		GDVIRTUAL_CALL(_draw, p_canvas_item, p_pos, p_modulate, p_transpose);
+		return;
+	}
 	if ((w | h) == 0) {
 		return;
 	}
