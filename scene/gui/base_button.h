@@ -77,6 +77,8 @@ private:
 	Timer *shortcut_feedback_timer = nullptr;
 	bool in_shortcut_feedback = false;
 	void _shortcut_feedback_timeout();
+	//Stardusk
+	bool shortcut_must_be_visible;
 
 protected:
 	virtual void pressed();
@@ -127,6 +129,11 @@ public:
 
 	void set_shortcut_feedback(bool p_enable);
 	bool is_shortcut_feedback() const;
+	
+	//Stardusk
+	void set_shortcut_must_be_visible(bool p_enable);
+	bool get_shortcut_must_be_visible() const;
+	//END
 
 	void set_button_mask(BitField<MouseButtonMask> p_mask);
 	BitField<MouseButtonMask> get_button_mask() const;

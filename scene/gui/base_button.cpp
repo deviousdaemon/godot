@@ -359,36 +359,39 @@ void BaseButton::_shortcut_feedback_timeout() {
 
 void BaseButton::shortcut_input(const Ref<InputEvent> &p_event) {
 	ERR_FAIL_COND(p_event.is_null());
+	
+	//Stardusk
+	if (!is_disabled() && p_event->is_pressed() && !p_event->is_echo() && shortcut.is_valid() && shortcut->matches_event(p_event)) {
+		if ((shortcut_must_be_visible && is_visible_in_tree()) || (!shortcut_must_be_visible)) {
+			if (toggle_mode) {
+				status.pressed = !status.pressed;
 
-	if (!is_disabled() && p_event->is_pressed() && is_visible_in_tree() && !p_event->is_echo() && shortcut.is_valid() && shortcut->matches_event(p_event)) {
-		if (toggle_mode) {
-			status.pressed = !status.pressed;
+				_unpress_group();
+				if (button_group.is_valid()) {
+					button_group->emit_signal(SceneStringName(pressed), this);
+				}
 
-			_unpress_group();
-			if (button_group.is_valid()) {
-				button_group->emit_signal(SceneStringName(pressed), this);
+				_toggled(status.pressed);
+				_pressed();
+
+			} else {
+				_pressed();
 			}
+			queue_redraw();
+			accept_event();
 
-			_toggled(status.pressed);
-			_pressed();
+			if (shortcut_feedback && is_inside_tree()) {
+				if (shortcut_feedback_timer == nullptr) {
+					shortcut_feedback_timer = memnew(Timer);
+					shortcut_feedback_timer->set_one_shot(true);
+					add_child(shortcut_feedback_timer);
+					shortcut_feedback_timer->set_wait_time(GLOBAL_GET("gui/timers/button_shortcut_feedback_highlight_time"));
+					shortcut_feedback_timer->connect("timeout", callable_mp(this, &BaseButton::_shortcut_feedback_timeout));
+				}
 
-		} else {
-			_pressed();
-		}
-		queue_redraw();
-		accept_event();
-
-		if (shortcut_feedback && is_inside_tree()) {
-			if (shortcut_feedback_timer == nullptr) {
-				shortcut_feedback_timer = memnew(Timer);
-				shortcut_feedback_timer->set_one_shot(true);
-				add_child(shortcut_feedback_timer);
-				shortcut_feedback_timer->set_wait_time(GLOBAL_GET("gui/timers/button_shortcut_feedback_highlight_time"));
-				shortcut_feedback_timer->connect("timeout", callable_mp(this, &BaseButton::_shortcut_feedback_timeout));
+				in_shortcut_feedback = true;
+				shortcut_feedback_timer->start();
 			}
-
-			in_shortcut_feedback = true;
-			shortcut_feedback_timer->start();
 		}
 	}
 }
@@ -453,6 +456,15 @@ PackedStringArray BaseButton::get_configuration_warnings() const {
 	return warnings;
 }
 
+//Stardusk
+void BaseButton::set_shortcut_must_be_visible(bool p_enable) {
+	shortcut_must_be_visible = p_enable;
+}
+bool BaseButton::get_shortcut_must_be_visible() const {
+	return shortcut_must_be_visible;
+}
+//END
+
 void BaseButton::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_pressed", "pressed"), &BaseButton::set_pressed);
 	ClassDB::bind_method(D_METHOD("is_pressed"), &BaseButton::is_pressed);
@@ -473,6 +485,10 @@ void BaseButton::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_keep_pressed_outside"), &BaseButton::is_keep_pressed_outside);
 	ClassDB::bind_method(D_METHOD("set_shortcut_feedback", "enabled"), &BaseButton::set_shortcut_feedback);
 	ClassDB::bind_method(D_METHOD("is_shortcut_feedback"), &BaseButton::is_shortcut_feedback);
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("set_shortcut_must_be_visible", "enabled"), &BaseButton::set_shortcut_must_be_visible);
+	ClassDB::bind_method(D_METHOD("get_shortcut_must_be_visible"), &BaseButton::get_shortcut_must_be_visible);
+	//END
 
 	ClassDB::bind_method(D_METHOD("set_shortcut", "shortcut"), &BaseButton::set_shortcut);
 	ClassDB::bind_method(D_METHOD("get_shortcut"), &BaseButton::get_shortcut);
@@ -500,6 +516,8 @@ void BaseButton::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "shortcut", PROPERTY_HINT_RESOURCE_TYPE, "Shortcut"), "set_shortcut", "get_shortcut");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "shortcut_feedback"), "set_shortcut_feedback", "is_shortcut_feedback");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "shortcut_in_tooltip"), "set_shortcut_in_tooltip", "is_shortcut_in_tooltip_enabled");
+	//Stardusk
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "shortcut_must_be_visible"), "set_shortcut_must_be_visible", "get_shortcut_must_be_visible");
 
 	BIND_ENUM_CONSTANT(DRAW_NORMAL);
 	BIND_ENUM_CONSTANT(DRAW_PRESSED);
@@ -515,6 +533,7 @@ void BaseButton::_bind_methods() {
 
 BaseButton::BaseButton() {
 	set_focus_mode(FOCUS_ALL);
+	shortcut_must_be_visible = true;
 }
 
 BaseButton::~BaseButton() {
