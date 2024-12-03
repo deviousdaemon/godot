@@ -705,6 +705,20 @@ void BitMap::blit(const Vector2i &p_pos, const Ref<BitMap> &p_bitmap) {
 	}
 }
 
+//Stardusk
+bool BitMap::is_equal_to(Ref<BitMap> p_bitmap) const {
+	if (get_size() != p_bitmap->get_size()) { return false; }
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			if (!(get_bit(x, y) == p_bitmap->get_bit(x, y))) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+//END
+
 void BitMap::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("create", "size"), &BitMap::create);
 	ClassDB::bind_method(D_METHOD("create_from_image_alpha", "image", "threshold"), &BitMap::create_from_image_alpha, DEFVAL(0.1));
@@ -726,6 +740,8 @@ void BitMap::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("grow_mask", "pixels", "rect"), &BitMap::grow_mask);
 	ClassDB::bind_method(D_METHOD("convert_to_image"), &BitMap::convert_to_image);
 	ClassDB::bind_method(D_METHOD("opaque_to_polygons", "rect", "epsilon"), &BitMap::_opaque_to_polygons_bind, DEFVAL(2.0));
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("is_equal_to", "bitmap"), &BitMap::is_equal_to);
 
 	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_data", "_get_data");
 }
