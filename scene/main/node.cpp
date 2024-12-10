@@ -3580,6 +3580,10 @@ void Node::notify_thread_safe(int p_notification) {
 
 //Stardusk
 void Node::post_ready() {
+	if (data.tree == nullptr) {
+		connect("tree_entered", callable_mp(this, &Node::post_ready), CONNECT_ONE_SHOT);
+		return;
+	}
 	notification(NOTIFICATION_POST_READY);
 	GDVIRTUAL_CALL(_post_ready);
 	emit_signal(SceneStringName(post_ready));

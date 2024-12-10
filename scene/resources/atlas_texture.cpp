@@ -31,6 +31,11 @@
 #include "atlas_texture.h"
 
 int AtlasTexture::get_width() const {
+	if (GDVIRTUAL_IS_OVERRIDDEN(_get_width)) {
+		int ret;
+		GDVIRTUAL_CALL(_get_width, ret);
+		return ret;
+	}
 	if (region.size.width == 0) {
 		if (atlas.is_valid()) {
 			return atlas->get_width();
@@ -42,6 +47,11 @@ int AtlasTexture::get_width() const {
 }
 
 int AtlasTexture::get_height() const {
+	if (GDVIRTUAL_IS_OVERRIDDEN(_get_height)) {
+		int ret;
+		GDVIRTUAL_CALL(_get_height, ret);
+		return ret;
+	}
 	if (region.size.height == 0) {
 		if (atlas.is_valid()) {
 			return atlas->get_height();

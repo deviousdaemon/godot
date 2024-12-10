@@ -1752,6 +1752,12 @@ void Control::_size_changed() {
 		if (pos_changed && !size_changed) {
 			_update_canvas_item_transform();
 		}
+		
+		//Stardusk
+		if (pos_changed) {
+			emit_signal(SceneStringName(position_changed), get_position());
+		}
+		//END
 	} else if (pos_changed) {
 		_notify_transform();
 	}
@@ -3827,6 +3833,7 @@ void Control::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("mouse_left_clicked", PropertyInfo(Variant::BOOL, "button_is_pressed")));
 	ADD_SIGNAL(MethodInfo("mouse_middle_clicked", PropertyInfo(Variant::BOOL, "button_is_pressed")));
 	ADD_SIGNAL(MethodInfo("mouse_right_clicked", PropertyInfo(Variant::BOOL, "button_is_pressed")));
+	ADD_SIGNAL(MethodInfo("position_changed", PropertyInfo(Variant::VECTOR2, "new_position")));
 
 	GDVIRTUAL_BIND(_has_point, "point");
 	GDVIRTUAL_BIND(_structured_text_parser, "args", "text");

@@ -66,6 +66,7 @@ SceneStringNames::SceneStringNames() {
 	mouse_left_clicked = StaticCString::create("mouse_left_clicked");
 	mouse_middle_clicked = StaticCString::create("mouse_middle_clicked");
 	mouse_right_clicked = StaticCString::create("mouse_right_clicked");
+	position_changed = StaticCString::create("position_changed");
 	//End
 	mouse_shape_entered = StaticCString::create("mouse_shape_entered");
 	mouse_shape_exited = StaticCString::create("mouse_shape_exited");

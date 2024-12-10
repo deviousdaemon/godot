@@ -82,6 +82,7 @@ public:
 	StringName mouse_left_clicked;
 	StringName mouse_middle_clicked;
 	StringName mouse_right_clicked;
+	StringName position_changed;
 	//End
 	StringName mouse_shape_entered;
 	StringName mouse_shape_exited;
