@@ -1004,44 +1004,38 @@ void EditorProperty::_update_flags() {
 	}
 }
 
-//Stardusk Fix blinking inspector tooltip? PR https://github.com/godotengine/godot/pull/95044
 Control *EditorProperty::make_custom_tooltip(const String &p_text) const {
-	String custom_warning;
+	String symbol;
+	String prologue;
+
 	if (object->has_method("_get_property_warning")) {
-		custom_warning = object->call("_get_property_warning", property);
+		const String custom_warning = object->call("_get_property_warning", property);
+		if (!custom_warning.is_empty()) {
+			prologue = "[b][color=" + get_theme_color(SNAME("warning_color")).to_html(false) + "]" + custom_warning + "[/color][/b]";
+		}
 	}
 
-	if (has_doc_tooltip || !custom_warning.is_empty()) {
-		String symbol;
-		String description;
-		if (has_doc_tooltip) {
-			symbol = p_text;
+	if (has_doc_tooltip) {
+		symbol = p_text;
 
-			const EditorInspector *inspector = get_parent_inspector();
-			if (inspector) {
-				const String custom_description = inspector->get_custom_property_description(p_text);
-				if (!custom_description.is_empty()) {
-					description = custom_description;
+		const EditorInspector *inspector = get_parent_inspector();
+		if (inspector) {
+			const String custom_description = inspector->get_custom_property_description(p_text);
+			if (!custom_description.is_empty()) {
+				if (!prologue.is_empty()) {
+					prologue += '\n';
 				}
+				prologue += custom_description;
 			}
 		}
+	}
 
-		if (!custom_warning.is_empty()) {
-			String description = "[b][color=" + get_theme_color(SNAME("warning_color")).to_html(false) + "]" + custom_warning + "[/color][/b]";
-			const String custom_warning_description = "[b][color=" + get_theme_color(SNAME("warning_color")).to_html(false) + "]" + custom_warning + "[/color][/b]";
-			if (description.is_empty()) {
-				description = custom_warning_description;
-			} else {
-				description = custom_warning_description + "\n" + description;
-			}
-		}
-
-		return EditorHelpBitTooltip::show_tooltip(symbol, const_cast<EditorProperty *>(this), description);
+	if (!symbol.is_empty() || !prologue.is_empty()) {
+		return EditorHelpBitTooltip::show_tooltip(const_cast<EditorProperty *>(this), symbol, prologue);
 	}
 
 	return nullptr;
 }
-//END
 
 void EditorProperty::menu_option(int p_option) {
 	switch (p_option) {
@@ -1334,8 +1328,7 @@ Control *EditorInspectorCategory::make_custom_tooltip(const String &p_text) cons
 		return nullptr;
 	}
 
-	//Stardusk Fix blinking inspector tooltip? PR https://github.com/godotengine/godot/pull/95044
-	return EditorHelpBitTooltip::show_tooltip(p_text, const_cast<EditorInspectorCategory *>(this));
+	return EditorHelpBitTooltip::show_tooltip(const_cast<EditorInspectorCategory *>(this), p_text);
 }
 
 void EditorInspectorCategory::set_as_favorite(EditorInspector *p_for_inspector) {
@@ -3025,24 +3018,14 @@ void EditorInspector::update_tree() {
 				category_label = p.name;
 
 				// Use category's owner script to update some of its information.
-				if (!EditorNode::get_editor_data().is_type_recognized(p.name) && ResourceLoader::exists(p.hint_string)) {
+				if (!EditorNode::get_editor_data().is_type_recognized(p.name) && ResourceLoader::exists(p.hint_string, "Script")) {
 					Ref<Script> scr = ResourceLoader::load(p.hint_string, "Script");
 					if (scr.is_valid()) {
-						StringName script_name = EditorNode::get_editor_data().script_class_get_name(scr->get_path());
+						doc_name = scr->get_doc_class_name();
 
-						// Update the docs reference and the label based on the script.
-						Vector<DocData::ClassDoc> docs = scr->get_documentation();
-						if (!docs.is_empty()) {
-							// The documentation of a GDScript's main class is at the end of the array.
-							// Hacky because this isn't necessarily always guaranteed.
-							doc_name = docs[docs.size() - 1].name;
-						}
+						StringName script_name = EditorNode::get_editor_data().script_class_get_name(scr->get_path());
 						if (script_name != StringName()) {
 							category_label = script_name;
-						}
-
-						// Find the icon corresponding to the script.
-						if (script_name != StringName()) {
 							category_icon = EditorNode::get_singleton()->get_class_icon(script_name);
 						} else {
 							category_icon = EditorNode::get_singleton()->get_object_icon(scr.ptr(), "Object");
@@ -4655,6 +4638,7 @@ void EditorInspector::_handle_menu_option(int p_option) {
 }
 
 void EditorInspector::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("edit", "object"), &EditorInspector::edit);
 	ClassDB::bind_method("_edit_request_change", &EditorInspector::_edit_request_change);
 	ClassDB::bind_method("get_selected_path", &EditorInspector::get_selected_path);
 	ClassDB::bind_method("get_edited_object", &EditorInspector::get_edited_object);
