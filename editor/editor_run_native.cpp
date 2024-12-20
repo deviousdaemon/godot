@@ -187,15 +187,15 @@ void EditorRunNative::_bind_methods() {
 }
 
 bool EditorRunNative::is_deploy_debug_remote_enabled() const {
-	return EditorSettings::get_singleton()->get_project_metadata("debug_options", "run_deploy_remote_debug", false);
+	return EditorSettings::get_singleton()->get_project_metadata("debug_options", "run_deploy_remote_debug", true);
 }
 
 EditorRunNative::EditorRunNative() {
-	ED_SHORTCUT("remote_deploy/deploy_to_device_1", TTR("Deploy to First Device in List"), KeyModifierMask::SHIFT | Key::F5);
+	ED_SHORTCUT("remote_deploy/deploy_to_device_1", TTRC("Deploy to First Device in List"), KeyModifierMask::SHIFT | Key::F5);
 	ED_SHORTCUT_OVERRIDE("remote_deploy/deploy_to_device_1", "macos", KeyModifierMask::META | KeyModifierMask::SHIFT | Key::B);
-	ED_SHORTCUT("remote_deploy/deploy_to_device_2", TTR("Deploy to Second Device in List"));
-	ED_SHORTCUT("remote_deploy/deploy_to_device_3", TTR("Deploy to Third Device in List"));
-	ED_SHORTCUT("remote_deploy/deploy_to_device_4", TTR("Deploy to Fourth Device in List"));
+	ED_SHORTCUT("remote_deploy/deploy_to_device_2", TTRC("Deploy to Second Device in List"));
+	ED_SHORTCUT("remote_deploy/deploy_to_device_3", TTRC("Deploy to Third Device in List"));
+	ED_SHORTCUT("remote_deploy/deploy_to_device_4", TTRC("Deploy to Fourth Device in List"));
 
 	remote_debug = memnew(MenuButton);
 	remote_debug->set_flat(false);
