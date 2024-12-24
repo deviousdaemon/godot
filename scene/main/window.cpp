@@ -320,6 +320,10 @@ void Window::_settings_changed() {
 	if (visible && initial_position != WINDOW_INITIAL_POSITION_ABSOLUTE && is_in_edited_scene_root()) {
 		Size2 screen_size = Size2(GLOBAL_GET("display/window/size/viewport_width"), GLOBAL_GET("display/window/size/viewport_height"));
 		position = (screen_size - size) / 2;
+		if (position != last_position) {
+			last_position = position;
+			emit_signal("position_changed", position);
+		}
 		if (embedder) {
 			embedder->_sub_window_update(this);
 		}
@@ -362,6 +366,10 @@ void Window::set_position(const Point2i &p_position) {
 	ERR_MAIN_THREAD_GUARD;
 
 	position = p_position;
+	if (position != last_position) {
+		last_position = position;
+		emit_signal("position_changed", position);
+	}
 
 	if (embedder) {
 		embedder->_sub_window_update(this);
@@ -732,6 +740,10 @@ void Window::_rect_changed_callback(const Rect2i &p_callback) {
 
 	if (position != p_callback.position) {
 		position = p_callback.position;
+		if (position != last_position) {
+			last_position = position;
+			emit_signal("position_changed", position);
+		}
 		_propagate_window_notification(this, NOTIFICATION_WM_POSITION_CHANGED);
 	}
 
@@ -889,8 +901,16 @@ void Window::set_visible(bool p_visible) {
 				if (is_in_edited_scene_root()) {
 					Size2 screen_size = Size2(GLOBAL_GET("display/window/size/viewport_width"), GLOBAL_GET("display/window/size/viewport_height"));
 					position = (screen_size - size) / 2;
+					if (position != last_position) {
+						last_position = position;
+						emit_signal("position_changed", position);
+					}
 				} else {
 					position = (embedder->get_visible_rect().size - size) / 2;
+					if (position != last_position) {
+						last_position = position;
+						emit_signal("position_changed", position);
+					}
 				}
 			}
 			embedder->_sub_window_register(this);
@@ -1362,8 +1382,16 @@ void Window::_notification(int p_what) {
 						if (is_in_edited_scene_root()) {
 							Size2 screen_size = Size2(GLOBAL_GET("display/window/size/viewport_width"), GLOBAL_GET("display/window/size/viewport_height"));
 							position = (screen_size - size) / 2;
+							if (position != last_position) {
+								last_position = position;
+								emit_signal("position_changed", position);
+							}
 						} else {
 							position = (embedder->get_visible_rect().size - size) / 2;
+							if (position != last_position) {
+								last_position = position;
+								emit_signal("position_changed", position);
+							}
 						}
 					}
 					embedder->_sub_window_register(this);
@@ -1381,6 +1409,10 @@ void Window::_notification(int p_what) {
 					// Since this window already exists (created on start), we must update pos and size from it.
 					{
 						position = DisplayServer::get_singleton()->window_get_position(window_id);
+						if (position != last_position) {
+							last_position = position;
+							emit_signal("position_changed", position);
+						}
 						size = DisplayServer::get_singleton()->window_get_size(window_id);
 						focused = DisplayServer::get_singleton()->window_is_focused(window_id);
 					}
@@ -3057,6 +3089,8 @@ void Window::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("dpi_changed"));
 	ADD_SIGNAL(MethodInfo("titlebar_changed"));
 	ADD_SIGNAL(MethodInfo("title_changed"));
+	//Stardusk
+	ADD_SIGNAL(MethodInfo("position_changed", PropertyInfo(Variant::VECTOR2I, "new_position")));
 
 	BIND_CONSTANT(NOTIFICATION_VISIBILITY_CHANGED);
 	BIND_CONSTANT(NOTIFICATION_THEME_CHANGED);

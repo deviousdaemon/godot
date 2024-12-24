@@ -142,6 +142,8 @@ private:
 	bool clamp_to_embedder = false;
 	bool unparent_when_invisible = false;
 	bool keep_title_visible = false;
+	//Stardusk
+	Point2i last_position;
 
 	LayoutDirection layout_dir = LAYOUT_DIRECTION_INHERITED;
 
