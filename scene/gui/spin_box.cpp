@@ -188,7 +188,7 @@ void SpinBox::gui_input(const Ref<InputEvent> &p_event) {
 		mouse_on_up_button = up_button_rc.has_point(mpos);
 		mouse_on_down_button = down_button_rc.has_point(mpos);
 
-		if (are_arrows_enabled()) {
+		if (!are_arrows_enabled()) {
 			mouse_on_up_button = false;
 			mouse_on_down_button = false;
 		}
