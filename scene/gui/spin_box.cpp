@@ -324,10 +324,15 @@ inline void SpinBox::_compute_sizes() {
 		line_edit->set_offset(SIDE_RIGHT, -w);
 		sizing_cache.buttons_block_width = w;
 	}
+	
+	if (!are_arrows_enabled()) {
+		line_edit->set_offset(SIDE_RIGHT, 0);
+		sizing_cache.buttons_block_width = 0;
+	}
 
 	Size2i size = get_size();
 
-	sizing_cache.buttons_width = w - theme_cache.field_and_buttons_separation;
+	sizing_cache.buttons_width = are_arrows_enabled() ? w - theme_cache.field_and_buttons_separation : 0;
 	sizing_cache.buttons_vertical_separation = CLAMP(theme_cache.buttons_vertical_separation, 0, size.height);
 	sizing_cache.buttons_left = is_layout_rtl() ? 0 : size.width - sizing_cache.buttons_width;
 	sizing_cache.button_up_height = (size.height - sizing_cache.buttons_vertical_separation) / 2;
@@ -336,7 +341,7 @@ inline void SpinBox::_compute_sizes() {
 
 	sizing_cache.buttons_separator_top = sizing_cache.button_up_height;
 	sizing_cache.field_and_buttons_separator_left = is_layout_rtl() ? sizing_cache.buttons_width : size.width - sizing_cache.buttons_block_width;
-	sizing_cache.field_and_buttons_separator_width = theme_cache.field_and_buttons_separation;
+	sizing_cache.field_and_buttons_separator_width = are_arrows_enabled() ? theme_cache.field_and_buttons_separation : 0;
 }
 
 inline int SpinBox::_get_widest_button_icon_width() {
