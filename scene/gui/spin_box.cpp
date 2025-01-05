@@ -326,6 +326,7 @@ inline void SpinBox::_compute_sizes() {
 	}
 	
 	if (!are_arrows_enabled()) {
+		line_edit->set_offset(SIDE_LEFT, 0);
 		line_edit->set_offset(SIDE_RIGHT, 0);
 		sizing_cache.buttons_block_width = 0;
 	}
