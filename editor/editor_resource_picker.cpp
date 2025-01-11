@@ -779,8 +779,12 @@ void EditorResourcePicker::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_toggle_mode", "enable"), &EditorResourcePicker::set_toggle_mode);
 	ClassDB::bind_method(D_METHOD("is_toggle_mode"), &EditorResourcePicker::is_toggle_mode);
 	ClassDB::bind_method(D_METHOD("set_toggle_pressed", "pressed"), &EditorResourcePicker::set_toggle_pressed);
+	ClassDB::bind_method(D_METHOD("is_toggle_pressed"), &EditorResourcePicker::is_toggle_pressed);
 	ClassDB::bind_method(D_METHOD("set_editable", "enable"), &EditorResourcePicker::set_editable);
 	ClassDB::bind_method(D_METHOD("is_editable"), &EditorResourcePicker::is_editable);
+	
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("set_edited_resource_no_check", "p_resource"), &EditorResourcePicker::set_edited_resource_no_check);
 
 	GDVIRTUAL_BIND(_set_create_options, "menu_node");
 	GDVIRTUAL_BIND(_handle_menu_selected, "id");
@@ -789,6 +793,8 @@ void EditorResourcePicker::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "edited_resource", PROPERTY_HINT_RESOURCE_TYPE, "Resource", PROPERTY_USAGE_NONE), "set_edited_resource", "get_edited_resource");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "editable"), "set_editable", "is_editable");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "toggle_mode"), "set_toggle_mode", "is_toggle_mode");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "toggle_pressed"), "set_toggle_pressed", "is_toggle_pressed");
+
 
 	ADD_SIGNAL(MethodInfo("resource_selected", PropertyInfo(Variant::OBJECT, "resource", PROPERTY_HINT_RESOURCE_TYPE, "Resource"), PropertyInfo(Variant::BOOL, "inspect")));
 	ADD_SIGNAL(MethodInfo("resource_changed", PropertyInfo(Variant::OBJECT, "resource", PROPERTY_HINT_RESOURCE_TYPE, "Resource")));
@@ -1142,7 +1148,10 @@ Node *EditorScriptPicker::get_script_owner() const {
 void EditorScriptPicker::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_script_owner", "owner_node"), &EditorScriptPicker::set_script_owner);
 	ClassDB::bind_method(D_METHOD("get_script_owner"), &EditorScriptPicker::get_script_owner);
-
+	
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("set_resource_owner", "object"), &EditorScriptPicker::set_resource_owner);
+	
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "script_owner", PROPERTY_HINT_RESOURCE_TYPE, "Node", PROPERTY_USAGE_NONE), "set_script_owner", "get_script_owner");
 }
 
@@ -1186,6 +1195,10 @@ ShaderMaterial *EditorShaderPicker::get_edited_material() const {
 
 void EditorShaderPicker::set_preferred_mode(int p_mode) {
 	preferred_mode = p_mode;
+}
+
+void EditorShaderPicker::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_preferred_mode", "mode"), &EditorShaderPicker::set_preferred_mode);
 }
 
 EditorShaderPicker::EditorShaderPicker() {

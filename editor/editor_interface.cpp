@@ -621,6 +621,12 @@ String EditorInterface::get_current_directory() const {
 	return FileSystemDock::get_singleton()->get_current_directory();
 }
 
+//Stardusk
+InspectorDock *EditorInterface::get_inspector_dock() const {
+	return InspectorDock::get_singleton();
+}
+//End
+
 EditorInspector *EditorInterface::get_inspector() const {
 	return InspectorDock::get_inspector_singleton();
 }
@@ -634,6 +640,16 @@ void EditorInterface::inspect_object(Object *p_obj, const String &p_for_property
 void EditorInterface::edit_resource(const Ref<Resource> &p_resource) {
 	EditorNode::get_singleton()->edit_resource(p_resource);
 }
+
+//Stardusk
+void EditorInterface::edit_item(Object *p_object, Object *p_editing_owner) {
+	EditorNode::get_singleton()->edit_item(p_object, p_editing_owner);
+}
+
+void EditorInterface::edit_foreign_resource(const Ref<Resource> &p_resource) {
+	EditorNode::get_singleton()->edit_foreign_resource(p_resource);
+}
+//End
 
 void EditorInterface::edit_node(Node *p_node) {
 	EditorNode::get_singleton()->edit_node(p_node);
@@ -754,6 +770,18 @@ void EditorInterface::get_argument_options(const StringName &p_function, int p_i
 }
 #endif
 
+//Stardusk
+int EditorInterface::get_plugin_count() {
+	return EditorNode::get_editor_data().get_editor_plugin_count();
+}
+EditorPlugin *EditorInterface::get_plugin(int p_idx) {
+	return EditorNode::get_editor_data().get_editor_plugin(p_idx);
+}
+void EditorInterface::hide_unused_editors() {
+	EditorNode::get_singleton()->hide_unused_editors();
+}
+//End
+
 // Base.
 
 void EditorInterface::_bind_methods() {
@@ -774,6 +802,11 @@ void EditorInterface::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_plugin_enabled", "plugin", "enabled"), &EditorInterface::set_plugin_enabled);
 	ClassDB::bind_method(D_METHOD("is_plugin_enabled", "plugin"), &EditorInterface::is_plugin_enabled);
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("get_plugin_count"), &EditorInterface::get_plugin_count);
+	ClassDB::bind_method(D_METHOD("get_plugin", "idx"), &EditorInterface::get_plugin);
+	ClassDB::bind_method(D_METHOD("hide_unused_editors"), &EditorInterface::hide_unused_editors);
+	//End
 
 	// Editor GUI.
 
@@ -818,12 +851,20 @@ void EditorInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_current_directory"), &EditorInterface::get_current_directory);
 
 	ClassDB::bind_method(D_METHOD("get_inspector"), &EditorInterface::get_inspector);
+	
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("get_inspector_dock"), &EditorInterface::get_inspector_dock);
 
 	// Object/Resource/Node editing.
 
 	ClassDB::bind_method(D_METHOD("inspect_object", "object", "for_property", "inspector_only"), &EditorInterface::inspect_object, DEFVAL(String()), DEFVAL(false));
 
 	ClassDB::bind_method(D_METHOD("edit_resource", "resource"), &EditorInterface::edit_resource);
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("edit_item", "object", "editing_owner"), &EditorInterface::edit_item);
+	ClassDB::bind_method(D_METHOD("edit_foreign_resource", "resource"), &EditorInterface::edit_foreign_resource);
+	//End
+	
 	ClassDB::bind_method(D_METHOD("edit_node", "node"), &EditorInterface::edit_node);
 	ClassDB::bind_method(D_METHOD("edit_script", "script", "line", "column", "grab_focus"), &EditorInterface::edit_script, DEFVAL(-1), DEFVAL(0), DEFVAL(true));
 	ClassDB::bind_method(D_METHOD("open_scene_from_path", "scene_filepath", "set_inherited"), &EditorInterface::open_scene_from_path, DEFVAL(false));

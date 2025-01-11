@@ -1207,6 +1207,17 @@ void EditorProperty::menu_option(int p_option) {
 	}
 }
 
+//Stardusk
+bool EditorProperty::get_has_borders() {
+	return has_borders;
+}
+
+void EditorProperty::set_has_borders(bool p_enabled) {
+	has_borders = p_enabled;
+	queue_redraw();
+}
+//End
+
 void EditorProperty::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_label", "text"), &EditorProperty::set_label);
 	ClassDB::bind_method(D_METHOD("get_label"), &EditorProperty::get_label);
@@ -1237,6 +1248,13 @@ void EditorProperty::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("get_edited_property"), &EditorProperty::get_edited_property);
 	ClassDB::bind_method(D_METHOD("get_edited_object"), &EditorProperty::get_edited_object);
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("get_edited_property_value"), &EditorProperty::get_edited_property_value);
+	ClassDB::bind_method(D_METHOD("set_has_borders", "borders_enabled"), &EditorProperty::set_has_borders);
+	ClassDB::bind_method(D_METHOD("get_has_borders"), &EditorProperty::get_has_borders);
+	ClassDB::bind_method(D_METHOD("update_property_bg"), &EditorProperty::_update_property_bg);
+	
+	//End
 
 	ClassDB::bind_method(D_METHOD("update_property"), &EditorProperty::update_property);
 
@@ -1272,6 +1290,8 @@ void EditorProperty::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "selectable"), "set_selectable", "is_selectable");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "use_folding"), "set_use_folding", "is_using_folding");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "name_split_ratio"), "set_name_split_ratio", "get_name_split_ratio");
+	//Stardusk
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "has_borders"), "set_has_borders", "get_has_borders");
 
 	ADD_SIGNAL(MethodInfo("property_changed", PropertyInfo(Variant::STRING_NAME, "property"), PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), PropertyInfo(Variant::STRING_NAME, "field"), PropertyInfo(Variant::BOOL, "changing")));
 	ADD_SIGNAL(MethodInfo("multiple_properties_changed", PropertyInfo(Variant::PACKED_STRING_ARRAY, "properties"), PropertyInfo(Variant::ARRAY, "value")));
@@ -1288,6 +1308,12 @@ void EditorProperty::_bind_methods() {
 
 	GDVIRTUAL_BIND(_update_property)
 	GDVIRTUAL_BIND(_set_read_only, "read_only")
+	
+	//Stardusk
+	BIND_ENUM_CONSTANT(COLORATION_CONTAINER_RESOURCE);
+	BIND_ENUM_CONSTANT(COLORATION_RESOURCE);
+	BIND_ENUM_CONSTANT(COLORATION_EXTERNAL);
+	//End
 
 	ClassDB::bind_method(D_METHOD("_update_editor_property_status"), &EditorProperty::update_editor_property_status);
 }
@@ -4008,6 +4034,16 @@ void EditorInspector::set_property_name_style(EditorPropertyNameProcessor::Style
 	update_tree();
 }
 
+//Stardusk
+void EditorInspector::set_property_name_style_int(int p_style) {
+	if (p_style < 0 || p_style >= 3) {
+		return;
+	}
+	EditorPropertyNameProcessor::Style e_style = static_cast<EditorPropertyNameProcessor::Style>(p_style);
+	set_property_name_style(e_style);
+}
+//End
+
 void EditorInspector::set_use_settings_name_style(bool p_enable) {
 	if (use_settings_name_style == p_enable) {
 		return;
@@ -4032,6 +4068,12 @@ void EditorInspector::set_use_doc_hints(bool p_enable) {
 	use_doc_hints = p_enable;
 	update_tree();
 }
+
+//Stardusk
+bool EditorInspector::is_using_doc_hints() const {
+	return use_doc_hints;
+}
+//End
 
 void EditorInspector::set_hide_script(bool p_hide) {
 	hide_script = p_hide;
@@ -4838,11 +4880,35 @@ void EditorInspector::_handle_menu_option(int p_option) {
 	}
 }
 
+//Stardusk
+LineEdit *EditorInspector::get_search_box() {
+	return search_box;
+}
+//End
+
 void EditorInspector::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("edit", "object"), &EditorInspector::edit);
 	ClassDB::bind_method("_edit_request_change", &EditorInspector::_edit_request_change);
 	ClassDB::bind_method("get_selected_path", &EditorInspector::get_selected_path);
 	ClassDB::bind_method("get_edited_object", &EditorInspector::get_edited_object);
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("set_use_doc_hints", "enable"), &EditorInspector::set_use_doc_hints);
+	ClassDB::bind_method(D_METHOD("is_using_doc_hints"), &EditorInspector::is_using_doc_hints);
+	ClassDB::bind_method(D_METHOD("set_root_inspector", "p_root_inspector"), &EditorInspector::set_root_inspector);
+	ClassDB::bind_method(D_METHOD("set_property_name_style", "p_style"), &EditorInspector::set_property_name_style_int);
+	ClassDB::bind_method(D_METHOD("set_read_only", "p_read_only"), &EditorInspector::set_read_only);
+	ClassDB::bind_method(D_METHOD("set_keying", "p_active"), &EditorInspector::set_keying);
+	ClassDB::bind_method(D_METHOD("set_use_folding", "p_use_folding", "p_update_tree"), &EditorInspector::set_use_folding, DEFVAL(true));
+	ClassDB::bind_method(D_METHOD("set_use_filter", "p_use"), &EditorInspector::set_use_filter);
+	ClassDB::bind_method(D_METHOD("register_text_enter", "p_line_edit"), &EditorInspector::register_text_enter);
+	ClassDB::bind_method(D_METHOD("get_root_inspector"), &EditorInspector::get_root_inspector);
+	ClassDB::bind_method(D_METHOD("get_search_box"), &EditorInspector::get_search_box);
+	ClassDB::bind_method(D_METHOD("collapse_all_folding"), &EditorInspector::collapse_all_folding);
+	ClassDB::bind_method(D_METHOD("expand_all_folding"), &EditorInspector::expand_all_folding);
+	ClassDB::bind_method(D_METHOD("expand_revertable"), &EditorInspector::expand_revertable);
+	//End
+	
+	
 
 	ClassDB::bind_static_method("EditorInspector", D_METHOD("instantiate_property_editor", "object", "type", "path", "hint", "hint_text", "usage", "wide"), &EditorInspector::instantiate_property_editor, DEFVAL(false));
 

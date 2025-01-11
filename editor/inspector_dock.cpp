@@ -468,8 +468,12 @@ void InspectorDock::_notification(int p_what) {
 }
 
 void InspectorDock::_bind_methods() {
-	ClassDB::bind_method("store_script_properties", &InspectorDock::store_script_properties);
-	ClassDB::bind_method("apply_script_properties", &InspectorDock::apply_script_properties);
+	ClassDB::bind_method(D_METHOD("store_script_properties", "p_object"), &InspectorDock::store_script_properties);
+	ClassDB::bind_method(D_METHOD("apply_script_properties", "p_object"), &InspectorDock::apply_script_properties);
+	
+	//Stardusk
+	ClassDB::bind_method("get_property_name_style", &InspectorDock::get_property_name_style_int);
+	
 
 	ADD_SIGNAL(MethodInfo("request_help"));
 }
@@ -596,6 +600,10 @@ void InspectorDock::go_back() {
 
 EditorPropertyNameProcessor::Style InspectorDock::get_property_name_style() const {
 	return property_name_style;
+}
+
+int InspectorDock::get_property_name_style_int() const {
+	return (int)property_name_style;
 }
 
 void InspectorDock::store_script_properties(Object *p_object) {

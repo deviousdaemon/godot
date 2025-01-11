@@ -285,6 +285,7 @@ protected:
 public:
 	void popup_scenetree_dialog(Node *p_selected_node = nullptr, Node *p_marked_node = nullptr, bool p_marked_node_selectable = true, bool p_marked_node_children_selectable = true);
 	void set_valid_types(const Vector<StringName> &p_valid);
+	void set_valid_types_string(const Vector<String> &p_valid);
 
 	SceneTreeEditor *get_scene_tree() { return tree; }
 	LineEdit *get_filter_line_edit() { return filter; }

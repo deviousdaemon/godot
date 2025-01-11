@@ -688,6 +688,8 @@ void EditorSpinSlider::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_hide_slider", "hide_slider"), &EditorSpinSlider::set_hide_slider);
 	ClassDB::bind_method(D_METHOD("is_hiding_slider"), &EditorSpinSlider::is_hiding_slider);
+	
+	ClassDB::bind_method(D_METHOD("get_line_edit"), &EditorSpinSlider::get_line_edit);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "label"), "set_label", "get_label");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "suffix"), "set_suffix", "get_suffix");

@@ -59,6 +59,8 @@ class Texture2D;
 class Theme;
 class VBoxContainer;
 class Window;
+//Stadusk
+class InspectorDock;
 
 class EditorInterface : public Object {
 	GDCLASS(EditorInterface, Object);
@@ -157,6 +159,9 @@ public:
 	Vector<String> get_selected_paths() const;
 	String get_current_path() const;
 	String get_current_directory() const;
+	
+	//Stardusk
+	InspectorDock *get_inspector_dock() const;
 
 	EditorInspector *get_inspector() const;
 
@@ -165,6 +170,13 @@ public:
 	void inspect_object(Object *p_obj, const String &p_for_property = String(), bool p_inspector_only = false);
 
 	void edit_resource(const Ref<Resource> &p_resource);
+	//Stardusk
+	void edit_foreign_resource(const Ref<Resource> &p_resource);
+	void edit_item(Object *p_object, Object *p_editing_owner);
+	int get_plugin_count();
+	EditorPlugin *get_plugin(int p_idx);
+	void hide_unused_editors();
+	//End
 	void edit_node(Node *p_node);
 	void edit_script(const Ref<Script> &p_script, int p_line = -1, int p_col = 0, bool p_grab_focus = true);
 	void open_scene_from_path(const String &scene_path, bool p_set_inherited = false);

@@ -51,6 +51,10 @@
 #include "editor/export/editor_export_platform_pc.h"
 #include "editor/export/editor_export_plugin.h"
 #include "editor/filesystem_dock.h"
+//Stardusk
+#include "editor/inspector_dock.h"
+#include "editor/gui/scene_tree_editor.h"
+//End
 #include "editor/gui/editor_file_dialog.h"
 #include "editor/gui/editor_spin_slider.h"
 #include "editor/gui/editor_toaster.h"
@@ -170,6 +174,13 @@ void register_editor_types() {
 	GDREGISTER_CLASS(EditorResourceConversionPlugin);
 	GDREGISTER_CLASS(EditorSceneFormatImporter);
 	GDREGISTER_CLASS(EditorScenePostImportPlugin);
+	//Stardusk
+	GDREGISTER_CLASS(SceneTreeEditor);
+	GDREGISTER_CLASS(SceneTreeDialog);
+	GDREGISTER_ABSTRACT_CLASS(InspectorDock);
+	GDREGISTER_CLASS(EditorShaderPicker);
+	//End
+	
 	GDREGISTER_CLASS(EditorInspector);
 	GDREGISTER_CLASS(EditorInspectorPlugin);
 	GDREGISTER_CLASS(EditorProperty);

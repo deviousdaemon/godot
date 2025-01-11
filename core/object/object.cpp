@@ -1679,7 +1679,14 @@ void Object::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_user_signal", "signal", "arguments"), &Object::_add_user_signal, DEFVAL(Array()));
 	ClassDB::bind_method(D_METHOD("has_user_signal", "signal"), &Object::_has_user_signal);
 	ClassDB::bind_method(D_METHOD("remove_user_signal", "signal"), &Object::_remove_user_signal);
-
+	
+	//Stardusk
+	#ifdef TOOLS_ENABLED
+	ClassDB::bind_method(D_METHOD("editor_set_section_unfold", "section", "unfolded"), &Object::editor_set_section_unfold);
+	ClassDB::bind_method(D_METHOD("editor_is_section_unfolded", "section"), &Object::editor_is_section_unfolded);
+	
+	#endif
+	
 	{
 		MethodInfo mi;
 		mi.name = "emit_signal";

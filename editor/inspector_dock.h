@@ -157,6 +157,8 @@ public:
 	EditorInspector *get_inspector() { return inspector; }
 
 	EditorPropertyNameProcessor::Style get_property_name_style() const;
+	//Stardusk
+	int get_property_name_style_int() const;
 
 	void store_script_properties(Object *p_object);
 	void apply_script_properties(Object *p_object);

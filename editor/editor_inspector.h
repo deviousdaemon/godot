@@ -160,6 +160,11 @@ protected:
 	void _update_property_bg();
 
 public:
+	//Stardusk
+	bool get_has_borders();
+	void set_has_borders(bool p_enabled);
+	//End
+	
 	void emit_changed(const StringName &p_property, const Variant &p_value, const StringName &p_field = StringName(), bool p_changing = false);
 
 	String get_tooltip_string(const String &p_string) const;
@@ -250,6 +255,8 @@ public:
 
 	EditorProperty();
 };
+
+VARIANT_ENUM_CAST(EditorProperty::ColorationMode);
 
 class EditorInspectorPlugin : public RefCounted {
 	GDCLASS(EditorInspectorPlugin, RefCounted);
@@ -658,6 +665,11 @@ public:
 
 	EditorPropertyNameProcessor::Style get_property_name_style() const;
 	void set_property_name_style(EditorPropertyNameProcessor::Style p_style);
+	
+	//Stardusk
+	void set_property_name_style_int(int p_style);
+	LineEdit *get_search_box();
+	//End
 
 	// If true, the inspector will update its property name style according to the current editor settings.
 	void set_use_settings_name_style(bool p_enable);
@@ -666,6 +678,9 @@ public:
 
 	void set_show_categories(bool p_show_standard, bool p_show_custom);
 	void set_use_doc_hints(bool p_enable);
+	//Stardusk
+	bool is_using_doc_hints() const;
+	
 	void set_hide_script(bool p_hide);
 	void set_hide_metadata(bool p_hide);
 
