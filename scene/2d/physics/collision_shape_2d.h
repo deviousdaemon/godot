@@ -31,13 +31,14 @@
 #ifndef COLLISION_SHAPE_2D_H
 #define COLLISION_SHAPE_2D_H
 
-#include "scene/2d/node_2d.h"
+// #include "scene/2d/node_2d.h"
+#include "scene/2d/physics/collision_shape_parent_2d.h"
 #include "scene/resources/2d/shape_2d.h"
 
 class CollisionObject2D;
 
-class CollisionShape2D : public Node2D {
-	GDCLASS(CollisionShape2D, Node2D);
+class CollisionShape2D : public CollisionShapeParent2D {
+	GDCLASS(CollisionShape2D, CollisionShapeParent2D);
 	Ref<Shape2D> shape;
 	Rect2 rect = Rect2(-Point2(10, 10), Point2(20, 20));
 	uint32_t owner_id = 0;
@@ -47,7 +48,7 @@ class CollisionShape2D : public Node2D {
 	real_t one_way_collision_margin = 1.0;
 
 	void _shape_changed();
-	void _update_in_shape_owner(bool p_xform_only = false);
+	// void _update_in_shape_owner(bool p_xform_only = false);
 
 	// Not wrapped in `#ifdef DEBUG_ENABLED` as it is used for rendering.
 	Color debug_color = Color(0.0, 0.0, 0.0, 0.0);
@@ -75,14 +76,14 @@ public:
 	void set_shape(const Ref<Shape2D> &p_shape);
 	Ref<Shape2D> get_shape() const;
 
-	void set_disabled(bool p_disabled);
-	bool is_disabled() const;
+	// void set_disabled(bool p_disabled);
+	// bool is_disabled() const;
 
-	void set_one_way_collision(bool p_enable);
-	bool is_one_way_collision_enabled() const;
+	// void set_one_way_collision(bool p_enable);
+	// bool is_one_way_collision_enabled() const;
 
-	void set_one_way_collision_margin(real_t p_margin);
-	real_t get_one_way_collision_margin() const;
+	// void set_one_way_collision_margin(real_t p_margin);
+	// real_t get_one_way_collision_margin() const;
 
 	void set_debug_color(const Color &p_color);
 	Color get_debug_color() const;

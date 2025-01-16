@@ -82,15 +82,15 @@ Vector<Vector<Vector2>> CollisionPolygon2D::_decompose_in_convex() {
 	return decomp;
 }
 
-void CollisionPolygon2D::_update_in_shape_owner(bool p_xform_only) {
-	collision_object->shape_owner_set_transform(owner_id, get_transform());
-	if (p_xform_only) {
-		return;
-	}
-	collision_object->shape_owner_set_disabled(owner_id, disabled);
-	collision_object->shape_owner_set_one_way_collision(owner_id, one_way_collision);
-	collision_object->shape_owner_set_one_way_collision_margin(owner_id, one_way_collision_margin);
-}
+// void CollisionPolygon2D::_update_in_shape_owner(bool p_xform_only) {
+// 	collision_object->shape_owner_set_transform(owner_id, get_transform());
+// 	if (p_xform_only) {
+// 		return;
+// 	}
+// 	collision_object->shape_owner_set_disabled(owner_id, disabled);
+// 	collision_object->shape_owner_set_one_way_collision(owner_id, one_way_collision);
+// 	collision_object->shape_owner_set_one_way_collision_margin(owner_id, one_way_collision_margin);
+// }
 
 void CollisionPolygon2D::_notification(int p_what) {
 	switch (p_what) {
@@ -256,41 +256,41 @@ PackedStringArray CollisionPolygon2D::get_configuration_warnings() const {
 	return warnings;
 }
 
-void CollisionPolygon2D::set_disabled(bool p_disabled) {
-	disabled = p_disabled;
-	queue_redraw();
-	if (collision_object) {
-		collision_object->shape_owner_set_disabled(owner_id, p_disabled);
-	}
-}
+// void CollisionPolygon2D::set_disabled(bool p_disabled) {
+// 	disabled = p_disabled;
+// 	queue_redraw();
+// 	if (collision_object) {
+// 		collision_object->shape_owner_set_disabled(owner_id, p_disabled);
+// 	}
+// }
 
-bool CollisionPolygon2D::is_disabled() const {
-	return disabled;
-}
+// bool CollisionPolygon2D::is_disabled() const {
+// 	return disabled;
+// }
 
-void CollisionPolygon2D::set_one_way_collision(bool p_enable) {
-	one_way_collision = p_enable;
-	queue_redraw();
-	if (collision_object) {
-		collision_object->shape_owner_set_one_way_collision(owner_id, p_enable);
-	}
-	update_configuration_warnings();
-}
+// void CollisionPolygon2D::set_one_way_collision(bool p_enable) {
+// 	one_way_collision = p_enable;
+// 	queue_redraw();
+// 	if (collision_object) {
+// 		collision_object->shape_owner_set_one_way_collision(owner_id, p_enable);
+// 	}
+// 	update_configuration_warnings();
+// }
 
-bool CollisionPolygon2D::is_one_way_collision_enabled() const {
-	return one_way_collision;
-}
+// bool CollisionPolygon2D::is_one_way_collision_enabled() const {
+// 	return one_way_collision;
+// }
 
-void CollisionPolygon2D::set_one_way_collision_margin(real_t p_margin) {
-	one_way_collision_margin = p_margin;
-	if (collision_object) {
-		collision_object->shape_owner_set_one_way_collision_margin(owner_id, one_way_collision_margin);
-	}
-}
+// void CollisionPolygon2D::set_one_way_collision_margin(real_t p_margin) {
+// 	one_way_collision_margin = p_margin;
+// 	if (collision_object) {
+// 		collision_object->shape_owner_set_one_way_collision_margin(owner_id, one_way_collision_margin);
+// 	}
+// }
 
-real_t CollisionPolygon2D::get_one_way_collision_margin() const {
-	return one_way_collision_margin;
-}
+// real_t CollisionPolygon2D::get_one_way_collision_margin() const {
+// 	return one_way_collision_margin;
+// }
 
 void CollisionPolygon2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_polygon", "polygon"), &CollisionPolygon2D::set_polygon);
@@ -298,18 +298,18 @@ void CollisionPolygon2D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_build_mode", "build_mode"), &CollisionPolygon2D::set_build_mode);
 	ClassDB::bind_method(D_METHOD("get_build_mode"), &CollisionPolygon2D::get_build_mode);
-	ClassDB::bind_method(D_METHOD("set_disabled", "disabled"), &CollisionPolygon2D::set_disabled);
-	ClassDB::bind_method(D_METHOD("is_disabled"), &CollisionPolygon2D::is_disabled);
-	ClassDB::bind_method(D_METHOD("set_one_way_collision", "enabled"), &CollisionPolygon2D::set_one_way_collision);
-	ClassDB::bind_method(D_METHOD("is_one_way_collision_enabled"), &CollisionPolygon2D::is_one_way_collision_enabled);
-	ClassDB::bind_method(D_METHOD("set_one_way_collision_margin", "margin"), &CollisionPolygon2D::set_one_way_collision_margin);
-	ClassDB::bind_method(D_METHOD("get_one_way_collision_margin"), &CollisionPolygon2D::get_one_way_collision_margin);
+	// ClassDB::bind_method(D_METHOD("set_disabled", "disabled"), &CollisionPolygon2D::set_disabled);
+	// ClassDB::bind_method(D_METHOD("is_disabled"), &CollisionPolygon2D::is_disabled);
+	// ClassDB::bind_method(D_METHOD("set_one_way_collision", "enabled"), &CollisionPolygon2D::set_one_way_collision);
+	// ClassDB::bind_method(D_METHOD("is_one_way_collision_enabled"), &CollisionPolygon2D::is_one_way_collision_enabled);
+	// ClassDB::bind_method(D_METHOD("set_one_way_collision_margin", "margin"), &CollisionPolygon2D::set_one_way_collision_margin);
+	// ClassDB::bind_method(D_METHOD("get_one_way_collision_margin"), &CollisionPolygon2D::get_one_way_collision_margin);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "build_mode", PROPERTY_HINT_ENUM, "Solids,Segments"), "set_build_mode", "get_build_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::PACKED_VECTOR2_ARRAY, "polygon"), "set_polygon", "get_polygon");
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "disabled"), "set_disabled", "is_disabled");
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "one_way_collision"), "set_one_way_collision", "is_one_way_collision_enabled");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "one_way_collision_margin", PROPERTY_HINT_RANGE, "0,128,0.1,suffix:px"), "set_one_way_collision_margin", "get_one_way_collision_margin");
+	// ADD_PROPERTY(PropertyInfo(Variant::BOOL, "disabled"), "set_disabled", "is_disabled");
+	// ADD_PROPERTY(PropertyInfo(Variant::BOOL, "one_way_collision"), "set_one_way_collision", "is_one_way_collision_enabled");
+	// ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "one_way_collision_margin", PROPERTY_HINT_RANGE, "0,128,0.1,suffix:px"), "set_one_way_collision_margin", "get_one_way_collision_margin");
 
 	BIND_ENUM_CONSTANT(BUILD_SOLIDS);
 	BIND_ENUM_CONSTANT(BUILD_SEGMENTS);

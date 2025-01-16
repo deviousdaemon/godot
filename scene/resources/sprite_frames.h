@@ -33,7 +33,7 @@
 
 #include "scene/resources/texture.h"
 
-static const float SPRITE_FRAME_MINIMUM_DURATION = 0.01;
+static const float SPRITE_FRAME_MINIMUM_DURATION = 0.0001;
 
 class SpriteFrames : public Resource {
 	GDCLASS(SpriteFrames, Resource);
