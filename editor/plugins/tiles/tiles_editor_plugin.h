@@ -126,6 +126,8 @@ class TileMapEditorPlugin : public EditorPlugin {
 
 	void _edit_tile_map_layer(TileMapLayer *p_tile_map_layer, bool p_show_layer_selector);
 	void _edit_tile_map(TileMap *p_tile_map);
+	//Stardusk
+	void _update_editor_size();
 
 protected:
 	void _notification(int p_notification);
@@ -152,6 +154,8 @@ class TileSetEditorPlugin : public EditorPlugin {
 	Button *button = nullptr;
 
 	ObjectID edited_tileset;
+	//Stardusk
+	void _update_editor_size();
 
 public:
 	virtual void edit(Object *p_object) override;

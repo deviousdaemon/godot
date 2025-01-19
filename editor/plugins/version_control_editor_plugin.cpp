@@ -934,6 +934,12 @@ void VersionControlEditorPlugin::shut_down() {
 	_set_vcs_ui_state(false);
 }
 
+//Stardusk
+void VersionControlEditorPlugin::_update_version_control_dock_size() {
+	version_control_dock->set_custom_minimum_size(Size2(0, int(EDITOR_GET("interface/editors/bottom_panel_minimum_height"))));
+}
+//END
+
 VersionControlEditorPlugin::VersionControlEditorPlugin() {
 	singleton = this;
 
@@ -1477,7 +1483,9 @@ VersionControlEditorPlugin::VersionControlEditorPlugin() {
 
 	version_control_dock = memnew(VBoxContainer);
 	version_control_dock->set_v_size_flags(Control::SIZE_EXPAND_FILL);
-	version_control_dock->set_custom_minimum_size(Size2(0, 300) * EDSCALE);
+	_update_version_control_dock_size();
+	//Stardusk
+	EditorSettings::get_singleton()->connect("settings_changed", callable_mp(this, &VersionControlEditorPlugin::_update_version_control_dock_size));
 	version_control_dock->hide();
 
 	HBoxContainer *diff_heading = memnew(HBoxContainer);

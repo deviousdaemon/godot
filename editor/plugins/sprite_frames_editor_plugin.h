@@ -292,6 +292,8 @@ class SpriteFramesEditorPlugin : public EditorPlugin {
 
 	SpriteFramesEditor *frames_editor = nullptr;
 	Button *button = nullptr;
+	//Stardusk
+	void _update_frames_editor_size();
 
 public:
 	virtual String get_plugin_name() const override { return "SpriteFrames"; }

@@ -420,10 +420,19 @@ void ResourcePreloaderEditorPlugin::make_visible(bool p_visible) {
 	}
 }
 
+//Stardusk
+void ResourcePreloaderEditorPlugin::_update_preloader_size() {
+	preloader_editor->set_custom_minimum_size(Size2(0, int(EDITOR_GET("interface/editors/bottom_panel_minimum_height"))));
+}
+//END
+
 ResourcePreloaderEditorPlugin::ResourcePreloaderEditorPlugin() {
 	preloader_editor = memnew(ResourcePreloaderEditor);
-	preloader_editor->set_custom_minimum_size(Size2(0, 250) * EDSCALE);
-
+	
+	//Stardusk
+	_update_preloader_size();
+	EditorSettings::get_singleton()->connect("settings_changed", callable_mp(this, &ResourcePreloaderEditorPlugin::_update_preloader_size));
+	//End
 	button = EditorNode::get_bottom_panel()->add_item("ResourcePreloader", preloader_editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_resource_preloader_bottom_panel", TTRC("Toggle ResourcePreloader Bottom Panel")));
 	button->hide();
 }

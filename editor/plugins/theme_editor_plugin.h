@@ -474,6 +474,8 @@ class ThemeEditorPlugin : public EditorPlugin {
 
 	ThemeEditor *theme_editor = nullptr;
 	Button *button = nullptr;
+	//Stardusk
+	void _update_theme_editor_size();
 
 public:
 	virtual String get_plugin_name() const override { return "Theme"; }

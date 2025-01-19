@@ -2518,9 +2518,17 @@ void SpriteFramesEditorPlugin::make_visible(bool p_visible) {
 	}
 }
 
+//Stardusk
+void SpriteFramesEditorPlugin::_update_frames_editor_size() {
+	frames_editor->set_custom_minimum_size(Size2(0, int(EDITOR_GET("interface/editors/bottom_panel_minimum_height"))));
+}
+//END
+
 SpriteFramesEditorPlugin::SpriteFramesEditorPlugin() {
 	frames_editor = memnew(SpriteFramesEditor);
-	frames_editor->set_custom_minimum_size(Size2(0, 300) * EDSCALE);
+	_update_frames_editor_size();
+	//Stardusk
+	EditorSettings::get_singleton()->connect("settings_changed", callable_mp(this, &SpriteFramesEditorPlugin::_update_frames_editor_size));
 	button = EditorNode::get_bottom_panel()->add_item(TTR("SpriteFrames"), frames_editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_sprite_frames_bottom_panel", TTRC("Toggle SpriteFrames Bottom Panel")));
 	button->hide();
 }

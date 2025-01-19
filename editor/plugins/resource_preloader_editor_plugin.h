@@ -86,6 +86,8 @@ class ResourcePreloaderEditorPlugin : public EditorPlugin {
 
 	ResourcePreloaderEditor *preloader_editor = nullptr;
 	Button *button = nullptr;
+	//Stardusk
+	void _update_preloader_size();
 
 public:
 	virtual String get_plugin_name() const override { return "ResourcePreloader"; }

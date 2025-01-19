@@ -71,6 +71,8 @@ class ShaderFileEditorPlugin : public EditorPlugin {
 
 	ShaderFileEditor *shader_editor = nullptr;
 	Button *button = nullptr;
+	//Stardusk
+	void _update_shader_editor_size();
 
 public:
 	virtual String get_plugin_name() const override { return "ShaderFile"; }

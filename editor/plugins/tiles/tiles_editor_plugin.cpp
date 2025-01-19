@@ -485,17 +485,26 @@ bool TileMapEditorPlugin::is_editor_visible() const {
 	return editor->is_visible_in_tree();
 }
 
+//Stardusk
+void TileMapEditorPlugin::_update_editor_size() {
+	editor->set_custom_minimum_size(Size2(0, int(EDITOR_GET("interface/editors/bottom_panel_minimum_height"))));
+}
+//END
+
 TileMapEditorPlugin::TileMapEditorPlugin() {
 	if (!TilesEditorUtils::get_singleton()) {
 		memnew(TilesEditorUtils);
 	}
 	tile_map_plugin_singleton = this;
+	
 
 	editor = memnew(TileMapLayerEditor);
 	editor->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	editor->set_v_size_flags(Control::SIZE_EXPAND_FILL);
-	editor->set_custom_minimum_size(Size2(0, 200) * EDSCALE);
+	_update_editor_size();
 	editor->hide();
+	//Stardusk
+	EditorSettings::get_singleton()->connect("settings_changed", callable_mp(this, &TileMapEditorPlugin::_update_editor_size));
 
 	button = EditorNode::get_bottom_panel()->add_item(TTR("TileMap"), editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_tile_map_bottom_panel", TTRC("Toggle TileMap Bottom Panel")));
 	button->hide();
@@ -536,6 +545,12 @@ ObjectID TileSetEditorPlugin::get_edited_tileset() const {
 	return edited_tileset;
 }
 
+//Stardusk
+void TileSetEditorPlugin::_update_editor_size() {
+	editor->set_custom_minimum_size(Size2(0, int(EDITOR_GET("interface/editors/bottom_panel_minimum_height"))));
+}
+//END
+
 TileSetEditorPlugin::TileSetEditorPlugin() {
 	if (!TilesEditorUtils::get_singleton()) {
 		memnew(TilesEditorUtils);
@@ -545,8 +560,10 @@ TileSetEditorPlugin::TileSetEditorPlugin() {
 	editor = memnew(TileSetEditor);
 	editor->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	editor->set_v_size_flags(Control::SIZE_EXPAND_FILL);
-	editor->set_custom_minimum_size(Size2(0, 200) * EDSCALE);
+	_update_editor_size();
 	editor->hide();
+	//Stardusk
+	EditorSettings::get_singleton()->connect("settings_changed", callable_mp(this, &TileSetEditorPlugin::_update_editor_size));
 
 	button = EditorNode::get_bottom_panel()->add_item(TTR("TileSet"), editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_tile_set_bottom_panel", TTRC("Toggle TileSet Bottom Panel")));
 	button->hide();

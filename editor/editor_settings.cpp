@@ -512,6 +512,9 @@ void EditorSettings::_load_defaults(Ref<ConfigFile> p_extra_config) {
 
 	_initial_set("interface/editors/show_scene_tree_root_selection", true);
 	_initial_set("interface/editors/derive_script_globals_by_name", true);
+	//Stardusk
+	EDITOR_SETTING_BASIC(Variant::INT, PROPERTY_HINT_RANGE, "interface/editors/bottom_panel_minimum_height", 160, "16,512,1")
+	//End
 	_initial_set("docks/scene_tree/ask_before_revoking_unique_name", true);
 
 	// Inspector

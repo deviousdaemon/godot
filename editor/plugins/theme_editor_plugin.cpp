@@ -34,6 +34,7 @@
 #include "editor/editor_file_system.h"
 #include "editor/editor_help.h"
 #include "editor/editor_node.h"
+#include "editor/editor_settings.h"
 #include "editor/editor_resource_picker.h"
 #include "editor/editor_string_names.h"
 #include "editor/editor_undo_redo_manager.h"
@@ -3871,11 +3872,18 @@ bool ThemeEditorPlugin::can_auto_hide() const {
 	return theme_editor->theme.is_null();
 }
 
+//Stardusk
+void ThemeEditorPlugin::_update_theme_editor_size() {
+	theme_editor->set_custom_minimum_size(Size2(0, int(EDITOR_GET("interface/editors/bottom_panel_minimum_height"))));
+}
+//END
+
 ThemeEditorPlugin::ThemeEditorPlugin() {
 	theme_editor = memnew(ThemeEditor);
 	theme_editor->plugin = this;
-	theme_editor->set_custom_minimum_size(Size2(0, 200) * EDSCALE);
-
+	_update_theme_editor_size();
+	//Stardusk
+	EditorSettings::get_singleton()->connect("settings_changed", callable_mp(this, &ThemeEditorPlugin::_update_theme_editor_size));
 	button = EditorNode::get_bottom_panel()->add_item(TTR("Theme"), theme_editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_theme_bottom_panel", TTRC("Toggle Theme Bottom Panel")));
 	button->hide();
 }

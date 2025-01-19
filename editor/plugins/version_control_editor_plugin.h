@@ -192,6 +192,8 @@ private:
 	void _create_vcs_metadata_files();
 	void _popup_file_dialog(const Variant &p_file_dialog_variant);
 	void _toggle_vcs_integration(bool p_toggled);
+	//Stardusk
+	void _update_version_control_dock_size();
 
 	friend class EditorVCSInterface;
 
