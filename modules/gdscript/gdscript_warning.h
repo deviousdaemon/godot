@@ -110,7 +110,7 @@ public:
 		WARN, // UNUSED_PRIVATE_CLASS_VARIABLE
 		WARN, // UNUSED_PARAMETER
 		WARN, // UNUSED_SIGNAL
-		WARN, // SHADOWED_VARIABLE
+		ERROR, // SHADOWED_VARIABLE
 		WARN, // SHADOWED_VARIABLE_BASE_CLASS
 		WARN, // SHADOWED_GLOBAL_IDENTIFIER
 		WARN, // UNREACHABLE_CODE
@@ -118,8 +118,8 @@ public:
 		WARN, // STANDALONE_EXPRESSION
 		WARN, // STANDALONE_TERNARY
 		WARN, // INCOMPATIBLE_TERNARY
-		IGNORE, // UNTYPED_DECLARATION // Static typing is optional, we don't want to spam warnings.
-		IGNORE, // INFERRED_DECLARATION // Static typing is optional, we don't want to spam warnings.
+		WARN, // UNTYPED_DECLARATION // Static typing is optional, we don't want to spam warnings.
+		WARN, // INFERRED_DECLARATION // Static typing is optional, we don't want to spam warnings.
 		IGNORE, // UNSAFE_PROPERTY_ACCESS // Too common in untyped scenarios.
 		IGNORE, // UNSAFE_METHOD_ACCESS // Too common in untyped scenarios.
 		IGNORE, // UNSAFE_CAST // Too common in untyped scenarios.
@@ -132,8 +132,8 @@ public:
 		WARN, // REDUNDANT_AWAIT
 		WARN, // ASSERT_ALWAYS_TRUE
 		WARN, // ASSERT_ALWAYS_FALSE
-		WARN, // INTEGER_DIVISION
-		WARN, // NARROWING_CONVERSION
+		IGNORE, // INTEGER_DIVISION
+		IGNORE, // NARROWING_CONVERSION
 		WARN, // INT_AS_ENUM_WITHOUT_CAST
 		WARN, // INT_AS_ENUM_WITHOUT_MATCH
 		WARN, // ENUM_VARIABLE_WITHOUT_DEFAULT
