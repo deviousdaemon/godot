@@ -933,6 +933,7 @@ void CodeTextEditor::_text_editor_gui_input(const Ref<InputEvent> &p_event) {
 		}
 	}
 
+#ifndef ANDROID_ENABLED
 	Ref<InputEventMagnifyGesture> magnify_gesture = p_event;
 	//From PR https://github.com/godotengine/godot/pull/97313, for toggling code editor zoom
 	if (magnify_gesture.is_valid() && zoom_shortcuts_enabled) {
@@ -940,6 +941,7 @@ void CodeTextEditor::_text_editor_gui_input(const Ref<InputEvent> &p_event) {
 		accept_event();
 		return;
 	}
+#endif
 
 	Ref<InputEventKey> k = p_event;
 	//From PR https://github.com/godotengine/godot/pull/97313, for toggling code editor zoom
