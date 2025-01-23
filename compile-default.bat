@@ -20,4 +20,4 @@ if not [%1] == [] (
 	)
 )
 
-CALL %main_batch_folder%\compile.bat --compile_path="%cd%" --version_string=4.4.dev --threads=!threads! --program=true --export_path=B:\GodotWindows\Godot4.4\
+CALL %main_batch_folder%\compile.bat --compile_path="%cd%" --threads=!threads! --program=true --export_path=B:\GodotWindows\Godot4.4\

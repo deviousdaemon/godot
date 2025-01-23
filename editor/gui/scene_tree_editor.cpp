@@ -2302,7 +2302,7 @@ void SceneTreeDialog::_bind_methods() {
 	//Stardusk
 	ClassDB::bind_method(D_METHOD("set_valid_types", "p_valid"), &SceneTreeDialog::set_valid_types_string);
 	ClassDB::bind_method("get_scene_tree", &SceneTreeDialog::get_scene_tree);
-	ClassDB::bind_method(D_METHOD("popup_scenetree_dialog", "p_selected_node", "p_marked_node", "p_marked_node_selectable", "p_marked_node_children_selectable"), &SceneTreeDialog::popup_scenetree_dialog, DEFVAL(true), DEFVAL(true), DEFVAL(Variant()), DEFVAL(Variant()));
+	ClassDB::bind_method(D_METHOD("popup_scenetree_dialog", "p_selected_node", "p_marked_node", "p_marked_node_selectable", "p_marked_node_children_selectable"), &SceneTreeDialog::popup_scenetree_dialog, DEFVAL(Variant()), DEFVAL(Variant()), DEFVAL(true), DEFVAL(true));
 	//End
 
 	ADD_SIGNAL(MethodInfo("selected", PropertyInfo(Variant::NODE_PATH, "path")));
