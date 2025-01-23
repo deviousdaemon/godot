@@ -1,0 +1,11 @@
+3d
+module_csg_enabled
+module_dds_enabled
+module_gridmap_enabled
+module_ktx_enabled
+module_mobile_vr_enabled
+module_multiplayer_enabled
+module_theora_enabled
+module_tinyexr_enabled
+module_vhacd_enabled
+module_camera_enabled

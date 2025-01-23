@@ -1,23 +1,32 @@
 @echo off
 setlocal EnableDelayedExpansion
 
-set main_batch_folder="B:\SourceControl\_BATCH"
+set main_batch_folder=B:\SourceControl\_BATCH
 set threads=16
-set threads_max=32
 
-if not [%1] == [] (
-	SET "var="&for /f "delims=0123456789" %%i in ("%1") do set var=%%i
-	if not defined var (
-		if [%1] GEQ [1] (
-			if [%1] LEQ [%threads_max%] (
-				set threads=%1
+set main_args="%main_batch_folder%\compile.bat" --compile_path="%~dp0" --threads=!threads! --program=false --templates=true --export_path=B:\GodotWindows\Godot4.4\
+
+set disabled_features=
+if not [%1]==[] (
+	
+	set filename=%~n1
+	
+	for /f delims^=^ eol^= %%a in (%1) do (
+		set first_char=%%~a
+		rem echo !first_char:~0,1!
+		rem pause
+		if "!first_char:~0,1!" neq "#" (
+			if not defined disabled_features (
+				set "disabled_features=--disable=%%~a"
 			) else (
-			set threads=%threads_max%
+				set disabled_features=!disabled_features! --disable=%%~a
 			)
-		) else (
-			set threads=1
 		)
 	)
+	set main_args=%main_args%  !disabled_features! --build_name=!filename!
 )
 
-CALL %main_batch_folder%\compile.bat --compile_path="%cd%" --threads=!threads! --program=false --templates=true --templates_x86=false --export_path=B:\GodotWindows\Godot4.4\
+rem echo !main_args!
+rem pause
+
+CALL !main_args!
