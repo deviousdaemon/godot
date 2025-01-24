@@ -44,6 +44,13 @@ void StyleBoxTexture::set_texture(Ref<Texture2D> p_texture) {
 	}
 	texture = p_texture;
 	emit_changed();
+	if (!texture.is_null()) {
+		if (texture->has_signal(StringName("changed"))) {
+			if (!texture->is_connected(StringName("changed"), callable_mp((Resource *)this, &StyleBoxTexture::emit_changed))) {
+				texture->connect_changed(callable_mp((Resource *)this, &StyleBoxTexture::emit_changed));
+			}
+		}
+	}
 }
 
 Ref<Texture2D> StyleBoxTexture::get_texture() const {
