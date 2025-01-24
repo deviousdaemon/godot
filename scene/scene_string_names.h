@@ -50,6 +50,8 @@ public:
 	const StringName post_ready = StaticCString::create("post_ready");
 	const StringName resized = StaticCString::create("resized");
 	const StringName draw = StaticCString::create("draw");
+	//Stardusk
+	const StringName shown = StaticCString::create("shown");
 	const StringName hidden = StaticCString::create("hidden");
 	const StringName visibility_changed = StaticCString::create("visibility_changed");
 

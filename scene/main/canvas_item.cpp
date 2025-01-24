@@ -95,6 +95,7 @@ void CanvasItem::_handle_visibility_change(bool p_visible) {
 
 	if (p_visible) {
 		queue_redraw();
+		emit_signal(SceneStringName(shown));
 	} else {
 		emit_signal(SceneStringName(hidden));
 	}
@@ -1412,6 +1413,8 @@ void CanvasItem::_bind_methods() {
 
 	ADD_SIGNAL(MethodInfo("draw"));
 	ADD_SIGNAL(MethodInfo("visibility_changed"));
+	//Stardusk
+	ADD_SIGNAL(MethodInfo("shown"));
 	ADD_SIGNAL(MethodInfo("hidden"));
 	ADD_SIGNAL(MethodInfo("item_rect_changed"));
 
