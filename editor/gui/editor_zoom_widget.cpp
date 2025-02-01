@@ -51,7 +51,7 @@ void EditorZoomWidget::_update_zoom_label() {
 }
 
 void EditorZoomWidget::_button_zoom_minus() {
-	set_zoom_by_increments(-6, Input::get_singleton()->is_key_pressed(Key::ALT));
+	set_zoom_by_increments(-1, Input::get_singleton()->is_key_pressed(Key::ALT));
 	emit_signal(SNAME("zoom_changed"), zoom);
 }
 
@@ -61,7 +61,7 @@ void EditorZoomWidget::_button_zoom_reset() {
 }
 
 void EditorZoomWidget::_button_zoom_plus() {
-	set_zoom_by_increments(6, Input::get_singleton()->is_key_pressed(Key::ALT));
+	set_zoom_by_increments(1, Input::get_singleton()->is_key_pressed(Key::ALT));
 	emit_signal(SNAME("zoom_changed"), zoom);
 }
 

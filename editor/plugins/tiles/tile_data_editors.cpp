@@ -565,12 +565,12 @@ void GenericTilePolygonEditor::_base_control_gui_input(Ref<InputEvent> p_event) 
 
 	Ref<InputEventMouseButton> mb = p_event;
 	if (mb.is_valid()) {
-		if (mb->get_button_index() == MouseButton::WHEEL_UP && mb->is_command_or_control_pressed()) {
-			editor_zoom_widget->set_zoom_by_increments(1);
+		if (mb->get_button_index() == MouseButton::WHEEL_UP && (mb->is_command_or_control_pressed() || mb->is_alt_pressed())) {
+			editor_zoom_widget->set_zoom_by_increments(1, true);
 			_zoom_changed();
 			accept_event();
-		} else if (mb->get_button_index() == MouseButton::WHEEL_DOWN && mb->is_command_or_control_pressed()) {
-			editor_zoom_widget->set_zoom_by_increments(-1);
+		} else if (mb->get_button_index() == MouseButton::WHEEL_DOWN && (mb->is_command_or_control_pressed() || mb->is_alt_pressed())) {
+			editor_zoom_widget->set_zoom_by_increments(-1, true);
 			_zoom_changed();
 			accept_event();
 		} else if (mb->get_button_index() == MouseButton::LEFT) {
@@ -782,7 +782,7 @@ void GenericTilePolygonEditor::set_tile_set(Ref<TileSet> p_tile_set) {
 	int default_control_y_size = 200 * EDSCALE;
 	Vector2 zoomed_tile = editor_zoom_widget->get_zoom() * tile_set->get_tile_size();
 	while (zoomed_tile.y < default_control_y_size) {
-		editor_zoom_widget->set_zoom_by_increments(6, false);
+		editor_zoom_widget->set_zoom_by_increments(6, true);
 		float current_zoom = editor_zoom_widget->get_zoom();
 		zoomed_tile = current_zoom * tile_set->get_tile_size();
 		if (Math::is_equal_approx(current_zoom, editor_zoom_widget->get_max_zoom())) {
@@ -790,14 +790,14 @@ void GenericTilePolygonEditor::set_tile_set(Ref<TileSet> p_tile_set) {
 		}
 	}
 	while (zoomed_tile.y > default_control_y_size) {
-		editor_zoom_widget->set_zoom_by_increments(-6, false);
+		editor_zoom_widget->set_zoom_by_increments(-6, true);
 		float current_zoom = editor_zoom_widget->get_zoom();
 		zoomed_tile = current_zoom * tile_set->get_tile_size();
 		if (Math::is_equal_approx(current_zoom, editor_zoom_widget->get_min_zoom())) {
 			break;
 		}
 	}
-	editor_zoom_widget->set_zoom_by_increments(-6, false);
+	editor_zoom_widget->set_zoom_by_increments(-6, true);
 	_zoom_changed();
 }
 
