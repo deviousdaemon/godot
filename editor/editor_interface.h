@@ -188,6 +188,10 @@ public:
 	Error save_scene();
 	void save_scene_as(const String &p_scene, bool p_with_preview = true);
 	void mark_scene_as_unsaved();
+	//Stardusk
+	bool is_scene_marked_as_unsaved();
+	void mark_scene_as_saved();
+	//END
 	void save_all_scenes();
 
 	// Scene playback.

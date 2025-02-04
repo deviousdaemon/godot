@@ -714,6 +714,16 @@ void EditorInterface::mark_scene_as_unsaved() {
 	EditorSceneTabs::get_singleton()->update_scene_tabs();
 }
 
+//Stardusk
+void EditorInterface::mark_scene_as_saved() {
+	EditorUndoRedoManager::get_singleton()->set_history_as_saved(EditorNode::get_editor_data().get_current_edited_scene_history_id());
+	EditorSceneTabs::get_singleton()->update_scene_tabs();
+}
+bool EditorInterface::is_scene_marked_as_unsaved() {
+	return EditorUndoRedoManager::get_singleton()->is_history_unsaved(EditorNode::get_editor_data().get_current_edited_scene_history_id());
+}
+//END
+
 void EditorInterface::save_all_scenes() {
 	EditorNode::get_singleton()->save_all_scenes();
 }
@@ -878,7 +888,10 @@ void EditorInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("save_all_scenes"), &EditorInterface::save_all_scenes);
 
 	ClassDB::bind_method(D_METHOD("mark_scene_as_unsaved"), &EditorInterface::mark_scene_as_unsaved);
-
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("is_scene_marked_as_unsaved"), &EditorInterface::is_scene_marked_as_unsaved);
+	ClassDB::bind_method(D_METHOD("mark_scene_as_saved"), &EditorInterface::mark_scene_as_saved);
+	
 	// Scene playback.
 
 	ClassDB::bind_method(D_METHOD("play_main_scene"), &EditorInterface::play_main_scene);
