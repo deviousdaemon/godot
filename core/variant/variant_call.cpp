@@ -1904,8 +1904,6 @@ static void _register_variant_builtin_methods_math() {
 	bind_methodv(Rect2, grow_side, &Rect2::grow_side_bind, sarray("side", "amount"), varray());
 	bind_method(Rect2, grow_individual, sarray("left", "top", "right", "bottom"), varray());
 	bind_method(Rect2, abs, sarray(), varray());
-	//Stardusk
-	bind_method(Rect2, move, sarray("direction"), varray());
 
 	/* Rect2i */
 
@@ -1922,8 +1920,6 @@ static void _register_variant_builtin_methods_math() {
 	bind_methodv(Rect2i, grow_side, &Rect2i::grow_side_bind, sarray("side", "amount"), varray());
 	bind_method(Rect2i, grow_individual, sarray("left", "top", "right", "bottom"), varray());
 	bind_method(Rect2i, abs, sarray(), varray());
-	//Stardusk
-	bind_method(Rect2i, move, sarray("direction"), varray());
 	
 
 	/* Vector3 */

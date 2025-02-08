@@ -243,15 +243,6 @@ struct [[nodiscard]] Rect2 {
 
 		return g;
 	}
-	//Stardusk
-	inline Rect2 move(Vector2 p_dir) const {
-		Rect2 g = *this;
-		g.position += p_dir;
-		g.set_end(g.get_end() + p_dir);
-		
-		return g;
-	}
-	//END
 	_FORCE_INLINE_ Rect2 expand(const Vector2 &p_vector) const {
 		Rect2 r = *this;
 		r.expand_to(p_vector);
