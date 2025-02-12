@@ -118,8 +118,8 @@ public:
 		WARN, // STANDALONE_EXPRESSION
 		WARN, // STANDALONE_TERNARY
 		WARN, // INCOMPATIBLE_TERNARY
-		WARN, // UNTYPED_DECLARATION // Static typing is optional, we don't want to spam warnings.
-		WARN, // INFERRED_DECLARATION // Static typing is optional, we don't want to spam warnings.
+		IGNORE, // UNTYPED_DECLARATION // Static typing is optional, we don't want to spam warnings.
+		IGNORE, // INFERRED_DECLARATION // Static typing is optional, we don't want to spam warnings.
 		IGNORE, // UNSAFE_PROPERTY_ACCESS // Too common in untyped scenarios.
 		IGNORE, // UNSAFE_METHOD_ACCESS // Too common in untyped scenarios.
 		IGNORE, // UNSAFE_CAST // Too common in untyped scenarios.
