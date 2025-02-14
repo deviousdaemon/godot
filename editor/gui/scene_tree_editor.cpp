@@ -2048,10 +2048,6 @@ void SceneTreeEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_update_tree"), &SceneTreeEditor::_update_tree, DEFVAL(false)); // Still used by UndoRedo.
 
 	ClassDB::bind_method(D_METHOD("update_tree"), &SceneTreeEditor::update_tree);
-	
-	//Stardusk
-	ClassDB::bind_method(D_METHOD("set_show_enabled_subscene", "p_show"), &SceneTreeEditor::set_show_enabled_subscene);
-	
 
 	ADD_SIGNAL(MethodInfo("node_selected"));
 	ADD_SIGNAL(MethodInfo("node_renamed"));
@@ -2226,14 +2222,6 @@ void SceneTreeDialog::set_valid_types(const Vector<StringName> &p_valid) {
 	}
 }
 
-void SceneTreeDialog::set_valid_types_string(const Vector<String> &p_valid) {
-	Vector<StringName> sm_valid;
-	for (int i = 0; i < p_valid.size(); i++) {
-		sm_valid.append(StringName(p_valid.get(i)));
-	}
-	set_valid_types(sm_valid);
-}
-
 void SceneTreeDialog::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_VISIBILITY_CHANGED: {
@@ -2300,12 +2288,6 @@ void SceneTreeDialog::_on_filter_gui_input(const Ref<InputEvent> &p_event) {
 
 void SceneTreeDialog::_bind_methods() {
 	ClassDB::bind_method("_cancel", &SceneTreeDialog::_cancel);
-	
-	//Stardusk
-	ClassDB::bind_method(D_METHOD("set_valid_types", "p_valid"), &SceneTreeDialog::set_valid_types_string);
-	ClassDB::bind_method("get_scene_tree", &SceneTreeDialog::get_scene_tree);
-	ClassDB::bind_method(D_METHOD("popup_scenetree_dialog", "p_selected_node", "p_marked_node", "p_marked_node_selectable", "p_marked_node_children_selectable"), &SceneTreeDialog::popup_scenetree_dialog, DEFVAL(Variant()), DEFVAL(Variant()), DEFVAL(true), DEFVAL(true));
-	//End
 
 	ADD_SIGNAL(MethodInfo("selected", PropertyInfo(Variant::NODE_PATH, "path")));
 }

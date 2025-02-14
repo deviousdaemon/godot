@@ -175,10 +175,10 @@ void register_editor_types() {
 	GDREGISTER_CLASS(EditorSceneFormatImporter);
 	GDREGISTER_CLASS(EditorScenePostImportPlugin);
 	//Stardusk
-	GDREGISTER_CLASS(SceneTreeEditor);
-	GDREGISTER_CLASS(SceneTreeDialog);
+	// GDREGISTER_CLASS(SceneTreeEditor);
+	// GDREGISTER_CLASS(SceneTreeDialog);
 	GDREGISTER_ABSTRACT_CLASS(InspectorDock);
-	GDREGISTER_CLASS(EditorShaderPicker);
+	// GDREGISTER_CLASS(EditorShaderPicker);
 	//End
 	
 	GDREGISTER_CLASS(EditorInspector);

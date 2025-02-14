@@ -1815,6 +1815,8 @@ void TileMapLayer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_cell_atlas_coords", "coords"), &TileMapLayer::get_cell_atlas_coords);
 	ClassDB::bind_method(D_METHOD("get_cell_alternative_tile", "coords"), &TileMapLayer::get_cell_alternative_tile);
 	ClassDB::bind_method(D_METHOD("get_cell_tile_data", "coords"), &TileMapLayer::get_cell_tile_data);
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("is_cell_empty", "coords"), &TileMapLayer::is_cell_empty);
 
 	ClassDB::bind_method(D_METHOD("is_cell_flipped_h", "coords"), &TileMapLayer::is_cell_flipped_h);
 	ClassDB::bind_method(D_METHOD("is_cell_flipped_v", "coords"), &TileMapLayer::is_cell_flipped_v);
@@ -2480,6 +2482,12 @@ TileData *TileMapLayer::get_cell_tile_data(const Vector2i &p_coords) const {
 
 	return nullptr;
 }
+
+//Stardusk
+bool TileMapLayer::is_cell_empty(const Vector2i &p_coords) const {
+	return get_cell_source_id(p_coords) == -1;
+}
+//END
 
 TypedArray<Vector2i> TileMapLayer::get_used_cells() const {
 	// Returns the cells used in the tilemap.
