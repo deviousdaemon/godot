@@ -1831,11 +1831,8 @@ void Control::_call_gui_input(const Ref<InputEvent> &p_event) {
 	gui_input(p_event);
 }
 
-/*
-Stardusk
 void Control::gui_input(const Ref<InputEvent> &p_event) {
 }
-*/
 
 void Control::accept_event() {
 	ERR_MAIN_THREAD_GUARD;
@@ -3329,8 +3326,6 @@ void Control::_notification(int p_notification) {
 
 		case NOTIFICATION_EXIT_TREE: {
 			set_theme_context(nullptr, false);
-			
-			_is_hovered = false;
 
 			release_focus();
 			get_viewport()->_gui_remove_control(this);
@@ -3478,60 +3473,6 @@ void Control::_notification(int p_notification) {
 		} break;
 	}
 }
-
-//Stardusk
-bool Control::is_mouse_hovering(int tolerance) const {
-	Rect2i rect = get_global_rect();
-	Vector2i mouse_pos = get_global_mouse_position();
-	if (mouse_pos.x >= rect.position.x - tolerance && mouse_pos.y >= rect.position.y - tolerance && 
-	mouse_pos.x < rect.get_end().x + tolerance && mouse_pos.y < rect.get_end().y + tolerance) {
-		return true;
-	}
-	return false;
-}
-bool Control::is_hovered() const {
-	return _is_hovered;
-}
-void Control::gui_input(const Ref<InputEvent> &p_event) {
-	ERR_FAIL_COND(p_event.is_null());
-	
-	if (!_is_hovered) {
-		Ref<InputEventMouseMotion> mm = p_event;
-		
-		if (mm.is_valid()) {
-			_is_hovered = true;
-			queue_redraw();
-		}
-	}
-	if (_is_hovered) {
-		Ref<InputEventMouseButton> mb = p_event;
-		if (mb.is_valid()) {
-			if (mb->get_button_index() == MouseButton::LEFT) {
-				emit_signal(SceneStringName(mouse_left_clicked), mb->is_pressed());
-			} else if (mb->get_button_index() == MouseButton::MIDDLE) {
-				emit_signal(SceneStringName(mouse_middle_clicked), mb->is_pressed());
-			} else if (mb->get_button_index() == MouseButton::RIGHT) {
-				emit_signal(SceneStringName(mouse_right_clicked), mb->is_pressed());
-			}
-		}
-	}
-}
-void Control::input(const Ref<InputEvent> &p_event) {
-	if (_is_hovered) {
-		if (!is_mouse_hovering(hover_tolerance)) {
-			_is_hovered = false;
-			queue_redraw();
-		}
-	}
-}
-void Control::set_mouse_hover_tolerance(int p_tolerance) {
-	hover_tolerance = p_tolerance;
-	queue_redraw();
-}
-int Control::get_mouse_hover_tolerance() const {
-	return hover_tolerance;
-}
-//End
 
 void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("accept_event"), &Control::accept_event);
@@ -3701,13 +3642,6 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_layout_direction", "direction"), &Control::set_layout_direction);
 	ClassDB::bind_method(D_METHOD("get_layout_direction"), &Control::get_layout_direction);
 	ClassDB::bind_method(D_METHOD("is_layout_rtl"), &Control::is_layout_rtl);
-	
-	//Stardusk
-	ClassDB::bind_method(D_METHOD("is_mouse_hovering", "tolerance"), &Control::is_mouse_hovering, DEFVAL(0));
-	ClassDB::bind_method(D_METHOD("is_hovered"), &Control::is_hovered);
-	ClassDB::bind_method(D_METHOD("set_mouse_hover_tolerance", "tolerance"), &Control::set_mouse_hover_tolerance);
-	ClassDB::bind_method(D_METHOD("get_mouse_hover_tolerance"), &Control::get_mouse_hover_tolerance);
-	//END
 
 #ifndef DISABLE_DEPRECATED
 	ClassDB::bind_method(D_METHOD("set_auto_translate", "enable"), &Control::set_auto_translate);
@@ -3786,8 +3720,6 @@ void Control::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "mouse_filter", PROPERTY_HINT_ENUM, "Stop,Pass (Propagate Up),Ignore"), "set_mouse_filter", "get_mouse_filter");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "mouse_force_pass_scroll_events"), "set_force_pass_scroll_events", "is_force_pass_scroll_events");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "mouse_default_cursor_shape", PROPERTY_HINT_ENUM, "Arrow,I-Beam,Pointing Hand,Cross,Wait,Busy,Drag,Can Drop,Forbidden,Vertical Resize,Horizontal Resize,Secondary Diagonal Resize,Main Diagonal Resize,Move,Vertical Split,Horizontal Split,Help"), "set_default_cursor_shape", "get_default_cursor_shape");
-	//Stardusk
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "mouse_hover_tolerance", PROPERTY_HINT_RANGE, "0,4096,suffix:px"), "set_mouse_hover_tolerance", "get_mouse_hover_tolerance");
 	
 	ADD_GROUP("Input", "");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "shortcut_context", PROPERTY_HINT_NODE_TYPE, "Node"), "set_shortcut_context", "get_shortcut_context");
@@ -3895,9 +3827,6 @@ void Control::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("minimum_size_changed"));
 	ADD_SIGNAL(MethodInfo("theme_changed"));
 	//Stardusk
-	ADD_SIGNAL(MethodInfo("mouse_left_clicked", PropertyInfo(Variant::BOOL, "button_is_pressed")));
-	ADD_SIGNAL(MethodInfo("mouse_middle_clicked", PropertyInfo(Variant::BOOL, "button_is_pressed")));
-	ADD_SIGNAL(MethodInfo("mouse_right_clicked", PropertyInfo(Variant::BOOL, "button_is_pressed")));
 	ADD_SIGNAL(MethodInfo("position_changed", PropertyInfo(Variant::VECTOR2, "new_position")));
 
 	GDVIRTUAL_BIND(_has_point, "point");
@@ -3915,7 +3844,6 @@ void Control::_bind_methods() {
 
 Control::Control() {
 	data.theme_owner = memnew(ThemeOwner(this));
-	_is_hovered = false;
 
 	set_physics_interpolation_mode(Node::PHYSICS_INTERPOLATION_MODE_OFF);
 }

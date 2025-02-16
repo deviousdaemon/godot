@@ -82,7 +82,20 @@ Vector3 Vector3::snappedf(real_t p_step) const {
 	v.snapf(p_step);
 	return v;
 }
-
+//Stardusk
+Vector3 Vector3::wrapped(const Vector3 &p_min, const Vector3 &p_max) const {
+	return Vector3(
+		Math::wrapf(x, p_min.x, p_max.x),
+		Math::wrapf(y, p_min.y, p_max.y),
+		Math::wrapf(z, p_min.z, p_max.z));
+}
+Vector3 Vector3::wrappedf(real_t p_min, real_t p_max) const {
+	return Vector3(
+		Math::wrapf(x, p_min, p_max),
+		Math::wrapf(y, p_min, p_max),
+		Math::wrapf(z, p_min, p_max));
+}
+//END
 Vector3 Vector3::limit_length(real_t p_len) const {
 	const real_t l = length();
 	Vector3 v = *this;

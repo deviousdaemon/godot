@@ -96,6 +96,10 @@ struct [[nodiscard]] Vector3i {
 	Vector3i clampi(int32_t p_min, int32_t p_max) const;
 	Vector3i snapped(const Vector3i &p_step) const;
 	Vector3i snappedi(int32_t p_step) const;
+	//Stardusk
+	Vector3i wrapped(const Vector3i &p_min, const Vector3i &p_max) const;
+	Vector3i wrappedi(int32_t p_min, int32_t p_max) const;
+	//END
 
 	_FORCE_INLINE_ double distance_to(const Vector3i &p_to) const;
 	_FORCE_INLINE_ int64_t distance_squared_to(const Vector3i &p_to) const;

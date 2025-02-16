@@ -163,7 +163,18 @@ Vector2 Vector2::limit_length(real_t p_len) const {
 
 	return v;
 }
-
+//Stardusk
+Vector2 Vector2::wrapped(const Vector2 &p_min, const Vector2 &p_max) const {
+	return Vector2(
+		Math::wrapf(x, p_min.x, p_max.x),
+		Math::wrapf(y, p_min.y, p_max.y));
+}
+Vector2 Vector2::wrappedf(real_t p_min, real_t p_max) const {
+	return Vector2(
+		Math::wrapf(x, p_min, p_max),
+		Math::wrapf(y, p_min, p_max));
+}
+//END
 Vector2 Vector2::move_toward(const Vector2 &p_to, real_t p_delta) const {
 	Vector2 v = *this;
 	Vector2 vd = p_to - v;

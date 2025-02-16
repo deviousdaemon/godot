@@ -60,9 +60,6 @@ public:
 	const StringName window_input = StaticCString::create("window_input");
 
 	//Stardusk
-	const StringName mouse_left_clicked = StaticCString::create("mouse_left_clicked");
-	const StringName mouse_middle_clicked = StaticCString::create("mouse_middle_clicked");
-	const StringName mouse_right_clicked = StaticCString::create("mouse_right_clicked");
 	const StringName position_changed = StaticCString::create("position_changed");
 	//End
 	const StringName tree_entered = StaticCString::create("tree_entered");

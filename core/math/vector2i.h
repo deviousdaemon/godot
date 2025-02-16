@@ -138,6 +138,10 @@ struct [[nodiscard]] Vector2i {
 	Vector2i clampi(int32_t p_min, int32_t p_max) const;
 	Vector2i snapped(const Vector2i &p_step) const;
 	Vector2i snappedi(int32_t p_step) const;
+	//Stardusk
+	Vector2i wrapped(const Vector2i &p_min, const Vector2i &p_max) const;
+	Vector2i wrappedi(int32_t p_min, int32_t p_max) const;
+	//END
 
 	operator String() const;
 	operator Vector2() const;

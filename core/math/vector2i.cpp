@@ -56,7 +56,18 @@ Vector2i Vector2i::snappedi(int32_t p_step) const {
 			Math::snapped(x, p_step),
 			Math::snapped(y, p_step));
 }
-
+//Stardusk
+Vector2i Vector2i::wrapped(const Vector2i &p_min, const Vector2i &p_max) const {
+	return Vector2i(
+		Math::wrapi(x, p_min.x, p_max.x),
+		Math::wrapi(y, p_min.y, p_max.y));
+}
+Vector2i Vector2i::wrappedi(int32_t p_min, int32_t p_max) const {
+	return Vector2i(
+		Math::wrapi(x, p_min, p_max),
+		Math::wrapi(y, p_min, p_max));
+}
+//END
 int64_t Vector2i::length_squared() const {
 	return x * (int64_t)x + y * (int64_t)y;
 }

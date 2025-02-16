@@ -116,6 +116,10 @@ struct [[nodiscard]] Vector4 {
 	Vector4 snappedf(real_t p_step) const;
 	Vector4 clamp(const Vector4 &p_min, const Vector4 &p_max) const;
 	Vector4 clampf(real_t p_min, real_t p_max) const;
+	//Stardusk
+	Vector4 wrapped(const Vector4 &p_min, const Vector4 &p_max) const;
+	Vector4 wrappedf(real_t p_min, real_t p_max) const;
+	//END
 
 	Vector4 inverse() const;
 	_FORCE_INLINE_ real_t dot(const Vector4 &p_vec4) const;

@@ -1871,6 +1871,10 @@ static void _register_variant_builtin_methods_math() {
 	bind_method(Vector2, clampf, sarray("min", "max"), varray());
 	bind_method(Vector2, snapped, sarray("step"), varray());
 	bind_method(Vector2, snappedf, sarray("step"), varray());
+	//Stardusk
+	bind_method(Vector2, wrapped, sarray("min", "max"), varray());
+	bind_method(Vector2, wrappedf, sarray("min", "max"), varray());
+	//END
 	bind_method(Vector2, min, sarray("with"), varray());
 	bind_method(Vector2, minf, sarray("with"), varray());
 	bind_method(Vector2, max, sarray("with"), varray());
@@ -1893,6 +1897,10 @@ static void _register_variant_builtin_methods_math() {
 	bind_method(Vector2i, clampi, sarray("min", "max"), varray());
 	bind_method(Vector2i, snapped, sarray("step"), varray());
 	bind_method(Vector2i, snappedi, sarray("step"), varray());
+	//Stardusk
+	bind_method(Vector2i, wrapped, sarray("min", "max"), varray());
+	bind_method(Vector2i, wrappedi, sarray("min", "max"), varray());
+	//END
 	bind_method(Vector2i, min, sarray("with"), varray());
 	bind_method(Vector2i, mini, sarray("with"), varray());
 	bind_method(Vector2i, max, sarray("with"), varray());
@@ -1956,6 +1964,10 @@ static void _register_variant_builtin_methods_math() {
 	bind_method(Vector3, clampf, sarray("min", "max"), varray());
 	bind_method(Vector3, snapped, sarray("step"), varray());
 	bind_method(Vector3, snappedf, sarray("step"), varray());
+	//Stardusk
+	bind_method(Vector3, wrapped, sarray("min", "max"), varray());
+	bind_method(Vector3, wrappedf, sarray("min", "max"), varray());
+	//END
 	bind_method(Vector3, rotated, sarray("axis", "angle"), varray());
 	bind_method(Vector3, lerp, sarray("to", "weight"), varray());
 	bind_method(Vector3, slerp, sarray("to", "weight"), varray());
@@ -1999,6 +2011,10 @@ static void _register_variant_builtin_methods_math() {
 	bind_method(Vector3i, clampi, sarray("min", "max"), varray());
 	bind_method(Vector3i, snapped, sarray("step"), varray());
 	bind_method(Vector3i, snappedi, sarray("step"), varray());
+	//Stardusk
+	bind_method(Vector3i, wrapped, sarray("min", "max"), varray());
+	bind_method(Vector3i, wrappedi, sarray("min", "max"), varray());
+	//END
 	bind_method(Vector3i, min, sarray("with"), varray());
 	bind_method(Vector3i, mini, sarray("with"), varray());
 	bind_method(Vector3i, max, sarray("with"), varray());
@@ -2022,6 +2038,10 @@ static void _register_variant_builtin_methods_math() {
 	bind_method(Vector4, posmodv, sarray("modv"), varray());
 	bind_method(Vector4, snapped, sarray("step"), varray());
 	bind_method(Vector4, snappedf, sarray("step"), varray());
+	//Stardusk
+	bind_method(Vector4, wrapped, sarray("min", "max"), varray());
+	bind_method(Vector4, wrappedf, sarray("min", "max"), varray());
+	//END
 	bind_method(Vector4, clamp, sarray("min", "max"), varray());
 	bind_method(Vector4, clampf, sarray("min", "max"), varray());
 	bind_method(Vector4, normalized, sarray(), varray());
@@ -2051,6 +2071,10 @@ static void _register_variant_builtin_methods_math() {
 	bind_method(Vector4i, clampi, sarray("min", "max"), varray());
 	bind_method(Vector4i, snapped, sarray("step"), varray());
 	bind_method(Vector4i, snappedi, sarray("step"), varray());
+	//Stardusk
+	bind_method(Vector4i, wrapped, sarray("min", "max"), varray());
+	bind_method(Vector4i, wrappedi, sarray("min", "max"), varray());
+	//END
 	bind_method(Vector4i, min, sarray("with"), varray());
 	bind_method(Vector4i, mini, sarray("with"), varray());
 	bind_method(Vector4i, max, sarray("with"), varray());
@@ -2109,6 +2133,10 @@ static void _register_variant_builtin_methods_math() {
 	bind_method(Color, lerp, sarray("to", "weight"), varray());
 	bind_method(Color, lightened, sarray("amount"), varray());
 	bind_method(Color, darkened, sarray("amount"), varray());
+	//Stardusk
+	bind_method(Color, transparentize, sarray("amount"), varray());
+	bind_method(Color, saturated, sarray("amount"), varray());
+	//END
 	bind_method(Color, blend, sarray("over"), varray());
 	bind_method(Color, get_luminance, sarray(), varray());
 	bind_method(Color, srgb_to_linear, sarray(), varray());

@@ -191,7 +191,22 @@ Vector4 Vector4::snappedf(real_t p_step) const {
 	v.snapf(p_step);
 	return v;
 }
-
+//Stardusk
+Vector4 Vector4::wrapped(const Vector4 &p_min, const Vector4 &p_max) const {
+	return Vector4(
+		Math::wrapf(x, p_min.x, p_max.x),
+		Math::wrapf(y, p_min.y, p_max.y),
+		Math::wrapf(z, p_min.z, p_max.z),
+		Math::wrapf(w, p_min.w, p_max.w));
+}
+Vector4 Vector4::wrappedf(real_t p_min, real_t p_max) const {
+	return Vector4(
+		Math::wrapf(x, p_min, p_max),
+		Math::wrapf(y, p_min, p_max),
+		Math::wrapf(z, p_min, p_max),
+		Math::wrapf(w, p_min, p_max));
+}
+//END
 Vector4 Vector4::inverse() const {
 	return Vector4(1.0f / x, 1.0f / y, 1.0f / z, 1.0f / w);
 }

@@ -311,12 +311,6 @@ private:
 	// Input events.
 
 	void _call_gui_input(const Ref<InputEvent> &p_event);
-	//Stardusk
-	bool _is_hovered;
-	int hover_tolerance;
-	//Stardusk
-	void input(const Ref<InputEvent> &p_event) override;
-	//END
 
 	// Focus.
 
@@ -636,13 +630,6 @@ public:
 	float get_theme_default_base_scale() const;
 	Ref<Font> get_theme_default_font() const;
 	int get_theme_default_font_size() const;
-	
-	//Stardusk
-	bool is_mouse_hovering(int tolerance) const;
-	bool is_hovered() const;
-	void set_mouse_hover_tolerance(int p_tolerance);
-	int get_mouse_hover_tolerance() const;
-	//END
 
 	// Internationalization.
 

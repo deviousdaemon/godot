@@ -101,6 +101,10 @@ struct [[nodiscard]] Vector4i {
 	Vector4i clampi(int32_t p_min, int32_t p_max) const;
 	Vector4i snapped(const Vector4i &p_step) const;
 	Vector4i snappedi(int32_t p_step) const;
+	//Stardusk
+	Vector4i wrapped(const Vector4i &p_min, const Vector4i &p_max) const;
+	Vector4i wrappedi(int32_t p_min, int32_t p_max) const;
+	//END
 
 	/* Operators */
 

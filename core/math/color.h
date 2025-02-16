@@ -119,7 +119,18 @@ struct [[nodiscard]] Color {
 		res.b = res.b * (1.0f - p_amount);
 		return res;
 	}
-
+	//Stardusk
+	_FORCE_INLINE_ Color transparentize(float p_amount) const {
+		Color res = *this;
+		res.a = res.a * (1.0f - p_amount);
+		return res;
+	}
+	_FORCE_INLINE_ Color saturated(float p_amount) const {
+		Color res = *this;
+		res.set_s(res.get_s() * (1.0f - p_amount));
+		return res;
+	}
+	//END
 	_FORCE_INLINE_ Color lightened(float p_amount) const {
 		Color res = *this;
 		res.r = res.r + (1.0f - res.r) * p_amount;

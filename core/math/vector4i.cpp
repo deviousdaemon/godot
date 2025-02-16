@@ -88,6 +88,22 @@ Vector4i Vector4i::snappedi(int32_t p_step) const {
 			Math::snapped(z, p_step),
 			Math::snapped(w, p_step));
 }
+//Stardusk
+Vector4i Vector4i::wrapped(const Vector4i &p_min, const Vector4i &p_max) const {
+	return Vector4i(
+		Math::wrapi(x, p_min.x, p_max.x),
+		Math::wrapi(y, p_min.y, p_max.y),
+		Math::wrapi(z, p_min.z, p_max.z),
+		Math::wrapi(w, p_min.w, p_max.w));
+}
+Vector4i Vector4i::wrappedi(int32_t p_min, int32_t p_max) const {
+	return Vector4i(
+		Math::wrapi(x, p_min, p_max),
+		Math::wrapi(y, p_min, p_max),
+		Math::wrapi(z, p_min, p_max),
+		Math::wrapi(w, p_min, p_max));
+}
+//END
 
 Vector4i::operator String() const {
 	return "(" + itos(x) + ", " + itos(y) + ", " + itos(z) + ", " + itos(w) + ")";

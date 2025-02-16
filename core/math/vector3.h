@@ -107,6 +107,10 @@ struct [[nodiscard]] Vector3 {
 	void snapf(real_t p_step);
 	Vector3 snapped(const Vector3 &p_step) const;
 	Vector3 snappedf(real_t p_step) const;
+	//Stardusk
+	Vector3 wrapped(const Vector3 &p_min, const Vector3 &p_max) const;
+	Vector3 wrappedf(real_t p_min, real_t p_max) const;
+	//END
 
 	void rotate(const Vector3 &p_axis, real_t p_angle);
 	Vector3 rotated(const Vector3 &p_axis, real_t p_angle) const;
