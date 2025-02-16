@@ -3271,7 +3271,18 @@ Node *Node::get_node_and_resource(const NodePath &p_path, Ref<Resource> &r_res, 
 
 	return node;
 }
-
+//Stardusk
+bool Node::has_children(bool p_include_internal) const {
+	ERR_THREAD_GUARD_V(0);
+	_update_children_cache();
+	
+	if (p_include_internal) {
+		return !data.children_cache.is_empty();
+	} else {
+		return (data.children_cache.size() - data.internal_children_front_count_cache - data.internal_children_back_count_cache) != 0;
+	}
+}
+//END
 void Node::_set_tree(SceneTree *p_tree) {
 	SceneTree *tree_changed_a = nullptr;
 	SceneTree *tree_changed_b = nullptr;
@@ -3644,6 +3655,8 @@ void Node::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("find_parent", "pattern"), &Node::find_parent);
 	ClassDB::bind_method(D_METHOD("has_node_and_resource", "path"), &Node::has_node_and_resource);
 	ClassDB::bind_method(D_METHOD("get_node_and_resource", "path"), &Node::_get_node_and_resource);
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("has_children", "include_internal"), &Node::has_children, DEFVAL(false));
 
 	ClassDB::bind_method(D_METHOD("is_inside_tree"), &Node::is_inside_tree);
 	ClassDB::bind_method(D_METHOD("is_part_of_edited_scene"), &Node::is_part_of_edited_scene);
