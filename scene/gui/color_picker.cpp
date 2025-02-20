@@ -1642,7 +1642,8 @@ void ColorPicker::_slider_or_spin_input(const Ref<InputEvent> &p_event) {
 	}
 	Ref<InputEventMouseButton> bev = p_event;
 	if (bev.is_valid() && !bev->is_pressed() && bev->get_button_index() == MouseButton::LEFT) {
-		add_recent_preset(color);
+		//Stardusk
+		// add_recent_preset(color);
 	}
 }
 
