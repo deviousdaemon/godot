@@ -143,7 +143,11 @@ bool CreateDialog::_should_hide_type(const StringName &p_type) const {
 	if (is_base_type_node && p_type.operator String().begins_with("Editor")) {
 		return true; // Do not show editor nodes.
 	}
-
+	//Stardusk
+	if (p_type.operator String().ends_with("_Internal")) {
+		return true; // Do not show custom Internal Nodes
+	}
+	//END
 	if (ClassDB::class_exists(p_type)) {
 		if (!ClassDB::can_instantiate(p_type) || ClassDB::is_virtual(p_type)) {
 			return true; // Can't create abstract or virtual class.

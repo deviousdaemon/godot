@@ -439,7 +439,9 @@ public:
 	int get_cell_alternative_tile(const Vector2i &p_coords) const;
 	TileData *get_cell_tile_data(const Vector2i &p_coords) const; // Helper method to make accessing the data easier.
 	//Stardusk
+	bool is_empty() const;
 	bool is_cell_empty(const Vector2i &p_coords) const;
+	//END
 
 	TypedArray<Vector2i> get_used_cells() const;
 	TypedArray<Vector2i> get_used_cells_by_id(int p_source_id = TileSet::INVALID_SOURCE, const Vector2i &p_atlas_coords = TileSetSource::INVALID_ATLAS_COORDS, int p_alternative_tile = TileSetSource::INVALID_TILE_ALTERNATIVE) const;
