@@ -513,6 +513,7 @@ public:
 
 	virtual void gui_input(const Ref<InputEvent> &p_event);
 	void accept_event();
+	bool is_mouse_hovering() const;
 
 	virtual bool has_point(const Point2 &p_point) const;
 

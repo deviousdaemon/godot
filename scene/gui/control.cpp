@@ -1840,7 +1840,13 @@ void Control::accept_event() {
 		get_viewport()->_gui_accept_event();
 	}
 }
-
+//Stardusk
+bool Control::is_mouse_hovering() const {
+	if (!is_visible_in_tree())
+		return false;
+	return get_global_rect().has_point(get_global_mouse_position());
+}
+//END
 bool Control::has_point(const Point2 &p_point) const {
 	ERR_READ_THREAD_GUARD_V(false);
 	bool ret;
@@ -3478,6 +3484,8 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("accept_event"), &Control::accept_event);
 	ClassDB::bind_method(D_METHOD("get_minimum_size"), &Control::get_minimum_size);
 	ClassDB::bind_method(D_METHOD("get_combined_minimum_size"), &Control::get_combined_minimum_size);
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("is_mouse_hovering"), &Control::is_mouse_hovering);
 
 	ClassDB::bind_method(D_METHOD("_set_layout_mode", "mode"), &Control::_set_layout_mode);
 	ClassDB::bind_method(D_METHOD("_get_layout_mode"), &Control::_get_layout_mode);

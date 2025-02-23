@@ -259,11 +259,6 @@ bool BaseButton::is_pressed() const {
 	return toggle_mode ? status.pressed : status.press_attempt;
 }
 
-// Stardusk
-bool BaseButton::is_hovered() const {
-	return status.hovering;
-}
-
 BaseButton::DrawMode BaseButton::get_draw_mode() const {
 	if (status.disabled) {
 		return DRAW_DISABLED;
