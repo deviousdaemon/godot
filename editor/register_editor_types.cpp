@@ -178,6 +178,7 @@ void register_editor_types() {
 	// GDREGISTER_CLASS(SceneTreeEditor);
 	// GDREGISTER_CLASS(SceneTreeDialog);
 	GDREGISTER_ABSTRACT_CLASS(InspectorDock);
+	GDREGISTER_ABSTRACT_CLASS(Node3DEditor);
 	// GDREGISTER_CLASS(EditorShaderPicker);
 	//End
 	

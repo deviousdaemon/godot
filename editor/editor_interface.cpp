@@ -395,6 +395,12 @@ SubViewport *EditorInterface::get_editor_viewport_3d(int p_idx) const {
 	return Node3DEditor::get_singleton()->get_editor_viewport(p_idx)->get_viewport_node();
 }
 
+//Stardusk
+Node3DEditor *EditorInterface::get_node_3d_editor() const {
+	return Node3DEditor::get_singleton();
+}
+//END
+
 void EditorInterface::set_main_screen_editor(const String &p_name) {
 	EditorNode::get_singleton()->get_editor_main_screen()->select_by_name(p_name);
 }
@@ -864,6 +870,8 @@ void EditorInterface::_bind_methods() {
 	
 	//Stardusk
 	ClassDB::bind_method(D_METHOD("get_inspector_dock"), &EditorInterface::get_inspector_dock);
+	ClassDB::bind_method(D_METHOD("get_node_3d_editor"), &EditorInterface::get_node_3d_editor);
+	//END
 
 	// Object/Resource/Node editing.
 

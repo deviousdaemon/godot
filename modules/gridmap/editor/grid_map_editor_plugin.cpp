@@ -796,6 +796,9 @@ EditorPlugin::AfterGUIInput GridMapEditor::forward_spatial_input_event(Camera3D 
 				} else if (selection.active) {
 					_set_selection(false);
 					return EditorPlugin::AFTER_GUI_INPUT_STOP;
+				} else if (mode_buttons_group->get_pressed_button() == paint_mode_button) { //Stardusk
+					input_action = INPUT_ERASE;
+					set_items.clear();
 				}
 			} else {
 				return EditorPlugin::AFTER_GUI_INPUT_PASS;

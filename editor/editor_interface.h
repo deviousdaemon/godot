@@ -59,8 +59,10 @@ class Texture2D;
 class Theme;
 class VBoxContainer;
 class Window;
-//Stadusk
+//Stardusk
 class InspectorDock;
+class Node3DEditor;
+//END
 
 class EditorInterface : public Object {
 	GDCLASS(EditorInterface, Object);
@@ -111,6 +113,9 @@ public:
 	Ref<EditorSettings> get_editor_settings() const;
 	EditorToaster *get_editor_toaster() const;
 	EditorUndoRedoManager *get_editor_undo_redo() const;
+	//Stardusk
+	Node3DEditor *get_node_3d_editor() const;
+	//END
 
 	Vector<Ref<Texture2D>> make_mesh_previews(const Vector<Ref<Mesh>> &p_meshes, Vector<Transform3D> *p_transforms, int p_preview_size);
 	void make_scene_preview(const String &p_path, Node *p_scene, int p_preview_size);

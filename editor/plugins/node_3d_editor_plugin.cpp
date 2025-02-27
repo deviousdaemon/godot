@@ -4320,7 +4320,30 @@ Dictionary Node3DEditorViewport::get_state() const {
 
 	return d;
 }
-
+//Stardusk
+Vector2 Node3DEditorViewport::get_camera_cursor_rotation() const {
+	return Vector2(cursor.x_rot, cursor.y_rot);
+}
+void Node3DEditorViewport::set_camera_cursor_rotation(Vector2 p_rot) {
+	cursor.x_rot = p_rot.x;
+	cursor.y_rot = p_rot.y;
+	_update_camera(0);
+}
+float Node3DEditorViewport::get_camera_cursor_distance() const {
+	return cursor.distance;
+}
+void Node3DEditorViewport::set_camera_cursor_distance(float p_dist) {
+	cursor.distance = p_dist;
+	_update_camera(0);
+}
+Vector3 Node3DEditorViewport::get_camera_cursor_position() const {
+	return cursor.pos;
+}
+void Node3DEditorViewport::set_camera_cursor_position(Vector3 p_pos) {
+	cursor.pos = p_pos;
+	_update_camera(0);
+}
+//END
 void Node3DEditorViewport::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("toggle_maximize_view", PropertyInfo(Variant::OBJECT, "viewport")));
 	ADD_SIGNAL(MethodInfo("clicked"));
@@ -8377,7 +8400,32 @@ void Node3DEditor::move_control_to_right_panel(Control *p_control) {
 
 	add_control_to_right_panel(p_control);
 }
-
+//Stardusk
+Vector2 Node3DEditor::get_camera_cursor_rotation() const {
+	Node3DEditorViewport *vp = viewports[last_used_viewport];
+	return vp->get_camera_cursor_rotation();
+}
+void Node3DEditor::set_camera_cursor_rotation(Vector2 p_rot) {
+	Node3DEditorViewport *vp = viewports[last_used_viewport];
+	vp->set_camera_cursor_rotation(p_rot);
+}
+float Node3DEditor::get_camera_cursor_distance() const {
+	Node3DEditorViewport *vp = viewports[last_used_viewport];
+	return vp->get_camera_cursor_distance();
+}
+void Node3DEditor::set_camera_cursor_distance(float p_dist) {
+	Node3DEditorViewport *vp = viewports[last_used_viewport];
+	vp->set_camera_cursor_distance(p_dist);
+}
+void Node3DEditor::set_camera_cursor_position(Vector3 p_pos) {
+	Node3DEditorViewport *vp = viewports[last_used_viewport];
+	vp->set_camera_cursor_position(p_pos);
+}
+Vector3 Node3DEditor::get_camera_cursor_position() const {
+	Node3DEditorViewport *vp = viewports[last_used_viewport];
+	return vp->get_camera_cursor_position();
+}
+//END
 void Node3DEditor::_request_gizmo(Object *p_obj) {
 	Node3D *sp = Object::cast_to<Node3D>(p_obj);
 	if (!sp) {
@@ -8607,6 +8655,16 @@ void Node3DEditor::_bind_methods() {
 
 	ClassDB::bind_method("update_all_gizmos", &Node3DEditor::update_all_gizmos);
 	ClassDB::bind_method("update_transform_gizmo", &Node3DEditor::update_transform_gizmo);
+	
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("get_camera_cursor_rotation"), &Node3DEditor::get_camera_cursor_rotation);
+	ClassDB::bind_method(D_METHOD("set_camera_cursor_rotation", "rotation"), &Node3DEditor::set_camera_cursor_rotation);
+	ClassDB::bind_method(D_METHOD("get_camera_cursor_distance"), &Node3DEditor::get_camera_cursor_distance);
+	ClassDB::bind_method(D_METHOD("set_camera_cursor_distance", "distance"), &Node3DEditor::set_camera_cursor_distance);
+	ClassDB::bind_method(D_METHOD("get_camera_cursor_position"), &Node3DEditor::get_camera_cursor_position);
+	ClassDB::bind_method(D_METHOD("set_camera_cursor_position", "position"), &Node3DEditor::set_camera_cursor_position);
+	
+	//END
 
 	ADD_SIGNAL(MethodInfo("transform_key_request"));
 	ADD_SIGNAL(MethodInfo("item_lock_status_changed"));

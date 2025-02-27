@@ -553,7 +553,16 @@ public:
 
 	SubViewport *get_viewport_node() { return viewport; }
 	Camera3D *get_camera_3d() { return camera; } // return the default camera object.
-
+	
+	//Stardusk
+	Vector2 get_camera_cursor_rotation() const;
+	void set_camera_cursor_rotation(Vector2 p_rot);
+	float get_camera_cursor_distance() const;
+	void set_camera_cursor_distance(float p_dist);
+	Vector3 get_camera_cursor_position() const;
+	void set_camera_cursor_position(Vector3 p_pos);
+	//END
+	
 	Node3DEditorViewport(Node3DEditor *p_spatial_editor, int p_index);
 	~Node3DEditorViewport();
 };
@@ -990,9 +999,19 @@ public:
 		return viewports[p_idx];
 	}
 	Node3DEditorViewport *get_last_used_viewport();
+	
 
 	void add_gizmo_plugin(Ref<EditorNode3DGizmoPlugin> p_plugin);
 	void remove_gizmo_plugin(Ref<EditorNode3DGizmoPlugin> p_plugin);
+	
+	//Stardusk
+	void set_camera_cursor_rotation(Vector2 p_rot);
+	Vector2 get_camera_cursor_rotation() const;
+	void set_camera_cursor_distance(float p_dist);
+	float get_camera_cursor_distance() const;
+	void set_camera_cursor_position(Vector3 p_pos);
+	Vector3 get_camera_cursor_position() const;
+	//Stardusk
 
 	DynamicBVH::ID insert_gizmo_bvh_node(Node3D *p_node, const AABB &p_aabb);
 	void update_gizmo_bvh_node(DynamicBVH::ID p_id, const AABB &p_aabb);
