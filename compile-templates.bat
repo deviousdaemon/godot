@@ -26,7 +26,6 @@ if not [%1]==[] (
 	set main_args=%main_args%  !disabled_features! --build_name=!filename!
 )
 
-rem echo !main_args!
-rem pause
-
 CALL !main_args!
+
+pause

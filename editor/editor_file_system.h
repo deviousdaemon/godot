@@ -255,6 +255,8 @@ class EditorFileSystem : public Node {
 
 	HashSet<String> textfile_extensions;
 	HashSet<String> other_file_extensions;
+	//Stardusk
+	HashSet<String> project_file_extensions;
 	HashSet<String> valid_extensions;
 	HashSet<String> import_extensions;
 

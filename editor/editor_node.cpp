@@ -482,6 +482,24 @@ void EditorNode::_update_from_settings() {
 	tree->set_debug_collision_contact_color(GLOBAL_GET("debug/shapes/collision/contact_color"));
 
 	ResourceImporterTexture::get_singleton()->update_imports();
+	
+	//Stardusk
+	HashSet<String> old_project_file_extensions = HashSet<String>(project_file_extensions);
+	bool fe_changed = false;
+	project_file_extensions.clear();
+	const Vector<String> project_file_ext = ((String)ProjectSettings::get_singleton()->get_setting("filesystem/file_types/project_file_extensions")).split(",", false);
+	for (const String &E : project_file_ext) {
+		if (!project_file_extensions.has(E)) {
+			if (!old_project_file_extensions.has(E)) {
+				fe_changed = true;
+			}	
+			project_file_extensions.insert(E);
+		}
+	}
+	if (old_project_file_extensions.size() != project_file_extensions.size() || fe_changed) {
+		EditorFileSystem::get_singleton()->scan();
+	}
+	//END
 
 #ifdef DEBUG_ENABLED
 	NavigationServer3D::get_singleton()->set_debug_navigation_edge_connection_color(GLOBAL_GET("debug/shapes/navigation/edge_connection_color"));
@@ -1351,7 +1369,8 @@ Error EditorNode::load_resource(const String &p_resource, bool p_ignore_broken_d
 		res = ResourceLoader::load(p_resource, "", ResourceFormatLoader::CACHE_MODE_REUSE, &err);
 	} else if (textfile_extensions.has(p_resource.get_extension())) {
 		res = ScriptEditor::get_singleton()->open_file(p_resource);
-	} else if (other_file_extensions.has(p_resource.get_extension())) {
+	//Stardusk
+	} else if (other_file_extensions.has(p_resource.get_extension()) || project_file_extensions.has(p_resource.get_extension())) {
 		OS::get_singleton()->shell_open(ProjectSettings::get_singleton()->globalize_path(p_resource));
 		return OK;
 	}
@@ -7186,6 +7205,14 @@ EditorNode::EditorNode() {
 	for (const String &E : other_file_ext) {
 		other_file_extensions.insert(E);
 	}
+	//Stardusk
+	const Vector<String> project_file_ext = ((String)ProjectSettings::get_singleton()->get_setting("filesystem/file_types/project_file_extensions")).split(",", false);
+	for (const String &E : project_file_ext) {
+		if (!project_file_extensions.has(E)) {
+			project_file_extensions.insert(E);
+		}
+	}
+	//END
 
 	resource_preview = memnew(EditorResourcePreview);
 	add_child(resource_preview);
