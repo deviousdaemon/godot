@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef COLLISION_POLYGON_2D_H
-#define COLLISION_POLYGON_2D_H
+#pragma once
 
 // #include "scene/2d/node_2d.h"
 #include "scene/2d/physics/collision_shape_parent_2d.h"
@@ -93,5 +92,3 @@ public:
 };
 
 VARIANT_ENUM_CAST(CollisionPolygon2D::BuildMode);
-
-#endif // COLLISION_POLYGON_2D_H

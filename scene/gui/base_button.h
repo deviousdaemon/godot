@@ -28,8 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef BASE_BUTTON_H
-#define BASE_BUTTON_H
+#pragma once
 
 #include "core/input/shortcut.h"
 #include "scene/gui/control.h"
@@ -173,5 +172,3 @@ public:
 	
 	ButtonGroup();
 };
-
-#endif // BASE_BUTTON_H
