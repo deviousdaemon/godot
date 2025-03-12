@@ -235,3 +235,6 @@ struct [[nodiscard]] Rect2i {
 			size(p_size) {
 	}
 };
+
+template <>
+struct is_zero_constructible<Rect2i> : std::true_type {};

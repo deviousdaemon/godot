@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  script_debugger.h                                                     */
+/*  nav_link_3d.h                                                         */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,57 +30,70 @@
 
 #pragma once
 
-#include "core/object/script_language.h"
-#include "core/string/string_name.h"
-#include "core/templates/hash_set.h"
-#include "core/templates/vector.h"
+#include "3d/nav_base_iteration_3d.h"
+#include "nav_base_3d.h"
+#include "nav_utils_3d.h"
 
-class ScriptDebugger {
-	typedef ScriptLanguage::StackInfo StackInfo;
+struct NavLinkIteration3D : NavBaseIteration3D {
+	bool bidirectional = true;
+	Vector3 start_position;
+	Vector3 end_position;
 
-	bool skip_breakpoints = false;
-	bool ignore_error_breaks = false;
+	Vector3 get_start_position() const { return start_position; }
+	Vector3 get_end_position() const { return end_position; }
+	bool is_bidirectional() const { return bidirectional; }
+};
 
-	HashMap<int, HashSet<StringName>> breakpoints;
+#include "core/templates/self_list.h"
 
-	static thread_local int lines_left;
-	static thread_local int depth;
-	static thread_local ScriptLanguage *break_lang;
-	static thread_local Vector<StackInfo> error_stack_info;
+class NavLink3D : public NavBase3D {
+	NavMap3D *map = nullptr;
+	bool bidirectional = true;
+	Vector3 start_position;
+	Vector3 end_position;
+	bool enabled = true;
+
+	bool link_dirty = true;
+
+	SelfList<NavLink3D> sync_dirty_request_list_element;
 
 public:
-	void set_lines_left(int p_left);
-	_ALWAYS_INLINE_ int get_lines_left() const {
-		return lines_left;
+	NavLink3D();
+	~NavLink3D();
+
+	void set_map(NavMap3D *p_map);
+	NavMap3D *get_map() const {
+		return map;
 	}
 
-	void set_depth(int p_depth);
-	_ALWAYS_INLINE_ int get_depth() const {
-		return depth;
+	void set_enabled(bool p_enabled);
+	bool get_enabled() const { return enabled; }
+
+	void set_bidirectional(bool p_bidirectional);
+	bool is_bidirectional() const {
+		return bidirectional;
 	}
 
-	String breakpoint_find_source(const String &p_source) const;
-	void set_break_language(ScriptLanguage *p_lang) { break_lang = p_lang; }
-	ScriptLanguage *get_break_language() { return break_lang; }
-	void set_skip_breakpoints(bool p_skip_breakpoints);
-	bool is_skipping_breakpoints();
-	void set_ignore_error_breaks(bool p_ignore);
-	bool is_ignoring_error_breaks();
-	void insert_breakpoint(int p_line, const StringName &p_source);
-	void remove_breakpoint(int p_line, const StringName &p_source);
-	_ALWAYS_INLINE_ bool is_breakpoint(int p_line, const StringName &p_source) const {
-		if (likely(!breakpoints.has(p_line))) {
-			return false;
-		}
-		return breakpoints[p_line].has(p_source);
+	void set_start_position(Vector3 p_position);
+	Vector3 get_start_position() const {
+		return start_position;
 	}
-	void clear_breakpoints();
-	const HashMap<int, HashSet<StringName>> &get_breakpoints() const { return breakpoints; }
 
-	void debug(ScriptLanguage *p_lang, bool p_can_continue = true, bool p_is_error_breakpoint = false);
-	ScriptLanguage *get_break_language() const;
+	void set_end_position(Vector3 p_position);
+	Vector3 get_end_position() const {
+		return end_position;
+	}
 
-	void send_error(const String &p_func, const String &p_file, int p_line, const String &p_err, const String &p_descr, bool p_editor_notify, ErrorHandlerType p_type, const Vector<StackInfo> &p_stack_info);
-	Vector<StackInfo> get_error_stack_info() const;
-	ScriptDebugger() {}
+	// NavBase properties.
+	virtual void set_navigation_layers(uint32_t p_navigation_layers) override;
+	virtual void set_enter_cost(real_t p_enter_cost) override;
+	virtual void set_travel_cost(real_t p_travel_cost) override;
+	virtual void set_owner_id(ObjectID p_owner_id) override;
+
+	bool is_dirty() const;
+	void sync();
+	void request_sync();
+	void cancel_sync_request();
+
+	void get_iteration_update(NavLinkIteration3D &r_iteration);
 };
