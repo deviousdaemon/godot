@@ -4288,6 +4288,7 @@ void Viewport::_camera_3d_set(Camera3D *p_camera) {
 
 	_update_audio_listener_3d();
 	_camera_3d_transform_changed_notify();
+	emit_signal("camera_changed");
 }
 
 bool Viewport::_camera_3d_add(Camera3D *p_camera) {
@@ -5002,6 +5003,8 @@ void Viewport::_bind_methods() {
 
 	ADD_SIGNAL(MethodInfo("size_changed"));
 	ADD_SIGNAL(MethodInfo("gui_focus_changed", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Control")));
+	//Stardusk
+	ADD_SIGNAL(MethodInfo("camera_changed"));
 
 	BIND_ENUM_CONSTANT(SHADOW_ATLAS_QUADRANT_SUBDIV_DISABLED);
 	BIND_ENUM_CONSTANT(SHADOW_ATLAS_QUADRANT_SUBDIV_1);
