@@ -874,7 +874,7 @@ Color TileSet::get_terrain_color(int p_terrain_set, int p_terrain_index) const {
 
 bool TileSet::is_valid_terrain_peering_bit_for_mode(TileSet::TerrainMode p_terrain_mode, TileSet::CellNeighbor p_peering_bit) const {
 	if (tile_shape == TileSet::TILE_SHAPE_SQUARE) {
-		if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS_AND_SIDES || p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_SIDES) {
+		if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_SIDES) {
 			if (p_peering_bit == TileSet::CELL_NEIGHBOR_RIGHT_SIDE ||
 					p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_SIDE ||
 					p_peering_bit == TileSet::CELL_NEIGHBOR_LEFT_SIDE ||
@@ -882,7 +882,7 @@ bool TileSet::is_valid_terrain_peering_bit_for_mode(TileSet::TerrainMode p_terra
 				return true;
 			}
 		}
-		if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS_AND_SIDES || p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS) {
+		if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS) {
 			if (p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER ||
 					p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_LEFT_CORNER ||
 					p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_LEFT_CORNER ||
@@ -890,8 +890,20 @@ bool TileSet::is_valid_terrain_peering_bit_for_mode(TileSet::TerrainMode p_terra
 				return true;
 			}
 		}
+		if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS_AND_SIDES) {
+			if (p_peering_bit == TileSet::CELL_NEIGHBOR_RIGHT_SIDE ||
+					p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_SIDE ||
+					p_peering_bit == TileSet::CELL_NEIGHBOR_LEFT_SIDE ||
+					p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_SIDE ||
+					p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER ||
+					p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_LEFT_CORNER ||
+					p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_LEFT_CORNER ||
+					p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_RIGHT_CORNER) {
+				return true;
+			}
+		}
 	} else if (tile_shape == TileSet::TILE_SHAPE_ISOMETRIC) {
-		if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS_AND_SIDES || p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_SIDES) {
+		if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_SIDES) {
 			if (p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE ||
 					p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_LEFT_SIDE ||
 					p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_LEFT_SIDE ||
@@ -899,8 +911,20 @@ bool TileSet::is_valid_terrain_peering_bit_for_mode(TileSet::TerrainMode p_terra
 				return true;
 			}
 		}
-		if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS_AND_SIDES || p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS) {
+		if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS) {
 			if (p_peering_bit == TileSet::CELL_NEIGHBOR_RIGHT_CORNER ||
+					p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_CORNER ||
+					p_peering_bit == TileSet::CELL_NEIGHBOR_LEFT_CORNER ||
+					p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_CORNER) {
+				return true;
+			}
+		}
+		if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS_AND_SIDES) {
+			if (p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE ||
+					p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_LEFT_SIDE ||
+					p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_LEFT_SIDE ||
+					p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_RIGHT_SIDE ||
+					p_peering_bit == TileSet::CELL_NEIGHBOR_RIGHT_CORNER ||
 					p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_CORNER ||
 					p_peering_bit == TileSet::CELL_NEIGHBOR_LEFT_CORNER ||
 					p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_CORNER) {
@@ -909,7 +933,7 @@ bool TileSet::is_valid_terrain_peering_bit_for_mode(TileSet::TerrainMode p_terra
 		}
 	} else {
 		if (get_tile_offset_axis() == TileSet::TILE_OFFSET_AXIS_HORIZONTAL) {
-			if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS_AND_SIDES || p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_SIDES) {
+			if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_SIDES) {
 				if (p_peering_bit == TileSet::CELL_NEIGHBOR_RIGHT_SIDE ||
 						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE ||
 						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_LEFT_SIDE ||
@@ -919,7 +943,7 @@ bool TileSet::is_valid_terrain_peering_bit_for_mode(TileSet::TerrainMode p_terra
 					return true;
 				}
 			}
-			if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS_AND_SIDES || p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS) {
+			if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS) {
 				if (p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER ||
 						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_CORNER ||
 						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_LEFT_CORNER ||
@@ -929,8 +953,24 @@ bool TileSet::is_valid_terrain_peering_bit_for_mode(TileSet::TerrainMode p_terra
 					return true;
 				}
 			}
+			if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS_AND_SIDES) {
+				if (p_peering_bit == TileSet::CELL_NEIGHBOR_RIGHT_SIDE ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_LEFT_SIDE ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_LEFT_SIDE ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_LEFT_SIDE ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_RIGHT_SIDE ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_CORNER ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_LEFT_CORNER ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_LEFT_CORNER ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_CORNER ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_RIGHT_CORNER) {
+					return true;
+				}
+			}
 		} else {
-			if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS_AND_SIDES || p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_SIDES) {
+			if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_SIDES) {
 				if (p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE ||
 						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_SIDE ||
 						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_LEFT_SIDE ||
@@ -940,8 +980,24 @@ bool TileSet::is_valid_terrain_peering_bit_for_mode(TileSet::TerrainMode p_terra
 					return true;
 				}
 			}
-			if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS_AND_SIDES || p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS) {
+			if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS) {
 				if (p_peering_bit == TileSet::CELL_NEIGHBOR_RIGHT_CORNER ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_LEFT_CORNER ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_LEFT_CORNER ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_LEFT_CORNER ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_RIGHT_CORNER) {
+					return true;
+				}
+			}
+			if (p_terrain_mode == TileSet::TERRAIN_MODE_MATCH_CORNERS_AND_SIDES) {
+				if (p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_SIDE ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_LEFT_SIDE ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_LEFT_SIDE ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_SIDE ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_TOP_RIGHT_SIDE ||
+						p_peering_bit == TileSet::CELL_NEIGHBOR_RIGHT_CORNER ||
 						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER ||
 						p_peering_bit == TileSet::CELL_NEIGHBOR_BOTTOM_LEFT_CORNER ||
 						p_peering_bit == TileSet::CELL_NEIGHBOR_LEFT_CORNER ||
@@ -6079,6 +6135,11 @@ void TileData::add_terrain(int p_terrain_set, int p_to_pos) {
 
 void TileData::move_terrain(int p_terrain_set, int p_from_index, int p_to_pos) {
 	if (terrain_set == p_terrain_set) {
+		if (terrain == p_from_index) {
+			terrain = p_to_pos;
+		} else if (terrain == p_to_pos) {
+			terrain = p_from_index;
+		}
 		for (int i = 0; i < 16; i++) {
 			if (p_from_index == terrain_peering_bits[i]) {
 				terrain_peering_bits[i] = (p_from_index < p_to_pos) ? p_to_pos - 1 : p_to_pos;
