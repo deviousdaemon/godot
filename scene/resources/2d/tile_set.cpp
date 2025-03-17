@@ -38,6 +38,8 @@
 #include "scene/gui/control.h"
 #include "scene/resources/image_texture.h"
 #include "servers/navigation_server_2d.h"
+//Stardusk
+#include "editor/editor_settings.h"
 
 /////////////////////////////// TileMapPattern //////////////////////////////////////
 
@@ -2399,7 +2401,8 @@ Vector<Point2> TileSet::get_terrain_peering_bit_polygon(int p_terrain_set, TileS
 	}
 }
 
-#define TERRAIN_ALPHA 0.6
+//Stardusk
+// #define TERRAIN_ALPHA 0.6
 
 void TileSet::draw_terrains(CanvasItem *p_canvas_item, Transform2D p_transform, const TileData *p_tile_data) {
 	ERR_FAIL_NULL(p_tile_data);
@@ -2517,12 +2520,13 @@ void TileSet::draw_terrains(CanvasItem *p_canvas_item, Transform2D p_transform, 
 		return;
 	}
 	TileSet::TerrainMode terrain_mode = get_terrain_set_mode(terrain_set);
-
+	
 	RenderingServer::get_singleton()->canvas_item_add_set_transform(p_canvas_item->get_canvas_item(), p_transform);
 	int terrain_id = p_tile_data->get_terrain();
 	if (terrain_id >= 0) {
 		Color color = get_terrain_color(terrain_set, terrain_id);
-		color.a = TERRAIN_ALPHA;
+		//Stardusk
+		color.a = terrain_alpha;
 		p_canvas_item->draw_mesh(terrain_meshes[terrain_mode], Ref<Texture2D>(), Transform2D(), color);
 	}
 
@@ -2532,7 +2536,8 @@ void TileSet::draw_terrains(CanvasItem *p_canvas_item, Transform2D p_transform, 
 			terrain_id = p_tile_data->get_terrain_peering_bit(bit);
 			if (terrain_id >= 0) {
 				Color color = get_terrain_color(terrain_set, terrain_id);
-				color.a = TERRAIN_ALPHA;
+				//Stardusk
+				color.a = terrain_alpha;
 				p_canvas_item->draw_mesh(terrain_peering_bits_meshes[terrain_mode][bit], Ref<Texture2D>(), Transform2D(), color);
 			}
 		}
@@ -4498,6 +4503,8 @@ TileSet::TileSet() {
 	// Instantiate the tile meshes.
 	tile_lines_mesh.instantiate();
 	tile_filled_mesh.instantiate();
+	//Stardusk
+	terrain_alpha = float(EditorSettings::get_singleton()->get_setting("editors/tiles_editor/terrain_alpha"));
 }
 
 TileSet::~TileSet() {

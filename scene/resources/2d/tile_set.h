@@ -303,6 +303,8 @@ protected:
 #endif
 
 private:
+	float terrain_alpha;
+	
 	// --- TileSet data ---
 	// Basic shape and layout.
 	TileShape tile_shape = TILE_SHAPE_SQUARE;

@@ -1907,6 +1907,8 @@ void TileMapLayer::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "navigation_visibility_mode", PROPERTY_HINT_ENUM, "Default,Force Show,Force Hide"), "set_navigation_visibility_mode", "get_navigation_visibility_mode");
 
 	ADD_SIGNAL(MethodInfo(CoreStringName(changed)));
+	//Stardusk
+	ADD_SIGNAL(MethodInfo("cell_updated", PropertyInfo(Variant::VECTOR2I, "coords")));
 
 	ADD_PROPERTY_DEFAULT("tile_map_data_format", TileMapDataFormat::TILE_MAP_DATA_FORMAT_1);
 
@@ -2408,6 +2410,8 @@ void TileMapLayer::set_cell(const Vector2i &p_coords, int p_source_id, const Vec
 	_queue_internal_update();
 
 	used_rect_cache_dirty = true;
+	
+	emit_signal("cell_updated", pk);
 }
 
 void TileMapLayer::erase_cell(const Vector2i &p_coords) {
