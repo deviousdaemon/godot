@@ -181,9 +181,6 @@ class EditorShaderPicker : public EditorResourcePicker {
 	ShaderMaterial *edited_material = nullptr;
 	int preferred_mode = -1;
 
-protected:
-	static void _bind_methods();
-
 public:
 	virtual void set_create_options(Object *p_menu_node) override;
 	virtual bool handle_menu_selected(int p_which) override;
