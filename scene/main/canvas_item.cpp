@@ -798,6 +798,13 @@ void CanvasItem::draw_rect(const Rect2 &p_rect, const Color &p_color, bool p_fil
 }
 
 //Stardusk
+void CanvasItem::draw_pixel(const Point2 &p_pos, const Color &p_color) {
+	ERR_THREAD_GUARD;
+	ERR_DRAW_GUARD;
+	Rect2 pix_rect = Rect2(p_pos, Size2(1, 1));
+	draw_rect(pix_rect, p_color, true);
+}
+
 void CanvasItem::draw_rect_with_thickness(const Rect2 &p_rect, const Color &p_color, int p_thickness) {
 	ERR_THREAD_GUARD;
 	ERR_DRAW_GUARD;
@@ -1345,6 +1352,7 @@ void CanvasItem::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("draw_multiline_colors", "points", "colors", "width", "antialiased"), &CanvasItem::draw_multiline_colors, DEFVAL(-1.0), DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("draw_rect", "rect", "color", "filled", "width", "antialiased"), &CanvasItem::draw_rect, DEFVAL(true), DEFVAL(-1.0), DEFVAL(false));
 	//Stardusk
+	ClassDB::bind_method(D_METHOD("draw_pixel", "position", "color"), &CanvasItem::draw_pixel);
 	ClassDB::bind_method(D_METHOD("draw_rect_with_thickness", "rect", "color", "thickness"), &CanvasItem::draw_rect_with_thickness, DEFVAL(1));
 	//END
 	ClassDB::bind_method(D_METHOD("draw_circle", "position", "radius", "color", "filled", "width", "antialiased"), &CanvasItem::draw_circle, DEFVAL(true), DEFVAL(-1.0), DEFVAL(false));
