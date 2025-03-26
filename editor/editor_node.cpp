@@ -2434,7 +2434,7 @@ void EditorNode::edit_item(Object *p_object, Object *p_editing_owner) {
 			plugin->edit(p_object);
 			continue;
 		}
-		
+
 		bool need_to_add = true;
 		List<EditorPropertyResource *> to_fold;
 
@@ -2453,7 +2453,7 @@ void EditorNode::edit_item(Object *p_object, Object *p_editing_owner) {
 				need_to_add = false;
 			}
 		}
-		
+
 		if (!need_to_add && to_fold.is_empty()) {
 			plugin->make_visible(true);
 			plugin->edit(p_object);
@@ -2461,7 +2461,7 @@ void EditorNode::edit_item(Object *p_object, Object *p_editing_owner) {
 			for (EditorPropertyResource *epres : to_fold) {
 				epres->fold_resource();
 			}
-			
+
 			// TODO: Call the function directly once a proper priority system is implemented.
 			to_over_edit.push_back(plugin);
 		}
