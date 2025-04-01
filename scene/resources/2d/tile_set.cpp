@@ -4457,7 +4457,7 @@ TileSet::TileSet() {
 	tile_lines_mesh.instantiate();
 	tile_filled_mesh.instantiate();
 	//Stardusk
-	terrain_alpha = float(EditorSettings::get_singleton()->get_setting("editors/tiles_editor/terrain_alpha"));
+	terrain_alpha = 0.6;
 }
 
 TileSet::~TileSet() {

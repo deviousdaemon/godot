@@ -595,7 +595,7 @@ void SceneTreeDock::_tool_selected(int p_tool, bool p_confirm_override) {
 			if (!profile_allow_editing) {
 				break;
 			}
-			if (editor_selection->get_selected_node_list().size() != 1) {
+			if (editor_selection->get_top_selected_node_list().size() != 1) {
 				break;
 			}
 			if (scene_tree->get_selected() == edited_scene) {
@@ -606,7 +606,7 @@ void SceneTreeDock::_tool_selected(int p_tool, bool p_confirm_override) {
 			if (!_validate_no_foreign()){
 				break;
 			}
-			Node *selection = editor_selection->get_selected_node_list().front()->get();
+			Node *selection = editor_selection->get_top_selected_node_list().front()->get();
 			if (selection->get_parent()->get_child_count() == 1) {
 				break;
 			}
@@ -644,13 +644,13 @@ void SceneTreeDock::_tool_selected(int p_tool, bool p_confirm_override) {
 			if (!profile_allow_editing) {
 				break;
 			}
-			if (editor_selection->get_selected_node_list().size() < 1) {
+			if (editor_selection->get_top_selected_node_list().size() < 1) {
 				break;
 			}
 			if (!_validate_no_foreign()){
 				break;
 			}
-			for (Node *E: editor_selection->get_selected_node_list()) {
+			for (Node *E: editor_selection->get_top_selected_node_list()) {
 				Node2D *node2d = Object::cast_to<Node2D>(E);
 				if (node2d != nullptr) {
 					node2d->set_visible(!node2d->is_visible());

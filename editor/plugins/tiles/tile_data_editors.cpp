@@ -798,6 +798,7 @@ void GenericTilePolygonEditor::set_tile_set(Ref<TileSet> p_tile_set) {
 		}
 	}
 	editor_zoom_widget->set_zoom_by_increments(-6, true);
+	editor_zoom_widget->set_zoom(16.0);
 	_zoom_changed();
 }
 
@@ -984,7 +985,7 @@ GenericTilePolygonEditor::GenericTilePolygonEditor() {
 
 	Control *root = memnew(Control);
 	root->set_v_size_flags(Control::SIZE_EXPAND_FILL);
-	root->set_custom_minimum_size(Size2(0, 200 * EDSCALE));
+	root->set_custom_minimum_size(Size2(528, 528 * EDSCALE));
 	root->set_mouse_filter(Control::MOUSE_FILTER_IGNORE);
 	add_child(root);
 
@@ -1006,6 +1007,7 @@ GenericTilePolygonEditor::GenericTilePolygonEditor() {
 
 	editor_zoom_widget = memnew(EditorZoomWidget);
 	editor_zoom_widget->setup_zoom_limits(0.125, 128.0);
+	editor_zoom_widget->set_zoom(16.0);
 	editor_zoom_widget->set_position(Vector2(5, 5));
 	editor_zoom_widget->connect("zoom_changed", callable_mp(this, &GenericTilePolygonEditor::_zoom_changed).unbind(1));
 	editor_zoom_widget->set_shortcut_context(this);
