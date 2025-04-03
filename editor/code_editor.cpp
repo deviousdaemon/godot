@@ -1737,7 +1737,7 @@ void CodeTextEditor::toggle_bookmark() {
 
 void CodeTextEditor::goto_next_bookmark() {
 	PackedInt32Array bmarks = text_editor->get_bookmarked_lines();
-	if (bmarks.size() <= 0) {
+	if (bmarks.is_empty()) {
 		return;
 	}
 
@@ -1753,7 +1753,7 @@ void CodeTextEditor::goto_next_bookmark() {
 
 void CodeTextEditor::goto_prev_bookmark() {
 	PackedInt32Array bmarks = text_editor->get_bookmarked_lines();
-	if (bmarks.size() <= 0) {
+	if (bmarks.is_empty()) {
 		return;
 	}
 

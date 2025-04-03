@@ -1633,6 +1633,7 @@ ProjectSettings::ProjectSettings() {
 	//Stardusk
 	GLOBAL_DEF_BASIC("filesystem/file_types/project_file_extensions", "");
 
+#if !defined(NAVIGATION_2D_DISABLED) || !defined(NAVIGATION_3D_DISABLED)
 	GLOBAL_DEF("navigation/world/map_use_async_iterations", true);
 
 	GLOBAL_DEF("navigation/avoidance/thread_model/avoidance_use_multiple_threads", true);
@@ -1643,6 +1644,7 @@ ProjectSettings::ProjectSettings() {
 	GLOBAL_DEF("navigation/baking/use_crash_prevention_checks", true);
 	GLOBAL_DEF("navigation/baking/thread_model/baking_use_multiple_threads", true);
 	GLOBAL_DEF("navigation/baking/thread_model/baking_use_high_priority_threads", true);
+#endif // !defined(NAVIGATION_2D_DISABLED) || !defined(NAVIGATION_3D_DISABLED)
 
 	ProjectSettings::get_singleton()->add_hidden_prefix("input/");
 }
