@@ -1838,6 +1838,15 @@ bool Control::is_mouse_hovering() const {
 		return false;
 	return get_global_rect().has_point(get_global_mouse_position());
 }
+Point2 Control::to_local(Point2 p_global) const {
+	ERR_READ_THREAD_GUARD_V(Point2());
+	return get_global_transform().affine_inverse().xform(p_global);
+}
+
+Point2 Control::to_global(Point2 p_local) const {
+	ERR_READ_THREAD_GUARD_V(Point2());
+	return get_global_transform().xform(p_local);
+}
 //END
 bool Control::has_point(const Point2 &p_point) const {
 	ERR_READ_THREAD_GUARD_V(false);
@@ -3640,6 +3649,9 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_combined_minimum_size"), &Control::get_combined_minimum_size);
 	//Stardusk
 	ClassDB::bind_method(D_METHOD("is_mouse_hovering"), &Control::is_mouse_hovering);
+	ClassDB::bind_method(D_METHOD("to_local", "global_point"), &Control::to_local);
+	ClassDB::bind_method(D_METHOD("to_global", "local_point"), &Control::to_global);
+	//END
 
 	ClassDB::bind_method(D_METHOD("_set_layout_mode", "mode"), &Control::_set_layout_mode);
 	ClassDB::bind_method(D_METHOD("_get_layout_mode"), &Control::_get_layout_mode);

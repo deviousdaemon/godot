@@ -517,6 +517,11 @@ public:
 
 	void set_custom_minimum_size(const Size2 &p_custom);
 	Size2 get_custom_minimum_size() const;
+	
+	//Stardusk
+	Point2 to_local(Point2 p_global) const;
+	Point2 to_global(Point2 p_local) const;
+	//END
 
 	// Container sizing.
 
