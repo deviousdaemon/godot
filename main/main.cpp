@@ -4401,7 +4401,7 @@ int Main::start() {
 			sml->get_root()->set_snap_controls_to_pixels(snap_controls);
 
 			bool font_oversampling = GLOBAL_GET("gui/fonts/dynamic_fonts/use_oversampling");
-			sml->get_root()->set_use_font_oversampling(font_oversampling);
+			sml->get_root()->set_use_oversampling(font_oversampling);
 
 			int texture_filter = GLOBAL_GET("rendering/textures/canvas_textures/default_texture_filter");
 			int texture_repeat = GLOBAL_GET("rendering/textures/canvas_textures/default_texture_repeat");
@@ -4645,13 +4645,6 @@ bool Main::iteration() {
 #ifndef XR_DISABLED
 	XRServer::get_singleton()->_process();
 #endif // XR_DISABLED
-
-#ifndef NAVIGATION_2D_DISABLED
-	NavigationServer2D::get_singleton()->sync();
-#endif // NAVIGATION_2D_DISABLED
-#ifndef NAVIGATION_3D_DISABLED
-	NavigationServer3D::get_singleton()->sync();
-#endif // NAVIGATION_3D_DISABLED
 
 	for (int iters = 0; iters < advance.physics_steps; ++iters) {
 		if (Input::get_singleton()->is_agile_input_event_flushing()) {
