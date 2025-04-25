@@ -1,0 +1,1 @@
+/home/stardusk/Desktop/SharedFiles/compile-windows.sh
