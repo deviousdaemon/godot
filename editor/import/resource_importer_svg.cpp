@@ -77,7 +77,7 @@ Error ResourceImporterSVG::import(ResourceUID::ID p_source_id, const String &p_s
 	svg_tex.instantiate();
 
 	String source = FileAccess::get_file_as_string(p_source_file);
-	ERR_FAIL_COND_V(source.is_empty(), ERR_CANT_OPEN);
+	ERR_FAIL_COND_V_MSG(source.is_empty(), ERR_CANT_OPEN, vformat("Cannot open file from path \"%s\".", p_source_file));
 
 	double base_scale = p_options["base_scale"];
 	double saturation = p_options["saturation"];
@@ -88,6 +88,8 @@ Error ResourceImporterSVG::import(ResourceUID::ID p_source_id, const String &p_s
 	svg_tex->set_color_map(color_map);
 	svg_tex->set_source(source);
 
+	ERR_FAIL_COND_V_MSG(svg_tex->get_rid().is_null(), ERR_CANT_OPEN, vformat("Failed loading SVG, unsupported or invalid SVG data in \"%s\".", p_source_file));
+
 	int flg = 0;
 	if ((bool)p_options["compress"]) {
 		flg |= ResourceSaver::SaverFlags::FLAG_COMPRESS;
@@ -95,7 +97,7 @@ Error ResourceImporterSVG::import(ResourceUID::ID p_source_id, const String &p_s
 
 	print_verbose("Saving to: " + p_save_path + ".svgtex");
 	Error err = ResourceSaver::save(svg_tex, p_save_path + ".svgtex", flg);
-	ERR_FAIL_COND_V_MSG(err != OK, err, "Cannot save SVG texture to file \"" + p_save_path + ".svgtex\".");
+	ERR_FAIL_COND_V_MSG(err != OK, err, vformat("Cannot save SVG texture to file \"%s.svgtex\".", p_save_path));
 	print_verbose("Done saving to: " + p_save_path + ".svgtex");
 
 	return OK;
