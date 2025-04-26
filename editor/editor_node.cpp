@@ -7299,10 +7299,6 @@ EditorNode::EditorNode() {
 		import_svg.instantiate();
 		ResourceFormatImporter::get_singleton()->add_importer(import_svg);
 
-		Ref<ResourceImporterSVG> import_svg;
-		import_svg.instantiate();
-		ResourceFormatImporter::get_singleton()->add_importer(import_svg);
-
 		Ref<ResourceImporterTextureAtlas> import_texture_atlas;
 		import_texture_atlas.instantiate();
 		ResourceFormatImporter::get_singleton()->add_importer(import_texture_atlas);
