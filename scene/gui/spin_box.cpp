@@ -654,6 +654,14 @@ void SpinBox::set_arrows_enabled(bool p_enabled) {
 	state_cache.down_button_pressed = false;
 	queue_redraw();
 }
+void SpinBox::set_expand_to_text_length_enabled(bool p_enabled) {
+	expand_to_text_length = p_enabled;
+	line_edit->set_expand_to_text_length_enabled(p_enabled);
+	update_minimum_size();
+}
+bool SpinBox::is_expand_to_text_length_enabled() const {
+	return expand_to_text_length;
+}
 //End
 
 void SpinBox::_bind_methods() {
@@ -674,8 +682,10 @@ void SpinBox::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("apply"), &SpinBox::apply);
 	ClassDB::bind_method(D_METHOD("get_line_edit"), &SpinBox::get_line_edit);
 	//Stardusk
-	ClassDB::bind_method(D_METHOD("are_arrows_enabled"), &SpinBox::are_arrows_enabled);
 	ClassDB::bind_method(D_METHOD("set_arrows_enabled", "enabled"), &SpinBox::set_arrows_enabled);
+	ClassDB::bind_method(D_METHOD("are_arrows_enabled"), &SpinBox::are_arrows_enabled);
+	ClassDB::bind_method(D_METHOD("set_expand_to_text_length_enabled", "enabled"), &SpinBox::set_expand_to_text_length_enabled);
+	ClassDB::bind_method(D_METHOD("is_expand_to_text_length_enabled"), &SpinBox::is_expand_to_text_length_enabled);
 	//End
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "alignment", PROPERTY_HINT_ENUM, "Left,Center,Right,Fill"), "set_horizontal_alignment", "get_horizontal_alignment");
@@ -687,6 +697,8 @@ void SpinBox::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "select_all_on_focus"), "set_select_all_on_focus", "is_select_all_on_focus");
 	//Stardusk
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "arrows_enabled"), "set_arrows_enabled", "are_arrows_enabled");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "expand_to_text_length"), "set_expand_to_text_length_enabled", "is_expand_to_text_length_enabled");
+	//End
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, SpinBox, buttons_vertical_separation);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_CONSTANT, SpinBox, field_and_buttons_separation);

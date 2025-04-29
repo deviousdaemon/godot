@@ -29,6 +29,12 @@
 				Virtual method to be implemented by the user. Returns a custom minimum size that the stylebox must respect when drawing. By default [method get_minimum_size] only takes content margins into account. This method can be overridden to add another size restriction. A combination of the default behavior and the output of this method will be used, to account for both sizes.
 			</description>
 		</method>
+		<method name="_get_offset" qualifiers="virtual const">
+			<return type="Vector2" />
+			<description>
+				Virtual method to be implemented by the user. Returns the "offset" of a stylebox. This helper function returns a value equivalent to Vector2(style.get_margin(MARGIN_LEFT), style.get_margin(MARGIN_TOP)).
+			</description>
+		</method>
 		<method name="_test_mask" qualifiers="virtual const">
 			<return type="bool" />
 			<param index="0" name="point" type="Vector2" />

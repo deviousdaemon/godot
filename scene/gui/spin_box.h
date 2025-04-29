@@ -85,6 +85,7 @@ class SpinBox : public Range {
 
 	//Stardusk
 	bool arrows_enabled = true;
+	bool expand_to_text_length = false;
 	//End
 
 	void _line_edit_input(const Ref<InputEvent> &p_event);
@@ -193,6 +194,8 @@ public:
 	//Stardusk
 	void set_arrows_enabled(bool p_enabled);
 	bool are_arrows_enabled() const { return arrows_enabled; };
+	void set_expand_to_text_length_enabled(bool p_enabled);
+	bool is_expand_to_text_length_enabled() const ;
 	//End
 
 	SpinBox();

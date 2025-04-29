@@ -632,6 +632,12 @@ Point2i DisplayServerWeb::mouse_get_position() const {
 	return Input::get_singleton()->get_mouse_position();
 }
 
+//Stardusk
+float DisplayServerWeb::get_double_click_time() const {
+	return DisplayServer::get_default_double_click_time();
+}
+//End
+
 // Wheel
 int DisplayServerWeb::mouse_wheel_callback(double p_delta_x, double p_delta_y) {
 #ifdef PROXY_TO_PTHREAD_ENABLED

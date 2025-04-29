@@ -226,6 +226,10 @@ public:
 	void virtual_keyboard_set_height(int height);
 	virtual int virtual_keyboard_get_height() const override;
 	virtual bool has_hardware_keyboard() const override;
+	
+	//Stardusk
+	virtual float get_double_click_time() const override;
+	//End
 
 	virtual void clipboard_set(const String &p_text) override;
 	virtual String clipboard_get() const override;

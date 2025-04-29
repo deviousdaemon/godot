@@ -531,6 +531,12 @@ BitField<MouseButtonMask> DisplayServer::mouse_get_button_state() const {
 	ERR_FAIL_V_MSG(MouseButtonMask::NONE, "Mouse is not supported by this display server.");
 }
 
+//Stardusk
+float DisplayServer::get_double_click_time() const {
+	ERR_FAIL_V_MSG(0.0, "Mouse is not supported by this display server.");
+}
+//End
+
 void DisplayServer::clipboard_set(const String &p_text) {
 	WARN_PRINT("Clipboard is not supported by this display server.");
 }
@@ -1374,6 +1380,9 @@ void DisplayServer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("warp_mouse", "position"), &DisplayServer::warp_mouse);
 	ClassDB::bind_method(D_METHOD("mouse_get_position"), &DisplayServer::mouse_get_position);
 	ClassDB::bind_method(D_METHOD("mouse_get_button_state"), &DisplayServer::mouse_get_button_state);
+	
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("get_double_click_time"), &DisplayServer::get_double_click_time);
 
 	ClassDB::bind_method(D_METHOD("clipboard_set", "clipboard"), &DisplayServer::clipboard_set);
 	ClassDB::bind_method(D_METHOD("clipboard_get"), &DisplayServer::clipboard_get);

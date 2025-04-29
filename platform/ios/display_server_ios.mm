@@ -796,6 +796,12 @@ bool DisplayServerIOS::has_hardware_keyboard() const {
 	}
 }
 
+//Stardusk
+float DisplayServerIOS::get_double_click_time() const {
+	return DisplayServer::get_default_double_click_time();
+}
+//End
+
 void DisplayServerIOS::clipboard_set(const String &p_text) {
 	[UIPasteboard generalPasteboard].string = [NSString stringWithUTF8String:p_text.utf8().get_data()];
 }

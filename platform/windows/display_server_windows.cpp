@@ -943,6 +943,12 @@ BitField<MouseButtonMask> DisplayServerWindows::mouse_get_button_state() const {
 	return last_button_state;
 }
 
+//Stardusk
+float DisplayServerWindows::get_double_click_time() const {
+	return (float)GetDoubleClickTime();
+}
+//End
+
 void DisplayServerWindows::clipboard_set(const String &p_text) {
 	_THREAD_SAFE_METHOD_
 

@@ -120,6 +120,11 @@ public:
 	virtual void set_system_theme_change_callback(const Callable &p_callable) override;
 	void emit_system_theme_changed();
 
+	//Stardusk
+	virtual float get_double_click_time() const override;
+	//End
+
+	
 	virtual void clipboard_set(const String &p_text) override;
 	virtual String clipboard_get() const override;
 	virtual bool clipboard_has() const override;

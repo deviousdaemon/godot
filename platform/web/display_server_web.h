@@ -193,6 +193,10 @@ public:
 	virtual bool mouse_is_mode_override_enabled() const override;
 
 	virtual Point2i mouse_get_position() const override;
+	
+	//Stardusk
+	virtual float get_double_click_time() const override;
+	//End
 
 	// ime
 	virtual void window_set_ime_active(const bool p_active, WindowID p_window = MAIN_WINDOW_ID) override;

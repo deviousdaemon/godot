@@ -1635,6 +1635,12 @@ BitField<MouseButtonMask> DisplayServerMacOS::mouse_get_button_state() const {
 	return last_button_state;
 }
 
+//Stardusk
+float DisplayServerMacOS::get_double_click_time() const {
+	return (float)[NSEvent doubleClickInterval]
+}
+//End
+
 void DisplayServerMacOS::clipboard_set(const String &p_text) {
 	_THREAD_SAFE_METHOD_
 

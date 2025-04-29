@@ -305,6 +305,10 @@ public:
 	virtual void warp_mouse(const Point2i &p_position);
 	virtual Point2i mouse_get_position() const;
 	virtual BitField<MouseButtonMask> mouse_get_button_state() const;
+	
+	//Stardusk
+	virtual float get_double_click_time() const;
+	//End
 
 	virtual void clipboard_set(const String &p_text);
 	virtual String clipboard_get() const;
@@ -880,6 +884,9 @@ public:
 
 	static inline RenderingDeviceCreationStatus supported_rendering_device = RenderingDeviceCreationStatus::UNKNOWN;
 	static bool is_rendering_device_supported();
+	
+	//Stardusk
+	static float get_default_double_click_time() { return 400.0; }
 
 	DisplayServer();
 	~DisplayServer();

@@ -155,6 +155,12 @@ void DisplayServerAndroid::emit_hardware_keyboard_connection_changed(bool p_conn
 	}
 }
 
+//Stardusk
+float DisplayServerAndroid::get_double_click_time() const {
+	return DisplayServer::get_default_double_click_time();
+}
+//End
+
 void DisplayServerAndroid::clipboard_set(const String &p_text) {
 	GodotJavaWrapper *godot_java = OS_Android::get_singleton()->get_godot_java();
 	ERR_FAIL_NULL(godot_java);

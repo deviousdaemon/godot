@@ -1869,7 +1869,10 @@ void Control::accept_event() {
 bool Control::is_mouse_hovering() const {
 	if (!is_visible_in_tree())
 		return false;
-	return get_global_rect().has_point(get_global_mouse_position());
+	Size2 global_scale = get_global_transform().get_scale();
+	Rect2 global_rect = get_global_rect();
+	global_rect = Rect2(global_rect.position * global_scale, global_rect.size * global_scale);
+	return global_rect.has_point(get_global_mouse_position());
 }
 Point2 Control::to_local(Point2 p_global) const {
 	ERR_READ_THREAD_GUARD_V(Point2());

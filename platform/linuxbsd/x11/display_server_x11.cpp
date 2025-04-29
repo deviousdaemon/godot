@@ -646,6 +646,12 @@ BitField<MouseButtonMask> DisplayServerX11::mouse_get_button_state() const {
 	return MouseButtonMask::NONE;
 }
 
+//Stardusk
+float DisplayServerX11::get_double_click_time() const {
+	return DisplayServer::get_default_double_click_time();
+}
+//End
+
 void DisplayServerX11::clipboard_set(const String &p_text) {
 	_THREAD_SAFE_METHOD_
 
