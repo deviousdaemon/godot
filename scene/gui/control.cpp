@@ -1777,7 +1777,7 @@ void Control::_size_changed() {
 		queue_accessibility_update();
 		
 		//Stardusk
-		if (pos_changed) {
+		if (pos_changed && is_inside_tree()) {
 			emit_signal(SceneStringName(position_changed), get_position());
 		}
 		//END
