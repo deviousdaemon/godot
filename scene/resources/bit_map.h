@@ -79,6 +79,4 @@ public:
 	
 	//Stardusk
 	bool is_equal_to(Ref<BitMap> p_bitmap) const;
-
-	BitMap();
 };
