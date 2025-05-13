@@ -263,5 +263,3 @@ Ref<Image> AtlasTexture::get_image() const {
 
 	return atlas_image->get_region(_get_region_rect());
 }
-
-AtlasTexture::AtlasTexture() {}
