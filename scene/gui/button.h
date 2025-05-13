@@ -41,6 +41,10 @@ private:
 	String text;
 	String xl_text;
 	Ref<TextParagraph> text_buf;
+	//Stardusk
+	bool draw_icon = true;
+	bool draw_text = true;
+	//End
 
 	String language;
 	TextDirection text_direction = TEXT_DIRECTION_AUTO;
@@ -150,6 +154,13 @@ public:
 
 	void set_flat(bool p_enabled);
 	bool is_flat() const;
+	
+	//Stardusk
+	void set_draw_text(bool p_enabled);
+	bool can_draw_text() const;
+	void set_draw_icon(bool p_enabled);
+	bool can_draw_icon() const;
+	//End
 
 	void set_clip_text(bool p_enabled);
 	bool get_clip_text() const;

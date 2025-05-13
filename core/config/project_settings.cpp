@@ -1633,6 +1633,8 @@ ProjectSettings::ProjectSettings() {
 #endif
 
 	GLOBAL_DEF_BASIC("gui/common/snap_controls_to_pixels", true);
+	//Stardusk
+	GLOBAL_DEF(PropertyInfo(Variant::FLOAT, "gui/common/oversampling_override", PROPERTY_HINT_RANGE, "0,32,0.001,or_greater"), 0.0);
 	GLOBAL_DEF_BASIC("gui/fonts/dynamic_fonts/use_oversampling", true);
 
 	GLOBAL_DEF_RST(PropertyInfo(Variant::INT, "rendering/rendering_device/vsync/frame_queue_size", PROPERTY_HINT_RANGE, "2,3,1"), 2);

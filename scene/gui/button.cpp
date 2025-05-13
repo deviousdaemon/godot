@@ -364,7 +364,7 @@ void Button::_notification(int p_what) {
 			const Size2 custom_element_size = drawable_size_remained;
 
 			// Draw the icon.
-			if (_icon.is_valid()) {
+			if (_icon.is_valid() && draw_icon) {
 				Size2 icon_size;
 
 				{ // Calculate the drawing size of the icon.
@@ -453,7 +453,7 @@ void Button::_notification(int p_what) {
 			}
 
 			// Draw the text.
-			if (!xl_text.is_empty()) {
+			if (!xl_text.is_empty() && draw_text) {
 				text_buf->set_alignment(align_rtl_checked);
 
 				float text_buf_width = Math::ceil(MAX(1.0f, drawable_size_remained.width)); // The space's width filled by the text_buf.
@@ -513,7 +513,7 @@ Size2 Button::get_minimum_size_for_text_and_icon(const String &p_text, Ref<Textu
 	// Do not include `_internal_margin`, it's already added in the `get_minimum_size` overrides.
 
 	Ref<TextParagraph> paragraph;
-	if (p_text.is_empty()) {
+	if (p_text.is_empty() && draw_text) {
 		paragraph = text_buf;
 	} else {
 		paragraph.instantiate();
@@ -525,7 +525,7 @@ Size2 Button::get_minimum_size_for_text_and_icon(const String &p_text, Ref<Textu
 		minsize.width = 0;
 	}
 
-	if (!expand_icon && p_icon.is_valid()) {
+	if (!expand_icon && p_icon.is_valid() && draw_icon) {
 		Size2 icon_size = _fit_icon_size(p_icon->get_size());
 		if (vertical_icon_alignment == VERTICAL_ALIGNMENT_CENTER) {
 			minsize.height = MAX(minsize.height, icon_size.height);
@@ -800,6 +800,28 @@ VerticalAlignment Button::get_vertical_icon_alignment() const {
 	return vertical_icon_alignment;
 }
 
+//Stardusk
+void Button::set_draw_text(bool p_enabled) {
+	draw_text = p_enabled;
+	update_minimum_size();
+	queue_redraw();
+}
+
+bool Button::can_draw_text() const {
+	return draw_text;
+}
+
+void Button::set_draw_icon(bool p_enabled) {
+	draw_icon = p_enabled;
+	update_minimum_size();
+	queue_redraw();
+}
+
+bool Button::can_draw_icon() const {
+	return draw_icon;
+}
+//End
+
 void Button::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_text", "text"), &Button::set_text);
 	ClassDB::bind_method(D_METHOD("get_text"), &Button::get_text);
@@ -817,6 +839,12 @@ void Button::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_button_icon"), &Button::get_button_icon);
 	ClassDB::bind_method(D_METHOD("set_flat", "enabled"), &Button::set_flat);
 	ClassDB::bind_method(D_METHOD("is_flat"), &Button::is_flat);
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("set_draw_text", "enabled"), &Button::set_draw_text);
+	ClassDB::bind_method(D_METHOD("can_draw_text"), &Button::can_draw_text);
+	ClassDB::bind_method(D_METHOD("set_draw_icon", "enabled"), &Button::set_draw_icon);
+	ClassDB::bind_method(D_METHOD("can_draw_icon"), &Button::can_draw_icon);
+	//END
 	ClassDB::bind_method(D_METHOD("set_clip_text", "enabled"), &Button::set_clip_text);
 	ClassDB::bind_method(D_METHOD("get_clip_text"), &Button::get_clip_text);
 	ClassDB::bind_method(D_METHOD("set_text_alignment", "alignment"), &Button::set_text_alignment);
@@ -833,6 +861,9 @@ void Button::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "flat"), "set_flat", "is_flat");
 
 	ADD_GROUP("Text Behavior", "");
+	//Stardusk
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "draw_text"), "set_draw_text", "can_draw_text");
+	//End
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "alignment", PROPERTY_HINT_ENUM, "Left,Center,Right"), "set_text_alignment", "get_text_alignment");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "text_overrun_behavior", PROPERTY_HINT_ENUM, "Trim Nothing,Trim Characters,Trim Words,Ellipsis (6+ Characters),Word Ellipsis (6+ Characters),Ellipsis (Always),Word Ellipsis (Always)"), "set_text_overrun_behavior", "get_text_overrun_behavior");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "autowrap_mode", PROPERTY_HINT_ENUM, "Off,Arbitrary,Word,Word (Smart)"), "set_autowrap_mode", "get_autowrap_mode");
@@ -840,6 +871,9 @@ void Button::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "clip_text"), "set_clip_text", "get_clip_text");
 
 	ADD_GROUP("Icon Behavior", "");
+	//Stardusk
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "draw_icon"), "set_draw_icon", "can_draw_icon");
+	//End
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "icon_alignment", PROPERTY_HINT_ENUM, "Left,Center,Right"), "set_icon_alignment", "get_icon_alignment");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "vertical_icon_alignment", PROPERTY_HINT_ENUM, "Top,Center,Bottom"), "set_vertical_icon_alignment", "get_vertical_icon_alignment");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "expand_icon"), "set_expand_icon", "is_expand_icon");

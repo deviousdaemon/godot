@@ -4399,6 +4399,11 @@ int Main::start() {
 			bool snap_controls = GLOBAL_GET("gui/common/snap_controls_to_pixels");
 			sml->get_root()->set_snap_controls_to_pixels(snap_controls);
 
+			//Stardusk
+			float oversampling_override = GLOBAL_GET("gui/common/oversampling_override");
+			sml->get_root()->set_oversampling_override(oversampling_override);
+			//End
+			
 			bool font_oversampling = GLOBAL_GET("gui/fonts/dynamic_fonts/use_oversampling");
 			sml->get_root()->set_use_oversampling(font_oversampling);
 
