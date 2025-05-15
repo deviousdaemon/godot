@@ -21,5 +21,3 @@ if not [%1] == [] (
 )
 
 CALL %main_batch_folder%\compile.bat --compile_path="%cd%" --threads=!threads! --program=true --export_path=B:\GodotWindows\Godot4.5\
-
-pause

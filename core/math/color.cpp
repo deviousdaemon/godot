@@ -37,6 +37,9 @@
 
 #include "thirdparty/misc/ok_color.h"
 
+//Stardusk
+#include "core/config/engine.h"
+
 uint32_t Color::to_argb32() const {
 	uint32_t c = (uint8_t)Math::round(a * 255.0f);
 	c <<= 8;
@@ -383,6 +386,9 @@ bool Color::html_is_valid(const String &p_color) {
 Color Color::named(const String &p_name) {
 	int idx = find_named_color(p_name);
 	if (idx == -1) {
+		if (Engine::get_singleton()->is_editor_hint()) {
+			return Color();
+		}
 		ERR_FAIL_V_MSG(Color(), "Invalid color name: " + p_name + ".");
 	}
 	return named_colors[idx].color;

@@ -2029,7 +2029,30 @@ void GraphEdit::gui_input(const Ref<InputEvent> &p_ev) {
 			// Only select frames when the box selection is fully enclosing them.
 			bool is_frame = Object::cast_to<GraphFrame>(graph_element);
 			Rect2 r = graph_element->get_rect();
-			bool should_be_selected = is_frame ? box_selecting_rect.encloses(r) : box_selecting_rect.intersects(r);
+			//Stardusk
+			// bool should_be_selected = is_frame ? box_selecting_rect.encloses(r) : box_selecting_rect.intersects(r);
+			bool should_be_selected = false;
+			if (is_frame || selection_style == SelectionStyle::SELECTION_STYLE_ENCLOSES_FULL) {
+				should_be_selected = box_selecting_rect.encloses(r);
+			} else {
+				switch (selection_style) {
+					case SelectionStyle::SELECTION_STYLE_INTERSECTING: {
+						should_be_selected = box_selecting_rect.intersects(r);
+						break;
+					}
+					case SelectionStyle::SELECTION_STYLE_ENCLOSES_MIDDLE: {
+						should_be_selected = box_selecting_rect.has_point(r.get_center());
+						break;
+					}
+					case SelectionStyle::SELECTION_STYLE_ENCLOSES_THIRD: {
+						float area_third = (r.get_size().x * r.get_size().y) / 3.0;
+						
+						Rect2 intersection = box_selecting_rect.intersection(r);
+						should_be_selected = intersection.get_size().x * intersection.get_size().y >= area_third;
+						break;
+					}
+				}
+			}
 
 			if (should_be_selected) {
 				graph_element->set_selected(box_selection_mode_additive);
@@ -2424,7 +2447,7 @@ void GraphEdit::set_zoom_custom(float p_zoom, const Vector2 &p_center) {
 		h_scrollbar->set_value(offset.x);
 		v_scrollbar->set_value(offset.y);
 		
-		emit_signal(SNAME("zoom_changed"));
+		emit_signal(SNAME("zoom_changed"), zoom);
 	}
 
 	_update_zoom_label();
@@ -2930,6 +2953,15 @@ void GraphEdit::arrange_nodes() {
 	arranger->arrange_nodes();
 }
 
+//Stardusk
+void GraphEdit::set_selection_style(GraphEdit::SelectionStyle p_style) {
+	selection_style = p_style;
+}
+GraphEdit::SelectionStyle GraphEdit::get_selection_style() const {
+	return selection_style;
+}
+//END
+
 void GraphEdit::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("connect_node", "from_node", "from_port", "to_node", "to_port", "keep_alive"), &GraphEdit::connect_node, DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("is_node_connected", "from_node", "from_port", "to_node", "to_port"), &GraphEdit::is_node_connected);
@@ -3036,6 +3068,11 @@ void GraphEdit::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("arrange_nodes"), &GraphEdit::arrange_nodes);
 
 	ClassDB::bind_method(D_METHOD("set_selected", "node"), &GraphEdit::set_selected);
+	
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("set_selection_style", "style"), &GraphEdit::set_selection_style);
+	ClassDB::bind_method(D_METHOD("get_selection_style"), &GraphEdit::get_selection_style);
+	//END
 
 	GDVIRTUAL_BIND(_get_connection_line, "from_position", "to_position")
 	GDVIRTUAL_BIND(_is_node_hover_valid, "from_node", "from_port", "to_node", "to_port");
@@ -3049,12 +3086,14 @@ void GraphEdit::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "right_disconnects"), "set_right_disconnects", "is_right_disconnects_enabled");
 
 	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "type_names", PROPERTY_HINT_DICTIONARY_TYPE, "int;String"), "set_type_names", "get_type_names");
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "connections", PROPERTY_HINT_ARRAY_TYPE, vformat("%s/%s:%s", Variant::DICTIONARY, PROPERTY_HINT_NONE, String())), "set_connections", "get_connection_list");
+	//Stardusk
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "selection_style", PROPERTY_HINT_ENUM, "Intersecting,Encloses Fully,Encloses Middle,Encloses 1/3rd"), "set_selection_style", "get_selection_style");
 
 	ADD_GROUP("Connection Lines", "connection_lines");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "connection_lines_curvature"), "set_connection_lines_curvature", "get_connection_lines_curvature");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "connection_lines_thickness", PROPERTY_HINT_RANGE, "0,100,0.1,suffix:px"), "set_connection_lines_thickness", "get_connection_lines_thickness");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "connection_lines_antialiased"), "set_connection_lines_antialiased", "is_connection_lines_antialiased");
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "connections", PROPERTY_HINT_ARRAY_TYPE, vformat("%s/%s:%s", Variant::DICTIONARY, PROPERTY_HINT_NONE, String())), "set_connections", "get_connection_list");
 
 	ADD_GROUP("Zoom", "");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "zoom"), "set_zoom", "get_zoom");
@@ -3100,13 +3139,20 @@ void GraphEdit::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("scroll_offset_changed", PropertyInfo(Variant::VECTOR2, "offset")));
 	
 	//Stardusk
-	ADD_SIGNAL(MethodInfo("zoom_changed"));
+	ADD_SIGNAL(MethodInfo("zoom_changed", PropertyInfo(Variant::FLOAT, "zoom")));
 
 	BIND_ENUM_CONSTANT(SCROLL_ZOOMS);
 	BIND_ENUM_CONSTANT(SCROLL_PANS);
 
 	BIND_ENUM_CONSTANT(GRID_PATTERN_LINES);
 	BIND_ENUM_CONSTANT(GRID_PATTERN_DOTS);
+	
+	//Stardusk
+	BIND_ENUM_CONSTANT(SELECTION_STYLE_INTERSECTING);
+	BIND_ENUM_CONSTANT(SELECTION_STYLE_ENCLOSES_FULL);
+	BIND_ENUM_CONSTANT(SELECTION_STYLE_ENCLOSES_MIDDLE);
+	BIND_ENUM_CONSTANT(SELECTION_STYLE_ENCLOSES_THIRD);
+	//End
 
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphEdit, panel);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_STYLEBOX, GraphEdit, panel_focus);

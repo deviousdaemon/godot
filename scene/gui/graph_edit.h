@@ -146,6 +146,15 @@ public:
 		GRID_PATTERN_LINES,
 		GRID_PATTERN_DOTS
 	};
+	
+	//Stardusk
+	enum SelectionStyle {
+		SELECTION_STYLE_INTERSECTING,
+		SELECTION_STYLE_ENCLOSES_FULL,
+		SELECTION_STYLE_ENCLOSES_MIDDLE,
+		SELECTION_STYLE_ENCLOSES_THIRD
+	};
+	//END
 
 private:
 	struct ConnectionType {
@@ -302,6 +311,9 @@ private:
 	// This separates the children in two layers to ensure the order
 	// of both background nodes (e.g frame nodes) and foreground nodes (connectable nodes).
 	int background_nodes_separator_idx = 0;
+	
+	//Stardusk
+	GraphEdit::SelectionStyle selection_style = GraphEdit::SelectionStyle::SELECTION_STYLE_INTERSECTING;
 
 	HashMap<StringName, HashSet<StringName>> frame_attached_nodes;
 	HashMap<StringName, StringName> linked_parent_map;
@@ -528,9 +540,16 @@ public:
 	void update_warped_panning();
 
 	void arrange_nodes();
+	
+	//Stardusk
+	void set_selection_style(GraphEdit::SelectionStyle p_style);
+	GraphEdit::SelectionStyle get_selection_style() const;
+	//END
 
 	GraphEdit();
 };
 
 VARIANT_ENUM_CAST(GraphEdit::PanningScheme);
 VARIANT_ENUM_CAST(GraphEdit::GridPattern);
+//Stardusk
+VARIANT_ENUM_CAST(GraphEdit::SelectionStyle);
