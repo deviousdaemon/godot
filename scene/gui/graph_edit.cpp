@@ -2324,6 +2324,8 @@ void GraphEdit::key_input(const Ref<InputEvent> &p_ev) {
 
 void GraphEdit::_pan_callback(Vector2 p_scroll_vec, Ref<InputEvent> p_event) {
 	ERR_FAIL_NULL_MSG(connections_layer, "connections_layer is missing.");
+	
+	if (Vector2i(p_scroll_vec) == Vector2i(h_scrollbar->get_value(), v_scrollbar->get_value())) return;
 
 	h_scrollbar->set_value(h_scrollbar->get_value() - p_scroll_vec.x);
 	v_scrollbar->set_value(v_scrollbar->get_value() - p_scroll_vec.y);
@@ -2940,6 +2942,15 @@ Ref<ViewPanner> GraphEdit::get_panner() {
 	return panner;
 }
 
+//Stardusk
+HScrollBar *GraphEdit::get_h_scrollbar() {
+	return h_scrollbar;
+}
+VScrollBar *GraphEdit::get_v_scrollbar() {
+	return v_scrollbar;
+}
+//End
+
 void GraphEdit::set_warped_panning(bool p_warped) {
 	warped_panning = p_warped;
 	update_warped_panning();
@@ -3064,6 +3075,10 @@ void GraphEdit::_bind_methods() {
 	GDVIRTUAL_BIND(_is_in_output_hotzone, "in_node", "in_port", "mouse_position");
 
 	ClassDB::bind_method(D_METHOD("get_menu_hbox"), &GraphEdit::get_menu_hbox);
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("get_h_scrollbar"), &GraphEdit::get_h_scrollbar);
+	ClassDB::bind_method(D_METHOD("get_v_scrollbar"), &GraphEdit::get_v_scrollbar);
+	//End
 
 	ClassDB::bind_method(D_METHOD("arrange_nodes"), &GraphEdit::arrange_nodes);
 

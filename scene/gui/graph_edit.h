@@ -536,6 +536,12 @@ public:
 
 	HBoxContainer *get_menu_hbox();
 	Ref<ViewPanner> get_panner();
+	
+	//Stardusk
+	HScrollBar *get_h_scrollbar();
+	VScrollBar *get_v_scrollbar();
+	//End
+	
 	void set_warped_panning(bool p_warped);
 	void update_warped_panning();
 
