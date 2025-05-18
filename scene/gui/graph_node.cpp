@@ -971,7 +971,7 @@ Size2 GraphNode::get_minimum_size() const {
 	return minsize;
 }
 
-void GraphNode::_port_pos_update() {
+void GraphNode::_port_pos_update() const {
 	int edgeofs = theme_cache.port_h_offset;
 	int separation = theme_cache.separation;
 
@@ -1010,6 +1010,7 @@ void GraphNode::_port_pos_update() {
 			if (slot.enable_right) {
 				PortCache port_cache_right{ Point2i(get_size().width - edgeofs, port_y), slot_count, slot.type_right, slot.color_right };
 				right_port_cache.push_back(port_cache_right);
+				
 			}
 		}
 		vertical_ofs += size.height + separation; // Add the height of the child and the separation to the vertical offset.
@@ -1023,15 +1024,15 @@ void GraphNode::_port_pos_update() {
 	port_pos_dirty = false;
 }
 
-int GraphNode::get_input_port_count() {
+int GraphNode::get_input_port_count() const {
 	if (port_pos_dirty) {
 		_port_pos_update();
 	}
-
+	
 	return left_port_cache.size();
 }
 
-int GraphNode::get_output_port_count() {
+int GraphNode::get_output_port_count() const {
 	if (port_pos_dirty) {
 		_port_pos_update();
 	}
@@ -1039,17 +1040,26 @@ int GraphNode::get_output_port_count() {
 	return right_port_cache.size();
 }
 
-Vector2 GraphNode::get_input_port_position(int p_port_idx) {
+Vector2 GraphNode::get_input_port_position(int p_port_idx) const {
 	if (port_pos_dirty) {
 		_port_pos_update();
 	}
 
 	ERR_FAIL_INDEX_V(p_port_idx, left_port_cache.size(), Vector2());
+	
+	Variant gd_virtual_value;
+	
+	if (GDVIRTUAL_CALL(_get_input_port_position, p_port_idx, gd_virtual_value)) {
+		if (gd_virtual_value.get_type() == Variant::Type::VECTOR2) {
+			return Vector2(gd_virtual_value);
+		}
+	}
+	
 	Vector2 pos = left_port_cache[p_port_idx].pos;
 	return pos;
 }
 
-int GraphNode::get_input_port_type(int p_port_idx) {
+int GraphNode::get_input_port_type(int p_port_idx) const {
 	if (port_pos_dirty) {
 		_port_pos_update();
 	}
@@ -1058,7 +1068,7 @@ int GraphNode::get_input_port_type(int p_port_idx) {
 	return left_port_cache[p_port_idx].type;
 }
 
-Color GraphNode::get_input_port_color(int p_port_idx) {
+Color GraphNode::get_input_port_color(int p_port_idx) const {
 	if (port_pos_dirty) {
 		_port_pos_update();
 	}
@@ -1067,7 +1077,7 @@ Color GraphNode::get_input_port_color(int p_port_idx) {
 	return left_port_cache[p_port_idx].color;
 }
 
-int GraphNode::get_input_port_slot(int p_port_idx) {
+int GraphNode::get_input_port_slot(int p_port_idx) const {
 	if (port_pos_dirty) {
 		_port_pos_update();
 	}
@@ -1076,17 +1086,26 @@ int GraphNode::get_input_port_slot(int p_port_idx) {
 	return left_port_cache[p_port_idx].slot_index;
 }
 
-Vector2 GraphNode::get_output_port_position(int p_port_idx) {
+Vector2 GraphNode::get_output_port_position(int p_port_idx) const {
 	if (port_pos_dirty) {
 		_port_pos_update();
 	}
 
 	ERR_FAIL_INDEX_V(p_port_idx, right_port_cache.size(), Vector2());
+	
+	Variant gd_virtual_value;
+	
+	if (GDVIRTUAL_CALL(_get_output_port_position, p_port_idx, gd_virtual_value)) {
+		if (gd_virtual_value.get_type() == Variant::Type::VECTOR2) {
+			return Vector2(gd_virtual_value);
+		}
+	}
+	
 	Vector2 pos = right_port_cache[p_port_idx].pos;
 	return pos;
 }
 
-int GraphNode::get_output_port_type(int p_port_idx) {
+int GraphNode::get_output_port_type(int p_port_idx) const {
 	if (port_pos_dirty) {
 		_port_pos_update();
 	}
@@ -1095,7 +1114,7 @@ int GraphNode::get_output_port_type(int p_port_idx) {
 	return right_port_cache[p_port_idx].type;
 }
 
-Color GraphNode::get_output_port_color(int p_port_idx) {
+Color GraphNode::get_output_port_color(int p_port_idx) const {
 	if (port_pos_dirty) {
 		_port_pos_update();
 	}
@@ -1104,7 +1123,7 @@ Color GraphNode::get_output_port_color(int p_port_idx) {
 	return right_port_cache[p_port_idx].color;
 }
 
-int GraphNode::get_output_port_slot(int p_port_idx) {
+int GraphNode::get_output_port_slot(int p_port_idx) const {
 	if (port_pos_dirty) {
 		_port_pos_update();
 	}
@@ -1232,8 +1251,10 @@ void GraphNode::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_output_port_color", "port_idx"), &GraphNode::get_output_port_color);
 	ClassDB::bind_method(D_METHOD("get_output_port_slot", "port_idx"), &GraphNode::get_output_port_slot);
 
-	GDVIRTUAL_BIND(_draw_port, "slot_index", "position", "left", "color")
-
+	GDVIRTUAL_BIND(_draw_port, "slot_index", "position", "left", "color");
+	//Stardusk
+	GDVIRTUAL_BIND(_get_input_port_position, "port_idx");
+	GDVIRTUAL_BIND(_get_output_port_position, "port_idx");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "title"), "set_title", "get_title");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "ignore_invalid_connection_type"), "set_ignore_invalid_connection_type", "is_ignoring_valid_connection_type");
 

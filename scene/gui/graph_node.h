@@ -79,14 +79,14 @@ class GraphNode : public GraphElement {
 
 	String title;
 
-	Vector<PortCache> left_port_cache;
-	Vector<PortCache> right_port_cache;
+	mutable Vector<PortCache> left_port_cache;
+	mutable Vector<PortCache> right_port_cache;
 
 	HashMap<int, Slot> slot_table;
 	Vector<int> slot_y_cache;
 
-	int slot_count = 0;
-	int selected_slot = -1;
+	mutable int slot_count = 0;
+	mutable int selected_slot = -1;
 
 	struct ThemeCache {
 		Ref<StyleBox> panel;
@@ -105,11 +105,11 @@ class GraphNode : public GraphElement {
 		Color resizer_color;
 	} theme_cache;
 
-	bool port_pos_dirty = true;
+	mutable bool port_pos_dirty = true;
 
 	bool ignore_invalid_connection_type = false;
 
-	void _port_pos_update();
+	void _port_pos_update() const;
 
 protected:
 	void _notification(int p_what);
@@ -119,6 +119,10 @@ protected:
 
 	virtual void draw_port(int p_slot_index, Point2i p_pos, bool p_left, const Color &p_color);
 	GDVIRTUAL4(_draw_port, int, Point2i, bool, const Color &);
+	
+	//Stardusk
+	GDVIRTUAL1RC(Variant, _get_input_port_position, int);
+	GDVIRTUAL1RC(Variant, _get_output_port_position, int);
 
 	bool _set(const StringName &p_name, const Variant &p_value);
 	bool _get(const StringName &p_name, Variant &r_ret) const;
@@ -167,17 +171,17 @@ public:
 	void set_ignore_invalid_connection_type(bool p_ignore);
 	bool is_ignoring_valid_connection_type() const;
 
-	int get_input_port_count();
-	Vector2 get_input_port_position(int p_port_idx);
-	int get_input_port_type(int p_port_idx);
-	Color get_input_port_color(int p_port_idx);
-	int get_input_port_slot(int p_port_idx);
+	int get_input_port_count() const;
+	virtual Vector2 get_input_port_position(int p_port_idx) const;
+	int get_input_port_type(int p_port_idx) const;
+	Color get_input_port_color(int p_port_idx) const;
+	int get_input_port_slot(int p_port_idx) const;
 
-	int get_output_port_count();
-	Vector2 get_output_port_position(int p_port_idx);
-	int get_output_port_type(int p_port_idx);
-	Color get_output_port_color(int p_port_idx);
-	int get_output_port_slot(int p_port_idx);
+	int get_output_port_count() const;
+	virtual Vector2 get_output_port_position(int p_port_idx) const;
+	int get_output_port_type(int p_port_idx) const;
+	Color get_output_port_color(int p_port_idx) const;
+	int get_output_port_slot(int p_port_idx) const;
 
 	virtual Size2 get_minimum_size() const override;
 
