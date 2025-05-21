@@ -1269,7 +1269,7 @@ void ScriptEditor::_menu_option(int p_option) {
 	switch (p_option) {
 		case FILE_MENU_NEW: {
 			script_create_dialog->config("Node", "new_script", false, false);
-			script_create_dialog->popup_centered_ratio();
+			script_create_dialog->popup_centered();
 		} break;
 		case FILE_MENU_NEW_TEXTFILE: {
 			file_dialog->set_file_mode(EditorFileDialog::FILE_MODE_SAVE_FILE);

@@ -193,7 +193,9 @@ void EditorFileDialog::_native_dialog_cb(bool p_ok, const Vector<String> &p_file
 }
 
 void EditorFileDialog::popup_file_dialog() {
-	popup_centered_clamped(Size2(1050, 700) * EDSCALE, 0.8);
+	//Stardusk
+	popup_centered_ratio(0.8);
+	// popup_centered_clamped(Size2(1050, 700) * EDSCALE, 0.8);
 	_focus_file_text();
 }
 
@@ -2511,6 +2513,8 @@ EditorFileDialog::EditorFileDialog() {
 	favorites = memnew(ItemList);
 	favorites->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);
 	fav_vb->add_child(favorites);
+	//Stardusk
+	favorites->set_auto_width(true);
 	favorites->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 	favorites->set_theme_type_variation("ItemListSecondary");
 	favorites->set_accessibility_name(TTRC("Favorites"));
@@ -2521,6 +2525,7 @@ EditorFileDialog::EditorFileDialog() {
 	rec_vb->set_custom_minimum_size(Size2(150, 100) * EDSCALE);
 	rec_vb->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 	recent = memnew(ItemList);
+	recent->set_auto_width(true);
 	recent->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);
 	recent->set_allow_reselect(true);
 	recent->set_theme_type_variation("ItemListSecondary");
