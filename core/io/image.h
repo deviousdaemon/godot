@@ -368,6 +368,7 @@ public:
 	bool is_invisible() const;
 	//Stardusk
 	bool is_invisible_t(int tolerance) const;
+	Ref<Image> trimmed();
 	//END
 
 	static int get_format_pixel_size(Format p_format);

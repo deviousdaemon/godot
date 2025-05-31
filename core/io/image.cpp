@@ -3525,6 +3525,12 @@ bool Image::is_invisible_t(int tolerance) const {
 	}
 	return true;
 }
+
+Ref<Image> Image::trimmed() {
+	Rect2i used_rect = get_used_rect();
+	if (used_rect.get_size().x < 2 || used_rect.get_size().y < 2) return get_region(Rect2i(Vector2i(), get_size()));
+	return get_region(get_used_rect());
+}
 //END
 
 void Image::_bind_methods() {
@@ -3578,6 +3584,7 @@ void Image::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_invisible"), &Image::is_invisible);
 	//Stardusk
 	ClassDB::bind_method(D_METHOD("is_invisible_t", "tolerance"), &Image::is_invisible_t);
+	ClassDB::bind_method(D_METHOD("trimmed"), &Image::trimmed);
 	//END
 
 	ClassDB::bind_method(D_METHOD("detect_used_channels", "source"), &Image::detect_used_channels, DEFVAL(COMPRESS_SOURCE_GENERIC));
