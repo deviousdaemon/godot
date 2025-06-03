@@ -1957,6 +1957,18 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		p_theme->set_stylebox("disabled", "RunBarButton", menu_transparent_style);
 		p_theme->set_stylebox(SceneStringName(pressed), "RunBarButton", menu_transparent_style);
 
+		p_theme->set_type_variation("RunBarButtonMovieMakerDisabled", "RunBarButton");
+		p_theme->set_color("icon_normal_color", "RunBarButtonMovieMakerDisabled", Color(1, 1, 1, 0.7));
+		p_theme->set_color("icon_pressed_color", "RunBarButtonMovieMakerDisabled", Color(1, 1, 1, 0.84));
+		p_theme->set_color("icon_hover_color", "RunBarButtonMovieMakerDisabled", Color(1, 1, 1, 0.9));
+		p_theme->set_color("icon_hover_pressed_color", "RunBarButtonMovieMakerDisabled", Color(1, 1, 1, 0.84));
+
+		p_theme->set_type_variation("RunBarButtonMovieMakerEnabled", "RunBarButton");
+		p_theme->set_color("icon_normal_color", "RunBarButtonMovieMakerEnabled", Color(0, 0, 0, 0.7));
+		p_theme->set_color("icon_pressed_color", "RunBarButtonMovieMakerEnabled", Color(0, 0, 0, 0.84));
+		p_theme->set_color("icon_hover_color", "RunBarButtonMovieMakerEnabled", Color(0, 0, 0, 0.9));
+		p_theme->set_color("icon_hover_pressed_color", "RunBarButtonMovieMakerEnabled", Color(0, 0, 0, 0.84));
+
 		// Bottom panel.
 		Ref<StyleBoxFlat> style_bottom_panel = p_config.content_panel_style->duplicate();
 		style_bottom_panel->set_corner_radius_all(p_config.corner_radius * EDSCALE);
@@ -2019,12 +2031,6 @@ void EditorThemeManager::_populate_editor_styles(const Ref<EditorTheme> &p_theme
 		style_write_movie_button->set_content_margin(SIDE_RIGHT, 0);
 		style_write_movie_button->set_expand_margin(SIDE_RIGHT, 2 * EDSCALE);
 		p_theme->set_stylebox("MovieWriterButtonPressed", EditorStringName(EditorStyles), style_write_movie_button);
-
-		// Movie writer button colors.
-		p_theme->set_color("movie_writer_icon_normal", EditorStringName(EditorStyles), Color(1, 1, 1, 0.7));
-		p_theme->set_color("movie_writer_icon_pressed", EditorStringName(EditorStyles), Color(0, 0, 0, 0.84));
-		p_theme->set_color("movie_writer_icon_hover", EditorStringName(EditorStyles), Color(1, 1, 1, 0.9));
-		p_theme->set_color("movie_writer_icon_hover_pressed", EditorStringName(EditorStyles), Color(0, 0, 0, 0.84));
 
 		// Profiler autostart indicator panel.
 		Ref<StyleBoxFlat> style_profiler_autostart = style_launch_pad->duplicate();
@@ -2727,7 +2733,7 @@ void EditorThemeManager::_generate_text_editor_defaults(ThemeConfiguration &p_co
 }
 
 void EditorThemeManager::_populate_text_editor_styles(const Ref<EditorTheme> &p_theme, ThemeConfiguration &p_config) {
-	String text_editor_color_theme = EditorSettings::get_singleton()->get("text_editor/theme/color_theme");
+	String text_editor_color_theme = EDITOR_GET("text_editor/theme/color_theme");
 	if (text_editor_color_theme == "Default") {
 		_generate_text_editor_defaults(p_config);
 	} else if (text_editor_color_theme == "Godot 2") {

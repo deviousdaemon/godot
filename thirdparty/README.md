@@ -624,12 +624,12 @@ See `linuxbsd_headers/README.md`.
 ## manifold
 
 - Upstream: https://github.com/elalish/manifold
-- Version: 3.0.1 (98b8142519d35c13e0e25cfa9fd6e3a271403be6, 2024)
+- Version: 3.1.1 (2f4741e0b1de44d6d461b869e481351335340b44, 2025)
 - License: Apache 2.0
 
 File extracted from upstream source:
 
-- `src/` and `include/`, except from `CMakeLists.txt`, `cross_section.cpp` and `meshIO.{cpp,h}`
+- `src/` and `include/`, except from `CMakeLists.txt`, `cross_section.h` and `meshIO.{cpp,h}`
 - `AUTHORS`, `LICENSE`
 
 
@@ -847,7 +847,7 @@ Files extracted from the upstream source:
 ## openxr
 
 - Upstream: https://github.com/KhronosGroup/OpenXR-SDK
-- Version: 1.1.41 (7d1c0961351bac61fd7bb72d402649d5ac3f2935, 2024)
+- Version: 1.1.47 (858912260ca616f4c23f7fb61c89228c353eb124, 2025)
 - License: Apache 2.0
 
 Files extracted from upstream source:
@@ -970,7 +970,7 @@ Patches:
 ## thorvg
 
 - Upstream: https://github.com/thorvg/thorvg
-- Version: 0.15.12 (91bd6f35b94e92abfc1a320632e66cd124943524, 2025)
+- Version: 0.15.13 (c597365b99f27cb46e2a5ac2942da45bb73d5a55, 2025)
 - License: MIT
 
 Files extracted from upstream source:
@@ -981,7 +981,6 @@ Files extracted from upstream source:
 Patches:
 
 - `0001-revert-tvglines-bezier-precision.patch` (GH-96658)
-- `0002-png-explicit-variable-scope.patch` (GH-105093)
 
 
 ## tinyexr

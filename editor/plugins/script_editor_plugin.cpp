@@ -38,6 +38,7 @@
 #include "core/io/resource_loader.h"
 #include "core/os/keyboard.h"
 #include "core/os/os.h"
+#include "core/string/fuzzy_search.h"
 #include "core/version.h"
 #include "editor/code_editor.h"
 #include "editor/debugger/editor_debugger_node.h"
@@ -1746,10 +1747,7 @@ void ScriptEditor::_notification(int p_what) {
 			[[fallthrough]];
 		}
 
-		case NOTIFICATION_TRANSLATION_CHANGED: {
-			disk_changed_list->set_accessibility_name(TTR("The following files are newer on disk"));
-			[[fallthrough]];
-		}
+		case NOTIFICATION_TRANSLATION_CHANGED:
 		case NOTIFICATION_LAYOUT_DIRECTION_CHANGED:
 		case NOTIFICATION_THEME_CHANGED: {
 			tab_container->add_theme_style_override(SceneStringName(panel), get_theme_stylebox(SNAME("ScriptEditor"), EditorStringName(EditorStyles)));
@@ -2054,12 +2052,29 @@ void ScriptEditor::_update_members_overview() {
 		functions.sort();
 	}
 
-	for (int i = 0; i < functions.size(); i++) {
-		String filter = filter_methods->get_text();
-		String name = functions[i].get_slicec(':', 0);
-		if (filter.is_empty() || filter.is_subsequence_ofn(name)) {
+	String filter = filter_methods->get_text();
+	if (filter.is_empty()) {
+		for (int i = 0; i < functions.size(); i++) {
+			String name = functions[i].get_slicec(':', 0);
 			members_overview->add_item(name);
 			members_overview->set_item_metadata(-1, functions[i].get_slicec(':', 1).to_int() - 1);
+		}
+	} else {
+		PackedStringArray search_names;
+		for (int i = 0; i < functions.size(); i++) {
+			search_names.append(functions[i].get_slicec(':', 0));
+		}
+
+		Vector<FuzzySearchResult> results;
+		FuzzySearch fuzzy;
+		fuzzy.set_query(filter, false);
+		fuzzy.search_all(search_names, results);
+
+		for (const FuzzySearchResult &res : results) {
+			String name = functions[res.original_index].get_slicec(':', 0);
+			int line = functions[res.original_index].get_slicec(':', 1).to_int() - 1;
+			members_overview->add_item(name);
+			members_overview->set_item_metadata(-1, line);
 		}
 	}
 
@@ -2322,10 +2337,24 @@ void ScriptEditor::_update_script_names() {
 	}
 
 	Vector<_ScriptEditorItemData> sedata_filtered;
-	for (int i = 0; i < sedata.size(); i++) {
-		String filter = filter_scripts->get_text();
-		if (filter.is_empty() || filter.is_subsequence_ofn(sedata[i].name)) {
-			sedata_filtered.push_back(sedata[i]);
+
+	String filter = filter_scripts->get_text();
+
+	if (filter.is_empty()) {
+		sedata_filtered = sedata;
+	} else {
+		PackedStringArray search_names;
+		for (int i = 0; i < sedata.size(); i++) {
+			search_names.append(sedata[i].name);
+		}
+
+		Vector<FuzzySearchResult> results;
+		FuzzySearch fuzzy;
+		fuzzy.set_query(filter, false);
+		fuzzy.search_all(search_names, results);
+
+		for (const FuzzySearchResult &res : results) {
+			sedata_filtered.push_back(sedata[res.original_index]);
 		}
 	}
 
@@ -4431,6 +4460,7 @@ ScriptEditor::ScriptEditor(WindowWrapper *p_wrapper) {
 		disk_changed_list = memnew(Tree);
 		disk_changed_list->set_hide_root(true);
 		disk_changed_list->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);
+		disk_changed_list->set_accessibility_name(TTRC("The following files are newer on disk"));
 		disk_changed_list->set_v_size_flags(SIZE_EXPAND_FILL);
 		vbc->add_child(disk_changed_list);
 

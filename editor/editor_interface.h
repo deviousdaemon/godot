@@ -198,6 +198,7 @@ public:
 	void mark_scene_as_saved();
 	//END
 	void save_all_scenes();
+	Error close_scene();
 
 	// Scene playback.
 
