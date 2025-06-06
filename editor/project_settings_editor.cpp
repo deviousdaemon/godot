@@ -80,6 +80,10 @@ void ProjectSettingsEditor::popup_for_override(const String &p_override) {
 	general_settings_inspector->set_current_section(ProjectSettings::EDITOR_SETTING_OVERRIDE_PREFIX + p_override.get_slicec('/', 0));
 }
 
+void ProjectSettingsEditor::set_filter(const String &p_filter) {
+	search_box->set_text(p_filter);
+}
+
 void ProjectSettingsEditor::queue_save() {
 	settings_changed = true;
 	timer->start();
@@ -760,6 +764,10 @@ ProjectSettingsEditor::ProjectSettingsEditor(EditorData *p_data) {
 	general_settings_inspector->get_inspector()->connect("property_deleted", callable_mp(this, &ProjectSettingsEditor::_on_editor_override_deleted));
 	general_settings_inspector->get_inspector()->connect("restart_requested", callable_mp(this, &ProjectSettingsEditor::_editor_restart_request));
 	general_editor->add_child(general_settings_inspector);
+
+	if (EDITOR_GET("interface/touchscreen/enable_touch_optimizations")) {
+		general_settings_inspector->set_touch_dragger_enabled(true);
+	}
 
 	restart_container = memnew(PanelContainer);
 	general_editor->add_child(restart_container);
