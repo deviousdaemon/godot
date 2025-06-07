@@ -148,9 +148,15 @@ private:
 	inline static bool default_show_hidden_files = false;
 	bool show_hidden_files = false;
 	bool use_native_dialog = false;
-
-	inline static LocalVector<String> global_favorites;
-	inline static LocalVector<String> global_recents;
+	
+	// Stardusk until official implementaion
+	// inline static LocalVector<String> global_favorites;
+	// inline static LocalVector<String> global_recents;
+	LocalVector<String> favorite_dirs;
+	LocalVector<String> recent_dirs;
+	//END
+	
+	
 
 	Access access = ACCESS_RESOURCES;
 	FileMode mode = FILE_MODE_SAVE_FILE;
@@ -222,6 +228,10 @@ private:
 	AcceptDialog *mkdirerr = nullptr;
 	AcceptDialog *exterr = nullptr;
 	ConfirmationDialog *confirm_save = nullptr;
+	
+	//Stardusk
+	bool prompt_on_overwrite = true;
+	//END
 
 	struct ThemeCache {
 		int thumbnail_size = 64;
@@ -402,6 +412,24 @@ public:
 	void invalidate();
 
 	void deselect_all();
+	
+	// Stardusk until official implementaion
+	void set_favorite_directories(const Vector<String> &p_dirs);
+	Vector<String> get_favorite_directories() const;
+	void add_favorite_directory(const String &p_dir);
+	void remove_favorite_directory(int idx);
+	
+	
+	void set_recent_directories(const Vector<String> &p_dirs);
+	Vector<String> get_recent_directories() const;
+	void add_recent_directory(const String &p_dir);
+	void remove_recent_directory(int idx);
+	//END
+	
+	//Stardusk
+	void set_prompt_on_overwrite(const bool p_enabled);
+	bool get_prompt_on_overwrite() const;
+	//END
 
 	FileDialog();
 	~FileDialog();
