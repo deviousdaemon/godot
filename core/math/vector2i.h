@@ -143,7 +143,7 @@ struct [[nodiscard]] Vector2i {
 	Vector2i wrappedi(int32_t p_min, int32_t p_max) const;
 	//END
 
-	operator String() const;
+	explicit operator String() const;
 	operator Vector2() const;
 
 	// NOLINTBEGIN(cppcoreguidelines-pro-type-member-init)
