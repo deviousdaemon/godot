@@ -3421,7 +3421,7 @@ void BaseMaterial3D::_bind_methods() {
 
 	ADD_GROUP("Grow", "grow_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "grow"), "set_grow_enabled", "is_grow_enabled");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "grow_amount", PROPERTY_HINT_RANGE, "-16,16,0.001,suffix:m"), "set_grow", "get_grow");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "grow_amount", PROPERTY_HINT_RANGE, "-16,16,0.00001,suffix:m"), "set_grow", "get_grow");
 
 	ADD_GROUP("Transform", "");
 	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "fixed_size"), "set_flag", "get_flag", FLAG_FIXED_SIZE);
@@ -3429,7 +3429,7 @@ void BaseMaterial3D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "point_size", PROPERTY_HINT_RANGE, "0.1,128,0.1,suffix:px"), "set_point_size", "get_point_size");
 	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "use_particle_trails"), "set_flag", "get_flag", FLAG_PARTICLE_TRAILS_MODE);
 	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "use_z_clip_scale"), "set_flag", "get_flag", FLAG_USE_Z_CLIP_SCALE);
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "z_clip_scale", PROPERTY_HINT_RANGE, "0.01,1.0,0.01"), "set_z_clip_scale", "get_z_clip_scale");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "z_clip_scale", PROPERTY_HINT_RANGE, "0.01,1.0,0.00001"), "set_z_clip_scale", "get_z_clip_scale");
 	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "use_fov_override"), "set_flag", "get_flag", FLAG_USE_FOV_OVERRIDE);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fov_override", PROPERTY_HINT_RANGE, "1,179,0.1,degrees"), "set_fov_override", "get_fov_override");
 	ADD_GROUP("Proximity Fade", "proximity_fade_");
