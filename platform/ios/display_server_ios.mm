@@ -110,11 +110,7 @@ float DisplayServerIOS::screen_get_refresh_rate(int p_screen) const {
 	}
 	return fps;
 }
-//Stardusk
-float DisplayServerIOS::get_double_click_time() const {
-	return DisplayServer::get_default_double_click_time();
-}
-//End
+
 float DisplayServerIOS::screen_get_scale(int p_screen) const {
 	p_screen = _get_screen_index(p_screen);
 	int screen_count = get_screen_count();

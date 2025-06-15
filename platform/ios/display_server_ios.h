@@ -47,10 +47,6 @@ public:
 	static DisplayServer *create_func(const String &p_rendering_driver, WindowMode p_mode, DisplayServer::VSyncMode p_vsync_mode, uint32_t p_flags, const Vector2i *p_position, const Vector2i &p_resolution, int p_screen, Context p_context, int64_t p_parent_window, Error &r_error);
 
 	virtual String get_name() const override;
-	
-	//Stardusk
-	virtual float get_double_click_time() const override;
-	//End
 
 	virtual int screen_get_dpi(int p_screen = SCREEN_OF_MAIN_WINDOW) const override;
 	virtual float screen_get_scale(int p_screen = SCREEN_OF_MAIN_WINDOW) const override;

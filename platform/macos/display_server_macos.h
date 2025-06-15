@@ -334,11 +334,6 @@ public:
 	virtual void warp_mouse(const Point2i &p_position) override;
 	virtual Point2i mouse_get_position() const override;
 	virtual BitField<MouseButtonMask> mouse_get_button_state() const override;
-	
-	//Stardusk
-	virtual float get_double_click_time() const override;
-	//End
-
 
 	virtual int get_screen_count() const override;
 	virtual int get_primary_screen() const override;

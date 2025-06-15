@@ -1581,12 +1581,6 @@ BitField<MouseButtonMask> DisplayServerMacOS::mouse_get_button_state() const {
 	return last_button_state;
 }
 
-//Stardusk
-float DisplayServerMacOS::get_double_click_time() const {
-	return (float)[NSEvent doubleClickInterval]
-}
-//End
-
 int DisplayServerMacOS::get_screen_count() const {
 	_THREAD_SAFE_METHOD_
 
