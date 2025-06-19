@@ -433,6 +433,6 @@ ResourcePreloaderEditorPlugin::ResourcePreloaderEditorPlugin() {
 	_update_preloader_size();
 	EditorSettings::get_singleton()->connect("settings_changed", callable_mp(this, &ResourcePreloaderEditorPlugin::_update_preloader_size));
 	//End
-	button = EditorNode::get_bottom_panel()->add_item("ResourcePreloader", preloader_editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_resource_preloader_bottom_panel", TTRC("Toggle ResourcePreloader Bottom Panel")));
+	button = EditorNode::get_bottom_panel()->add_item(TTRC("ResourcePreloader"), preloader_editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_resource_preloader_bottom_panel", TTRC("Toggle ResourcePreloader Bottom Panel")));
 	button->hide();
 }

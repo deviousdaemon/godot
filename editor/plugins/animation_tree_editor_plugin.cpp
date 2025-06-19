@@ -315,6 +315,6 @@ AnimationTreeEditorPlugin::AnimationTreeEditorPlugin() {
 	//Stardusk
 	EditorSettings::get_singleton()->connect("settings_changed", callable_mp(this, &AnimationTreeEditorPlugin::_update_anim_tree_editor_size));
 
-	button = EditorNode::get_bottom_panel()->add_item(TTR("AnimationTree"), anim_tree_editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_animation_tree_bottom_panel", TTRC("Toggle AnimationTree Bottom Panel")));
+	button = EditorNode::get_bottom_panel()->add_item(TTRC("AnimationTree"), anim_tree_editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_animation_tree_bottom_panel", TTRC("Toggle AnimationTree Bottom Panel")));
 	button->hide();
 }

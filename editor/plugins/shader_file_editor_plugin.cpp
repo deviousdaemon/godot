@@ -326,6 +326,6 @@ ShaderFileEditorPlugin::ShaderFileEditorPlugin() {
 	//Stardusk
 	EditorSettings::get_singleton()->connect("settings_changed", callable_mp(this, &ShaderFileEditorPlugin::_update_shader_editor_size));
 	
-	button = EditorNode::get_bottom_panel()->add_item(TTR("ShaderFile"), shader_editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_shader_file_bottom_panel", TTRC("Toggle ShaderFile Bottom Panel")));
+	button = EditorNode::get_bottom_panel()->add_item(TTRC("ShaderFile"), shader_editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_shader_file_bottom_panel", TTRC("Toggle ShaderFile Bottom Panel")));
 	button->hide();
 }

@@ -4042,6 +4042,6 @@ ThemeEditorPlugin::ThemeEditorPlugin() {
 	_update_theme_editor_size();
 	//Stardusk
 	EditorSettings::get_singleton()->connect("settings_changed", callable_mp(this, &ThemeEditorPlugin::_update_theme_editor_size));
-	button = EditorNode::get_bottom_panel()->add_item(TTR("Theme"), theme_editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_theme_bottom_panel", TTRC("Toggle Theme Bottom Panel")));
+	button = EditorNode::get_bottom_panel()->add_item(TTRC("Theme"), theme_editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_theme_bottom_panel", TTRC("Toggle Theme Bottom Panel")));
 	button->hide();
 }
