@@ -85,6 +85,7 @@ class GraphNode : public GraphElement {
 	HashMap<int, Slot> slot_table;
 	Vector<int> slot_y_cache;
 
+	Control::FocusMode slots_focus_mode = Control::FOCUS_ACCESSIBILITY;
 	mutable int slot_count = 0;
 	mutable int selected_slot = -1;
 
@@ -182,6 +183,9 @@ public:
 	int get_output_port_type(int p_port_idx) const;
 	Color get_output_port_color(int p_port_idx) const;
 	int get_output_port_slot(int p_port_idx) const;
+
+	void set_slots_focus_mode(Control::FocusMode p_focus_mode);
+	Control::FocusMode get_slots_focus_mode() const;
 
 	virtual Size2 get_minimum_size() const override;
 
