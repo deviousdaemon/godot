@@ -520,6 +520,7 @@ void CanvasItem::set_as_top_level(bool p_top_level) {
 	if (get_viewport()) {
 		get_viewport()->canvas_item_top_level_changed();
 	}
+	reset_physics_interpolation();
 }
 
 void CanvasItem::_top_level_changed() {
