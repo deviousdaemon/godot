@@ -50,8 +50,8 @@
 #include "editor/file_system/editor_file_system.h"
 #include "editor/file_system/editor_paths.h"
 //Stardusk
-#include "editor/inspector_dock.h"
-#include "editor/gui/scene_tree_editor.h"
+#include "editor/docks/inspector_dock.h"
+#include "editor/scene/scene_tree_editor.h"
 //End
 #include "editor/gui/editor_file_dialog.h"
 #include "editor/gui/editor_spin_slider.h"

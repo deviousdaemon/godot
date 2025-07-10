@@ -31,7 +31,7 @@
 #include "shader_file_editor_plugin.h"
 
 #include "editor/editor_node.h"
-#include "editor/editor_settings.h"
+#include "editor/settings/editor_settings.h"
 #include "editor/editor_string_names.h"
 #include "editor/gui/editor_bottom_panel.h"
 #include "editor/settings/editor_command_palette.h"

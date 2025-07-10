@@ -38,7 +38,7 @@
 #include "scene/gui/control.h"
 #include "scene/resources/image_texture.h"
 //Stardusk
-#include "editor/editor_settings.h"
+#include "editor/settings/editor_settings.h"
 
 #ifndef NAVIGATION_2D_DISABLED
 #include "servers/navigation_server_2d.h"
