@@ -2674,6 +2674,7 @@ void ThemeTypeEditor::_update_type_items() {
 			EditorResourcePicker *item_editor = memnew(EditorResourcePicker);
 			item_editor->set_h_size_flags(SIZE_EXPAND_FILL);
 			item_editor->set_base_type("Font");
+			item_editor->set_resource_owner(*edited_theme);
 			item_control->add_child(item_editor);
 
 			if (E.value) {
@@ -2745,6 +2746,7 @@ void ThemeTypeEditor::_update_type_items() {
 			EditorResourcePicker *item_editor = memnew(EditorResourcePicker);
 			item_editor->set_h_size_flags(SIZE_EXPAND_FILL);
 			item_editor->set_base_type("Texture2D");
+			item_editor->set_resource_owner(*edited_theme);
 			item_control->add_child(item_editor);
 
 			if (E.value) {
@@ -2783,6 +2785,7 @@ void ThemeTypeEditor::_update_type_items() {
 			item_editor->set_h_size_flags(SIZE_EXPAND_FILL);
 			item_editor->set_stretch_ratio(1.5);
 			item_editor->set_base_type("StyleBox");
+			item_editor->set_resource_owner(*edited_theme);
 
 			Button *pin_leader_button = memnew(Button);
 			pin_leader_button->set_flat(true);
@@ -2818,6 +2821,7 @@ void ThemeTypeEditor::_update_type_items() {
 			item_editor->set_h_size_flags(SIZE_EXPAND_FILL);
 			item_editor->set_stretch_ratio(1.5);
 			item_editor->set_base_type("StyleBox");
+			item_editor->set_resource_owner(*edited_theme);
 
 			if (E.value) {
 				if (edited_theme->has_stylebox(E.key, edited_type)) {
