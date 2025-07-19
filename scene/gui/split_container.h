@@ -88,6 +88,9 @@ private:
 	TextureRect *touch_dragger = nullptr;
 
 	struct ThemeCache {
+		Color grabber_color;
+		Color grabber_pressed_color;
+		Color grabber_hover_color;
 		Color touch_dragger_color;
 		Color touch_dragger_pressed_color;
 		Color touch_dragger_hover_color;

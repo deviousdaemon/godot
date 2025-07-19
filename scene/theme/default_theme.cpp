@@ -1203,11 +1203,17 @@ void fill_default_theme(Ref<Theme> &theme, const Ref<Font> &default_font, const 
 	theme->set_constant("strikethrough_alpha", "RichTextLabel", 50);
 
 	// Containers
+	
+	//Stardusk
+	theme->set_color("grabber_color", "SplitContainer", Color(1, 1, 1, 0.3));
+	theme->set_color("grabber_pressed_color", "SplitContainer", Color(1, 1, 1, 1));
+	theme->set_color("grabber_hover_color", "SplitContainer", Color(1, 1, 1, 0.6));
+	//END
 
 	theme->set_color("touch_dragger_color", "SplitContainer", Color(1, 1, 1, 0.3));
 	theme->set_color("touch_dragger_pressed_color", "SplitContainer", Color(1, 1, 1, 1));
 	theme->set_color("touch_dragger_hover_color", "SplitContainer", Color(1, 1, 1, 0.6));
-
+	
 	theme->set_icon("h_touch_dragger", "SplitContainer", icons["h_dragger"]);
 	theme->set_icon("v_touch_dragger", "SplitContainer", icons["v_dragger"]);
 	theme->set_icon("touch_dragger", "VSplitContainer", icons["v_dragger"]);

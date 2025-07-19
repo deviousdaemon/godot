@@ -166,7 +166,10 @@ void SplitContainerDragger::_notification(int p_what) {
 				Ref<Texture2D> tex = sc->_get_grabber_icon();
 				float available_size = sc->vertical ? (sc->get_size().x - tex->get_size().x) : (sc->get_size().y - tex->get_size().y);
 				if (available_size - sc->drag_area_margin_begin - sc->drag_area_margin_end > 0) { // Draw the grabber only if it fits.
-					draw_texture(tex, (split_bar_rect.get_position() + (split_bar_rect.get_size() - tex->get_size()) * 0.5));
+					//Stardusk
+					Color tex_color = (!mouse_inside && !dragging) ? sc->theme_cache.grabber_color : (dragging ? sc->theme_cache.grabber_pressed_color : sc->theme_cache.grabber_hover_color);
+																														 //| Stardusk
+					draw_texture(tex, (split_bar_rect.get_position() + (split_bar_rect.get_size() - tex->get_size()) * 0.5), tex_color);
 				}
 			}
 			if (sc->show_drag_area && Engine::get_singleton()->is_editor_hint()) {
@@ -642,7 +645,12 @@ void SplitContainer::_bind_methods() {
 	BIND_ENUM_CONSTANT(DRAGGER_VISIBLE);
 	BIND_ENUM_CONSTANT(DRAGGER_HIDDEN);
 	BIND_ENUM_CONSTANT(DRAGGER_HIDDEN_COLLAPSED);
-
+	
+	//Stardusk
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, SplitContainer, grabber_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, SplitContainer, grabber_pressed_color);
+	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, SplitContainer, grabber_hover_color);
+	//End
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, SplitContainer, touch_dragger_color);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, SplitContainer, touch_dragger_pressed_color);
 	BIND_THEME_ITEM(Theme::DATA_TYPE_COLOR, SplitContainer, touch_dragger_hover_color);
