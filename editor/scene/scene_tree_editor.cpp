@@ -2091,6 +2091,10 @@ void SceneTreeEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_update_tree"), &SceneTreeEditor::_update_tree, DEFVAL(false)); // Still used by UndoRedo.
 
 	ClassDB::bind_method(D_METHOD("update_tree"), &SceneTreeEditor::update_tree);
+	
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("get_scene_tree"), &SceneTreeEditor::get_scene_tree);
+	//END
 
 	ADD_SIGNAL(MethodInfo("node_selected"));
 	ADD_SIGNAL(MethodInfo("node_renamed"));

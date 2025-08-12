@@ -159,13 +159,6 @@ void Node2D::set_position(const Point2 &p_pos) {
 	}
 	position = p_pos;
 	
-	if (position != data.pos_cache) {
-		data.pos_cache = position;
-		if (is_inside_tree()) {
-			emit_signal(SceneStringName(position_changed), position);
-		}
-	}
-	
 	_update_transform();
 }
 
@@ -517,7 +510,4 @@ void Node2D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "global_scale", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_global_scale", "get_global_scale");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "global_skew", PROPERTY_HINT_NONE, "radians_as_degrees", PROPERTY_USAGE_NONE), "set_global_skew", "get_global_skew");
 	ADD_PROPERTY(PropertyInfo(Variant::TRANSFORM2D, "global_transform", PROPERTY_HINT_NONE, "suffix:px", PROPERTY_USAGE_NONE), "set_global_transform", "get_global_transform");
-	
-	//Stardusk
-	ADD_SIGNAL(MethodInfo("position_changed", PropertyInfo(Variant::VECTOR2, "new_position")));
 }
