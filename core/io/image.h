@@ -310,6 +310,9 @@ public:
 	// Resize the image, using the preferred interpolation method.
 	void resize_to_po2(bool p_square = false, Interpolation p_interpolation = INTERPOLATE_BILINEAR);
 	void resize(int p_width, int p_height, Interpolation p_interpolation = INTERPOLATE_BILINEAR);
+	//Stardusk
+	Ref<Image> resized(int p_width, int p_height, Interpolation p_interpolation = INTERPOLATE_BILINEAR);
+	//END
 	void shrink_x2();
 	bool is_size_po2() const;
 

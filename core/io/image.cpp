@@ -1431,6 +1431,16 @@ void Image::resize(int p_width, int p_height, Interpolation p_interpolation) {
 	_copy_internals_from(dst);
 }
 
+//Stardusk
+Ref<Image> Image::resized(int p_width, int p_height, Interpolation p_interpolation) {
+	Ref<Image> img = memnew(Image(width, height, mipmaps, format));
+	Rect2i rect = Rect2i(0, 0, width, height);
+	img->blit_rect(Ref<Image>((Image *)this), rect, Point2i(0, 0));
+	img->resize(p_width, p_height, p_interpolation);
+	return img;
+}
+//END
+
 void Image::crop_from_point(int p_x, int p_y, int p_width, int p_height) {
 	ERR_FAIL_COND_MSG(is_compressed(), "Cannot crop in compressed image formats.");
 	ERR_FAIL_COND_MSG(p_x < 0, "Start x position cannot be smaller than 0.");
@@ -3546,6 +3556,7 @@ void Image::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("resize_to_po2", "square", "interpolation"), &Image::resize_to_po2, DEFVAL(false), DEFVAL(INTERPOLATE_BILINEAR));
 	ClassDB::bind_method(D_METHOD("resize", "width", "height", "interpolation"), &Image::resize, DEFVAL(INTERPOLATE_BILINEAR));
+	ClassDB::bind_method(D_METHOD("resized", "width", "height", "interpolation"), &Image::resized, DEFVAL(INTERPOLATE_BILINEAR));
 	ClassDB::bind_method(D_METHOD("shrink_x2"), &Image::shrink_x2);
 
 	ClassDB::bind_method(D_METHOD("crop", "width", "height"), &Image::crop);
