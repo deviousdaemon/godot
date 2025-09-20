@@ -50,7 +50,9 @@ void ProgressBar::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_INTERNAL_PROCESS: {
 			if (is_visible_in_tree()) {
-				_indeterminate_fill_progress += get_process_delta_time() * MAX(indeterminate_min_speed, MAX(get_size().width, get_size().height) / 2);
+				//Stardusk
+				// _indeterminate_fill_progress += get_process_delta_time() * MAX(indeterminate_min_speed, MAX(get_size().width, get_size().height) / 2);
+				_indeterminate_fill_progress += get_process_delta_time() * indeterminate_speed;
 				queue_redraw();
 			}
 		} break;
@@ -237,6 +239,19 @@ bool ProgressBar::is_indeterminate() const {
 	return indeterminate;
 }
 
+//Stardusk
+void ProgressBar::set_indeterminate_speed(float p_speed) {
+	indeterminate_speed = p_speed;
+	if (indeterminate) {
+		queue_redraw();
+	}
+}
+
+float ProgressBar::get_indeterminate_speed() const {
+	return indeterminate_speed;
+}
+//END
+
 void ProgressBar::set_editor_preview_indeterminate(bool p_preview_indeterminate) {
 	if (editor_preview_indeterminate == p_preview_indeterminate) {
 		return;
@@ -261,12 +276,18 @@ void ProgressBar::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_percentage_shown"), &ProgressBar::is_percentage_shown);
 	ClassDB::bind_method(D_METHOD("set_indeterminate", "indeterminate"), &ProgressBar::set_indeterminate);
 	ClassDB::bind_method(D_METHOD("is_indeterminate"), &ProgressBar::is_indeterminate);
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("set_indeterminate_speed", "indeterminate_speed"), &ProgressBar::set_indeterminate_speed);
+	ClassDB::bind_method(D_METHOD("get_indeterminate_speed"), &ProgressBar::get_indeterminate_speed);
+	//END
 	ClassDB::bind_method(D_METHOD("set_editor_preview_indeterminate", "preview_indeterminate"), &ProgressBar::set_editor_preview_indeterminate);
 	ClassDB::bind_method(D_METHOD("is_editor_preview_indeterminate_enabled"), &ProgressBar::is_editor_preview_indeterminate_enabled);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "fill_mode", PROPERTY_HINT_ENUM, "Begin to End,End to Begin,Top to Bottom,Bottom to Top"), "set_fill_mode", "get_fill_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "show_percentage"), "set_show_percentage", "is_percentage_shown");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "indeterminate"), "set_indeterminate", "is_indeterminate");
+	//Stardusk
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "indeterminate_speed"), "set_indeterminate_speed", "get_indeterminate_speed");
 	ADD_GROUP("Editor", "editor_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "editor_preview_indeterminate"), "set_editor_preview_indeterminate", "is_editor_preview_indeterminate_enabled");
 

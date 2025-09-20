@@ -38,6 +38,9 @@ class ProgressBar : public Range {
 	bool show_percentage = true;
 	bool indeterminate = false;
 	bool editor_preview_indeterminate = false;
+	
+	//Stardusk
+	float indeterminate_speed = 256.0;
 
 	struct ThemeCache {
 		Ref<StyleBox> background_style;
@@ -75,7 +78,12 @@ public:
 
 	void set_indeterminate(bool p_indeterminate);
 	bool is_indeterminate() const;
-
+	
+	//Stardusk
+	void set_indeterminate_speed(float p_speed);
+	float get_indeterminate_speed() const;
+	//END
+	
 	void set_editor_preview_indeterminate(bool p_indeterminate_preview);
 	bool is_editor_preview_indeterminate_enabled() const;
 
