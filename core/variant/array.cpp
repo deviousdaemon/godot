@@ -299,6 +299,14 @@ void Array::append_array(const Array &p_array) {
 	_p->array.append_array(validated_array);
 }
 
+//Stardusk
+void Array::append_unique(const Variant &p_value) {
+	ERR_FAIL_COND_MSG(_p->read_only, "Array is in read-only state.");
+	if (has(p_value)) return;
+	append(p_value);
+}
+//END
+
 Error Array::resize(int p_new_size) {
 	ERR_FAIL_COND_V_MSG(_p->read_only, ERR_LOCKED, "Array is in read-only state.");
 	Variant::Type &variant_type = _p->typed.type;

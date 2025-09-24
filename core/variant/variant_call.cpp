@@ -2534,6 +2534,8 @@ static void _register_variant_builtin_methods_array() {
 	bind_method(Array, push_front, sarray("value"), varray());
 	bind_method(Array, append, sarray("value"), varray());
 	bind_method(Array, append_array, sarray("array"), varray());
+	//Stardusk
+	bind_method(Array, append_unique, sarray("value"), varray());
 	bind_method(Array, resize, sarray("size"), varray());
 	bind_method(Array, insert, sarray("position", "value"), varray());
 	bind_method(Array, remove_at, sarray("position"), varray());

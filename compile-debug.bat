@@ -20,6 +20,6 @@ if not [%1] == [] (
 	)
 )
 
-CALL %main_batch_folder%\compile.bat --compile_path="%cd%" --threads=!threads! --program=true --debug=true --export_path=B:\GodotWindows\Godot4.5\
+CALL %main_batch_folder%\compile.bat --compile_path="%cd%" --threads=!threads! --program=true --debug=true --export_path=B:\GodotWindows\Godot4.6\
 
 pause

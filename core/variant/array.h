@@ -134,6 +134,8 @@ public:
 	void push_back(const Variant &p_value);
 	_FORCE_INLINE_ void append(const Variant &p_value) { push_back(p_value); } //for python compatibility
 	void append_array(const Array &p_array);
+	//Stardusk
+	void append_unique(const Variant &p_value);
 	Error resize(int p_new_size);
 
 	Error insert(int p_pos, const Variant &p_value);
