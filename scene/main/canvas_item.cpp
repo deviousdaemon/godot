@@ -846,6 +846,42 @@ void CanvasItem::draw_rect(const Rect2 &p_rect, const Color &p_color, bool p_fil
 	}
 }
 
+void CanvasItem::draw_ellipse(const Point2 &p_pos, real_t p_major, real_t p_minor, const Color &p_color, bool p_filled, real_t p_width, bool p_antialiased) {
+	ERR_THREAD_GUARD;
+	ERR_DRAW_GUARD;
+
+	if (p_filled) {
+		if (p_width != -1.0) {
+			WARN_PRINT("The \"width\" argument has no effect when \"filled\" is \"true\".");
+		}
+
+		RenderingServer::get_singleton()->canvas_item_add_ellipse(canvas_item, p_pos, p_major, p_minor, p_color, p_antialiased);
+	} else if (p_width >= 2.0 * MAX(p_major, p_minor)) {
+		RenderingServer::get_singleton()->canvas_item_add_ellipse(canvas_item, p_pos, p_major + 0.5 * p_width, p_minor + 0.5 * p_width, p_color, p_antialiased);
+	} else {
+		// Tessellation count is hardcoded. Keep in sync with the same variable in `RendererCanvasCull::canvas_item_add_circle()`.
+		const int circle_segments = 64;
+
+		Vector<Vector2> points;
+		points.resize(circle_segments + 1);
+
+		Vector2 *points_ptr = points.ptrw();
+		const real_t circle_point_step = Math::TAU / circle_segments;
+
+		for (int i = 0; i < circle_segments; i++) {
+			float angle = i * circle_point_step;
+			points_ptr[i].x = Math::cos(angle) * p_major;
+			points_ptr[i].y = Math::sin(angle) * p_minor;
+			points_ptr[i] += p_pos;
+		}
+		points_ptr[circle_segments] = points_ptr[0];
+
+		Vector<Color> colors = { p_color };
+
+		RenderingServer::get_singleton()->canvas_item_add_polyline(canvas_item, points, colors, p_width, p_antialiased);
+	}
+}
+
 //Stardusk
 void CanvasItem::draw_pixel(const Point2 &p_pos, const Color &p_color) {
 	ERR_THREAD_GUARD;
@@ -885,42 +921,6 @@ void CanvasItem::draw_rect_with_thickness(const Rect2 &p_rect, const Color &p_co
 	}
 }
 //END
-
-void CanvasItem::draw_circle(const Point2 &p_pos, real_t p_radius, const Color &p_color, bool p_filled, real_t p_width, bool p_antialiased) {
-	ERR_THREAD_GUARD;
-	ERR_DRAW_GUARD;
-
-	if (p_filled) {
-		if (p_width != -1.0) {
-			WARN_PRINT("The \"width\" argument has no effect when \"filled\" is \"true\".");
-		}
-
-		RenderingServer::get_singleton()->canvas_item_add_ellipse(canvas_item, p_pos, p_major, p_minor, p_color, p_antialiased);
-	} else if (p_width >= 2.0 * MAX(p_major, p_minor)) {
-		RenderingServer::get_singleton()->canvas_item_add_ellipse(canvas_item, p_pos, p_major + 0.5 * p_width, p_minor + 0.5 * p_width, p_color, p_antialiased);
-	} else {
-		// Tessellation count is hardcoded. Keep in sync with the same variable in `RendererCanvasCull::canvas_item_add_circle()`.
-		const int circle_segments = 64;
-
-		Vector<Vector2> points;
-		points.resize(circle_segments + 1);
-
-		Vector2 *points_ptr = points.ptrw();
-		const real_t circle_point_step = Math::TAU / circle_segments;
-
-		for (int i = 0; i < circle_segments; i++) {
-			float angle = i * circle_point_step;
-			points_ptr[i].x = Math::cos(angle) * p_major;
-			points_ptr[i].y = Math::sin(angle) * p_minor;
-			points_ptr[i] += p_pos;
-		}
-		points_ptr[circle_segments] = points_ptr[0];
-
-		Vector<Color> colors = { p_color };
-
-		RenderingServer::get_singleton()->canvas_item_add_polyline(canvas_item, points, colors, p_width, p_antialiased);
-	}
-}
 
 void CanvasItem::draw_circle(const Point2 &p_pos, real_t p_radius, const Color &p_color, bool p_filled, real_t p_width, bool p_antialiased) {
 	ERR_THREAD_GUARD;
