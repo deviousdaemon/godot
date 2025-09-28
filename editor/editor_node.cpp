@@ -708,6 +708,9 @@ void EditorNode::_update_theme(bool p_skip_creation) {
 	editor_dock_manager->update_tab_styles();
 	editor_dock_manager->update_docks_menu();
 	editor_dock_manager->set_tab_icon_max_width(theme->get_constant(SNAME("class_icon_size"), EditorStringName(Editor)));
+#ifdef ANDROID_ENABLED
+	DisplayServer::get_singleton()->window_set_color(theme->get_color(SNAME("background"), EditorStringName(Editor)));
+#endif
 }
 
 Ref<Texture2D> EditorNode::_get_editor_theme_native_menu_icon(const StringName &p_name, bool p_global_menu, bool p_dark_mode) const {
@@ -1684,7 +1687,7 @@ void EditorNode::save_resource_as(const Ref<Resource> &p_resource, const String 
 
 	List<String> preferred;
 	for (const String &E : extensions) {
-		if (p_resource->derives_from<Script>() && (E == "tres" || E == "res")) {
+		if (p_resource->is_class("Script") && (E == "tres" || E == "res")) {
 			// This serves no purpose and confused people.
 			continue;
 		}
@@ -1921,13 +1924,13 @@ void EditorNode::_save_edited_subresources(Node *scene, HashMap<Ref<Resource>, b
 }
 
 void EditorNode::_find_node_types(Node *p_node, int &count_2d, int &count_3d) {
-	if (p_node->derives_from<Viewport>() || (p_node != editor_data.get_edited_scene_root() && p_node->get_owner() != editor_data.get_edited_scene_root())) {
+	if (p_node->is_class("Viewport") || (p_node != editor_data.get_edited_scene_root() && p_node->get_owner() != editor_data.get_edited_scene_root())) {
 		return;
 	}
 
-	if (p_node->derives_from<CanvasItem>()) {
+	if (p_node->is_class("CanvasItem")) {
 		count_2d++;
-	} else if (p_node->derives_from<Node3D>()) {
+	} else if (p_node->is_class("Node3D")) {
 		count_3d++;
 	}
 
@@ -2800,13 +2803,13 @@ void EditorNode::_edit_current(bool p_skip_foreign, bool p_skip_inspector_update
 	}
 
 	// Update the use folding setting and state.
-	bool disable_folding = bool(EDITOR_GET("interface/inspector/disable_folding")) || current_obj->derives_from<EditorDebuggerRemoteObjects>();
+	bool disable_folding = bool(EDITOR_GET("interface/inspector/disable_folding")) || current_obj->is_class("EditorDebuggerRemoteObjects");
 	if (InspectorDock::get_inspector_singleton()->is_using_folding() == disable_folding) {
 		InspectorDock::get_inspector_singleton()->set_use_folding(!disable_folding, false);
 	}
 
-	bool is_resource = current_obj->derives_from<Resource>();
-	bool is_node = current_obj->derives_from<Node>();
+	bool is_resource = current_obj->is_class("Resource");
+	bool is_node = current_obj->is_class("Node");
 	bool stay_in_script_editor_on_node_selected = bool(EDITOR_GET("text_editor/behavior/navigation/stay_in_script_editor_on_node_selected"));
 	bool skip_main_plugin = false;
 
@@ -2885,7 +2888,7 @@ void EditorNode::_edit_current(bool p_skip_foreign, bool p_skip_inspector_update
 		Node *selected_node = nullptr;
 
 		Vector<Node *> multi_nodes;
-		if (current_obj->derives_from<MultiNodeEdit>()) {
+		if (current_obj->is_class("MultiNodeEdit")) {
 			Node *scene = get_edited_scene();
 			if (scene) {
 				MultiNodeEdit *multi_node_edit = Object::cast_to<MultiNodeEdit>(current_obj);
@@ -2911,7 +2914,7 @@ void EditorNode::_edit_current(bool p_skip_foreign, bool p_skip_inspector_update
 			}
 		}
 
-		if (!current_obj->derives_from<EditorDebuggerRemoteObjects>()) {
+		if (!current_obj->is_class("EditorDebuggerRemoteObjects")) {
 			EditorDebuggerNode::get_singleton()->clear_remote_tree_selection();
 		}
 
@@ -2927,8 +2930,8 @@ void EditorNode::_edit_current(bool p_skip_foreign, bool p_skip_inspector_update
 			editable_info,
 			info_is_warning);
 
-	Object *editor_owner = (is_node || current_obj->derives_from<MultiNodeEdit>()) ? (Object *)SceneTreeDock::get_singleton() : is_resource ? (Object *)InspectorDock::get_inspector_singleton()
-																																			: (Object *)this;
+	Object *editor_owner = (is_node || current_obj->is_class("MultiNodeEdit")) ? (Object *)SceneTreeDock::get_singleton() : is_resource ? (Object *)InspectorDock::get_inspector_singleton()
+																																		: (Object *)this;
 
 	// Take care of the main editor plugin.
 
@@ -5328,7 +5331,7 @@ Ref<Texture2D> EditorNode::get_object_icon(const Object *p_object, const String 
 		return get_class_icon(class_name, p_fallback);
 	}
 
-	if (scr.is_null() && p_object->derives_from<Script>()) {
+	if (scr.is_null() && p_object->is_class("Script")) {
 		scr = p_object;
 	}
 
