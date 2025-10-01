@@ -143,6 +143,7 @@
 #include "editor/run/editor_run.h"
 #include "editor/run/editor_run_bar.h"
 #include "editor/run/game_view_plugin.h"
+#include "editor/scene/3d/material_3d_conversion_plugins.h"
 #include "editor/scene/3d/mesh_library_editor_plugin.h"
 #include "editor/scene/3d/node_3d_editor_plugin.h"
 #include "editor/scene/3d/root_motion_editor_plugin.h"
@@ -705,6 +706,10 @@ void EditorNode::_update_theme(bool p_skip_creation) {
 		_update_renderer_color();
 	}
 
+	Ref<Texture2D> thumbnail_icon = gui_base->get_theme_icon(SNAME("file_thumbnail"), SNAME("FileDialog"));
+	default_thumbnail.instantiate();
+	default_thumbnail->set_image(thumbnail_icon->get_image());
+
 	editor_dock_manager->update_tab_styles();
 	editor_dock_manager->update_docks_menu();
 	editor_dock_manager->set_tab_icon_max_width(theme->get_constant(SNAME("class_icon_size"), EditorStringName(Editor)));
@@ -928,7 +933,17 @@ void EditorNode::_notification(int p_what) {
 			feature_profile_manager->notify_changed();
 
 			// Save the project after opening to mark it as last modified, except in headless mode.
+			// Also use this opportunity to ensure default settings are applied to new projects created from the command line
+			// using `touch project.godot`.
 			if (DisplayServer::get_singleton()->window_can_draw()) {
+				const String project_settings_path = ProjectSettings::get_singleton()->get_resource_path().path_join("project.godot");
+				// Check the file's size in bytes as an optimization. If it's under 10 bytes, the file is assumed to be empty.
+				if (FileAccess::get_size(project_settings_path) < 10) {
+					const HashMap<String, Variant> initial_settings = get_initial_settings();
+					for (const KeyValue<String, Variant> &initial_setting : initial_settings) {
+						ProjectSettings::get_singleton()->set_setting(initial_setting.key, initial_setting.value);
+					}
+				}
 				ProjectSettings::get_singleton()->save();
 			}
 
@@ -5634,6 +5649,19 @@ Ref<Texture2D> EditorNode::_file_dialog_get_icon(const String &p_path) {
 	return singleton->icon_type_cache["Object"];
 }
 
+Ref<Texture2D> EditorNode::_file_dialog_get_thumbnail(const String &p_path) {
+	Ref<ImageTexture> texture = singleton->default_thumbnail->duplicate();
+	EditorResourcePreview::get_singleton()->queue_resource_preview(p_path, callable_mp_static(EditorNode::_file_dialog_thumbnail_callback).bind(texture));
+	return texture;
+}
+
+void EditorNode::_file_dialog_thumbnail_callback(const String &p_path, const Ref<Texture2D> &p_preview, const Ref<Texture2D> &p_small_preview, Ref<ImageTexture> p_texture) {
+	ERR_FAIL_COND(p_texture.is_null());
+	if (p_preview.is_valid()) {
+		p_texture->set_image(p_preview->get_image());
+	}
+}
+
 void EditorNode::_build_icon_type_cache() {
 	List<StringName> tl;
 	theme->get_icon_list(EditorStringName(EditorIcons), &tl);
@@ -7550,6 +7578,17 @@ void EditorNode::notify_settings_overrides_changed() {
 	settings_overrides_changed = true;
 }
 
+// Returns the list of project settings to add to new projects. This is used by the
+// project manager creation dialog, but also applies to empty `project.godot` files
+// to cover the command line workflow of creating projects using `touch project.godot`.
+//
+// This is used to set better defaults for new projects without affecting existing projects.
+HashMap<String, Variant> EditorNode::get_initial_settings() {
+	HashMap<String, Variant> settings;
+	settings["physics/3d/physics_engine"] = "Jolt Physics";
+	return settings;
+}
+
 EditorNode::EditorNode() {
 	DEV_ASSERT(!singleton);
 	singleton = this;
@@ -7815,7 +7854,8 @@ EditorNode::EditorNode() {
 	EditorContextMenuPluginManager::create();
 
 	// Used for previews.
-	FileDialog::get_icon_func = _file_dialog_get_icon;
+	FileDialog::set_get_icon_callback(callable_mp_static(_file_dialog_get_icon));
+	FileDialog::set_get_thumbnail_callback(callable_mp_static(_file_dialog_get_thumbnail));
 	FileDialog::register_func = _file_dialog_register;
 	FileDialog::unregister_func = _file_dialog_unregister;
 
@@ -8925,7 +8965,6 @@ EditorNode::~EditorNode() {
 	GDExtensionEditorPlugins::editor_node_add_plugin = nullptr;
 	GDExtensionEditorPlugins::editor_node_remove_plugin = nullptr;
 
-	FileDialog::get_icon_func = nullptr;
 	FileDialog::register_func = nullptr;
 	FileDialog::unregister_func = nullptr;
 

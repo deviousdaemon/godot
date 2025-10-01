@@ -2413,10 +2413,12 @@ Control *Control::find_next_valid_focus() const {
 	}
 
 	Control *from = const_cast<Control *>(this);
+	HashSet<Control *> checked;
 	bool ac_enabled = get_tree() && get_tree()->is_accessibility_enabled();
 
 	// Index of the current `Control` subtree within the containing `Window`.
 	int window_next = -1;
+	checked.insert(from);
 
 	while (true) {
 		// Find next child.
@@ -2478,9 +2480,10 @@ Control *Control::find_next_valid_focus() const {
 			return next_child;
 		}
 
-		if (next_child == from || next_child == this) {
+		if (checked.has(next_child)) {
 			return nullptr; // Stuck in a loop with no next control.
 		}
+		checked.insert(next_child);
 
 		from = next_child; // Try to find the next control with focus mode FOCUS_ALL.
 	}
@@ -2517,10 +2520,12 @@ Control *Control::find_prev_valid_focus() const {
 	}
 
 	Control *from = const_cast<Control *>(this);
+	HashSet<Control *> checked;
 	bool ac_enabled = get_tree() && get_tree()->is_accessibility_enabled();
 
 	// Index of the current `Control` subtree within the containing `Window`.
 	int window_prev = -1;
+	checked.insert(from);
 
 	while (true) {
 		// Find prev child.
@@ -2576,9 +2581,10 @@ Control *Control::find_prev_valid_focus() const {
 			return prev_child;
 		}
 
-		if (prev_child == from || prev_child == this) {
+		if (checked.has(prev_child)) {
 			return nullptr; // Stuck in a loop with no prev control.
 		}
+		checked.insert(prev_child);
 
 		from = prev_child; // Try to find the prev control with focus mode FOCUS_ALL.
 	}

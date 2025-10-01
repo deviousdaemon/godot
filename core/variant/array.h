@@ -137,6 +137,7 @@ public:
 	//Stardusk
 	void append_unique(const Variant &p_value);
 	Error resize(int p_new_size);
+	Error reserve(int p_new_size);
 
 	Error insert(int p_pos, const Variant &p_value);
 	void remove_at(int p_pos);
