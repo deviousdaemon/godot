@@ -110,6 +110,10 @@ void SpinBox::_update_text(bool p_only_update_if_value_changed) {
 	}
 
 	line_edit->set_text_with_selection(value);
+	
+	if (expand_to_text_length) {
+		update_minimum_size();
+	}
 }
 
 void SpinBox::_text_submitted(const String &p_string) {
