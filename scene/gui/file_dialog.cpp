@@ -1598,7 +1598,7 @@ void FileDialog::_sort_option_selected(int p_option) {
 }
 
 void FileDialog::_favorite_selected(int p_item) {
-	ERR_FAIL_UNSIGNED_INDEX((uint32_t)p_item, favorite_dirs.size());
+	ERR_FAIL_UNSIGNED_INDEX((uint32_t)p_item, global_favorites.size());
 	_change_dir(favorite_list->get_item_metadata(p_item));
 	_push_history();
 }
@@ -1610,7 +1610,7 @@ void FileDialog::_favorite_pressed() {
 	}
 
 	bool found = false;
-	for (const String &name : favorite_dirs) {
+	for (const String &name : global_favorites) {
 		if (!_path_matches_access(name)) {
 			continue;
 		}
@@ -1622,9 +1622,9 @@ void FileDialog::_favorite_pressed() {
 	}
 
 	if (found) {
-		favorite_dirs.erase(directory);
+		global_favorites.erase(directory);
 	} else {
-		favorite_dirs.push_back(directory);
+		global_favorites.push_back(directory);
 	}
 	
 	emit_signal("favorite_directories_updated");
@@ -1638,13 +1638,13 @@ void FileDialog::_favorite_move_up() {
 		return;
 	}
 
-	int a_idx = favorite_dirs.find(favorite_list->get_item_metadata(current - 1));
-	int b_idx = favorite_dirs.find(favorite_list->get_item_metadata(current));
+	int a_idx = global_favorites.find(favorite_list->get_item_metadata(current - 1));
+	int b_idx = global_favorites.find(favorite_list->get_item_metadata(current));
 
 	if (a_idx == -1 || b_idx == -1) {
 		return;
 	}
-	SWAP(favorite_dirs[a_idx], favorite_dirs[b_idx]);
+	SWAP(global_favorites[a_idx], global_favorites[b_idx]);
 	emit_signal("favorite_directories_updated");
 	_update_favorite_list();
 }
@@ -1655,13 +1655,13 @@ void FileDialog::_favorite_move_down() {
 		return;
 	}
 
-	int a_idx = favorite_dirs.find(favorite_list->get_item_metadata(current));
-	int b_idx = favorite_dirs.find(favorite_list->get_item_metadata(current + 1));
+	int a_idx = global_favorites.find(favorite_list->get_item_metadata(current));
+	int b_idx = global_favorites.find(favorite_list->get_item_metadata(current + 1));
 
 	if (a_idx == -1 || b_idx == -1) {
 		return;
 	}
-	SWAP(favorite_dirs[a_idx], favorite_dirs[b_idx]);
+	SWAP(global_favorites[a_idx], global_favorites[b_idx]);
 	emit_signal("favorite_directories_updated");
 	_update_favorite_list();
 }
@@ -1676,8 +1676,8 @@ void FileDialog::_update_favorite_list() {
 	Vector<String> favorited_names;
 
 	int current_favorite = -1;
-	for (uint32_t i = 0; i < favorite_dirs.size(); i++) {
-		String name = favorite_dirs[i];
+	for (uint32_t i = 0; i < global_favorites.size(); i++) {
+		String name = global_favorites[i];
 		if (!_path_matches_access(name)) {
 			continue;
 		}
@@ -1688,7 +1688,7 @@ void FileDialog::_update_favorite_list() {
 
 		if (!dir_access->dir_exists(name)) {
 			// Remove invalid directory from the list of favorited directories.
-			favorite_dirs.remove_at(i);
+			global_favorites.remove_at(i);
 			i--;
 			continue;
 		}
@@ -1735,7 +1735,7 @@ void FileDialog::_update_fav_buttons() {
 }
 
 void FileDialog::_recent_selected(int p_item) {
-	ERR_FAIL_UNSIGNED_INDEX((uint32_t)p_item, recent_dirs.size());
+	ERR_FAIL_UNSIGNED_INDEX((uint32_t)p_item, global_recents.size());
 	_change_dir(recent_list->get_item_metadata(p_item));
 	_push_history();
 }
@@ -1747,20 +1747,20 @@ void FileDialog::_save_to_recent() {
 	}
 
 	int count = 0;
-	for (uint32_t i = 0; i < recent_dirs.size(); i++) {
-		const String &dir = recent_dirs[i];
+	for (uint32_t i = 0; i < global_recents.size(); i++) {
+		const String &dir = global_recents[i];
 		if (!_path_matches_access(dir)) {
 			continue;
 		}
 
 		if (dir == directory || count > MAX_RECENTS) {
-			recent_dirs.remove_at(i);
+			global_recents.remove_at(i);
 			i--;
 		} else {
 			count++;
 		}
 	}
-	recent_dirs.insert(0, directory);
+	global_recents.insert(0, directory);
 
 	_update_recent_list();
 }
@@ -1771,8 +1771,8 @@ void FileDialog::_update_recent_list() {
 	Vector<String> recent_dir_paths;
 	Vector<String> recent_dir_names;
 
-	for (uint32_t i = 0; i < recent_dirs.size(); i++) {
-		String name = recent_dirs[i];
+	for (uint32_t i = 0; i < global_recents.size(); i++) {
+		String name = global_recents[i];
 		if (!_path_matches_access(name)) {
 			continue;
 		}
@@ -1783,7 +1783,7 @@ void FileDialog::_update_recent_list() {
 
 		if (!dir_access->dir_exists(name)) {
 			// Remove invalid directory from the list of recent directories.
-			recent_dirs.remove_at(i);
+			global_recents.remove_at(i);
 			i--;
 			continue;
 		}
@@ -1987,47 +1987,6 @@ int FileDialog::get_option_count() const {
 	return options.size();
 }
 
-// Stardusk until official implementaion
-void FileDialog::set_favorite_directories(const Vector<String> &p_dirs) {
-	favorite_dirs = p_dirs;
-	_update_favorite_list();
-}
-Vector<String> FileDialog::get_favorite_directories() const {
-	return favorite_dirs;
-}
-
-void FileDialog::add_favorite_directory(const String &p_dir) {
-	favorite_dirs.push_back(p_dir);
-	_update_favorite_list();
-}
-
-void FileDialog::remove_favorite_directory(int idx) {
-	if (idx < 0 || idx >= int(favorite_dirs.size())) return;
-	favorite_dirs.remove_at(idx);
-	_update_favorite_list();
-}
-
-void FileDialog::set_recent_directories(const Vector<String> &p_dirs) {
-	recent_dirs = p_dirs;
-	_update_recent_list();
-}
-
-Vector<String> FileDialog::get_recent_directories() const {
-	return recent_dirs;
-}
-
-void FileDialog::add_recent_directory(const String &p_dir) {
-	recent_dirs.push_back(p_dir);
-	_update_recent_list();
-}
-
-void FileDialog::remove_recent_directory(int idx) {
-	if (idx < 0 || idx >= int(recent_dirs.size())) return;
-	recent_dirs.remove_at(idx);
-	_update_recent_list();
-}
-//END
-
 //Stardusk
 void FileDialog::set_prompt_on_overwrite(const bool p_enabled) {
 	prompt_on_overwrite = p_enabled;
@@ -2093,20 +2052,6 @@ void FileDialog::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("invalidate"), &FileDialog::invalidate);
 	
-	// Stardusk until official implementaion
-	ClassDB::bind_method(D_METHOD("set_favorite_directories", "new_dirs"), &FileDialog::set_favorite_directories);
-	ClassDB::bind_method(D_METHOD("get_favorite_directories"), &FileDialog::get_favorite_directories);
-	
-	ClassDB::bind_method(D_METHOD("add_favorite_directory", "new_dir"), &FileDialog::add_favorite_directory);
-	ClassDB::bind_method(D_METHOD("remove_favorite_directory", "idx"), &FileDialog::remove_favorite_directory);
-	
-	ClassDB::bind_method(D_METHOD("set_recent_directories", "new_dirs"), &FileDialog::set_recent_directories);
-	ClassDB::bind_method(D_METHOD("get_recent_directories"), &FileDialog::get_recent_directories);
-	
-	ClassDB::bind_method(D_METHOD("add_recent_directory", "new_dir"), &FileDialog::add_recent_directory);
-	ClassDB::bind_method(D_METHOD("remove_recent_directory", "idx"), &FileDialog::remove_recent_directory);
-	//END
-	
 	//Stardusk
 	ClassDB::bind_method(D_METHOD("set_prompt_on_overwrite", "enabled"), &FileDialog::set_prompt_on_overwrite);
 	ClassDB::bind_method(D_METHOD("get_prompt_on_overwrite"), &FileDialog::get_prompt_on_overwrite);
@@ -2136,11 +2081,6 @@ void FileDialog::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "current_dir", PROPERTY_HINT_DIR, "", PROPERTY_USAGE_NONE), "set_current_dir", "get_current_dir");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "current_file", PROPERTY_HINT_FILE_PATH, "*", PROPERTY_USAGE_NONE), "set_current_file", "get_current_file");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "current_path", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_current_path", "get_current_path");
-	
-	// Stardusk until official implementaion
-	ADD_PROPERTY(PropertyInfo(Variant::PACKED_STRING_ARRAY, "favorite_directories"), "set_favorite_directories", "get_favorite_directories");
-	ADD_PROPERTY(PropertyInfo(Variant::PACKED_STRING_ARRAY, "recent_directories"), "set_recent_directories", "get_recent_directories");
-	//END
 	
 	//Stardusk
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "prompt_on_overwrite"), "set_prompt_on_overwrite", "get_prompt_on_overwrite");

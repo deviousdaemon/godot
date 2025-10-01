@@ -163,12 +163,8 @@ private:
 	bool use_native_dialog = false;
 		bool customization_flags[CUSTOMIZATION_MAX]; // Initialized to true in the constructor.
 
-	// Stardusk until official implementaion
-	// inline static LocalVector<String> global_favorites;
-	// inline static LocalVector<String> global_recents;
-	LocalVector<String> favorite_dirs;
-	LocalVector<String> recent_dirs;
-	//END
+	inline static LocalVector<String> global_favorites;
+	inline static LocalVector<String> global_recents;
 	
 	
 
