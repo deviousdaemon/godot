@@ -1987,16 +1987,6 @@ int FileDialog::get_option_count() const {
 	return options.size();
 }
 
-//Stardusk
-void FileDialog::set_prompt_on_overwrite(const bool p_enabled) {
-	prompt_on_overwrite = p_enabled;
-}
-
-bool FileDialog::get_prompt_on_overwrite() const {
-	return prompt_on_overwrite;	
-}
-//END
-
 void FileDialog::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_cancel_pressed"), &FileDialog::_cancel_pressed);
 
@@ -2051,11 +2041,6 @@ void FileDialog::_bind_methods() {
 	ClassDB::bind_static_method("FileDialog", D_METHOD("set_get_thumbnail_callback", "callback"), &FileDialog::set_get_thumbnail_callback);
 
 	ClassDB::bind_method(D_METHOD("invalidate"), &FileDialog::invalidate);
-	
-	//Stardusk
-	ClassDB::bind_method(D_METHOD("set_prompt_on_overwrite", "enabled"), &FileDialog::set_prompt_on_overwrite);
-	ClassDB::bind_method(D_METHOD("get_prompt_on_overwrite"), &FileDialog::get_prompt_on_overwrite);
-	//EMD
 
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "mode_overrides_title"), "set_mode_overrides_title", "is_mode_overriding_title");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "file_mode", PROPERTY_HINT_ENUM, "Open File,Open Files,Open Folder,Open Any,Save"), "set_file_mode", "get_file_mode");
@@ -2082,10 +2067,6 @@ void FileDialog::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "current_dir", PROPERTY_HINT_DIR, "", PROPERTY_USAGE_NONE), "set_current_dir", "get_current_dir");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "current_file", PROPERTY_HINT_FILE_PATH, "*", PROPERTY_USAGE_NONE), "set_current_file", "get_current_file");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "current_path", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_current_path", "get_current_path");
-	
-	//Stardusk
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "prompt_on_overwrite"), "set_prompt_on_overwrite", "get_prompt_on_overwrite");
-	//END
 
 	ADD_SIGNAL(MethodInfo("file_selected", PropertyInfo(Variant::STRING, "path")));
 	ADD_SIGNAL(MethodInfo("files_selected", PropertyInfo(Variant::PACKED_STRING_ARRAY, "paths")));
