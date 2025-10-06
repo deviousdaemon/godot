@@ -438,7 +438,7 @@ int Color::find_named_color(const String &p_name) {
 }
 
 int Color::get_named_color_count() {
-	return std::size(named_colors);
+	return std_size(named_colors);
 }
 
 String Color::get_named_color_name(int p_idx) {

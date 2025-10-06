@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  modifier_bone_target_3d.h                                             */
+/*  gdtype.h                                                              */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -30,26 +30,21 @@
 
 #pragma once
 
-#include "scene/3d/skeleton_modifier_3d.h"
+#include "core/string/string_name.h"
+#include "core/templates/vector.h"
 
-class ModifierBoneTarget3D : public SkeletonModifier3D {
-	GDCLASS(ModifierBoneTarget3D, SkeletonModifier3D);
+class GDType {
+	const GDType *super_type;
 
-	String bone_name;
-	int bone = -1;
-
-protected:
-	void _validate_property(PropertyInfo &p_property) const;
-	virtual void _validate_bone_names() override;
-	static void _bind_methods();
-	virtual void _process_modification(double p_delta) override;
+	StringName name;
+	/// Contains all the class names in order:
+	/// `name` is the first element and `Object` is the last.
+	Vector<StringName> name_hierarchy;
 
 public:
-#ifdef TOOLS_ENABLED
-	virtual bool is_processed_on_saving() const override { return true; }
-#endif
-	void set_bone_name(const String &p_bone_name);
-	String get_bone_name() const;
-	void set_bone(int p_bone);
-	int get_bone() const;
+	GDType(const GDType *p_super_type, StringName p_name);
+
+	const GDType *get_super_type() const { return super_type; }
+	const StringName &get_name() const { return name; }
+	const Vector<StringName> &get_name_hierarchy() const { return name_hierarchy; }
 };

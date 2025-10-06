@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  modifier_bone_target_3d.h                                             */
+/*  gdtype.cpp                                                            */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,28 +28,15 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#include "gdtype.h"
 
-#include "scene/3d/skeleton_modifier_3d.h"
+GDType::GDType(const GDType *p_super_type, StringName p_name) :
+		super_type(p_super_type), name(std::move(p_name)) {
+	name_hierarchy.push_back(StringName(name, true));
 
-class ModifierBoneTarget3D : public SkeletonModifier3D {
-	GDCLASS(ModifierBoneTarget3D, SkeletonModifier3D);
-
-	String bone_name;
-	int bone = -1;
-
-protected:
-	void _validate_property(PropertyInfo &p_property) const;
-	virtual void _validate_bone_names() override;
-	static void _bind_methods();
-	virtual void _process_modification(double p_delta) override;
-
-public:
-#ifdef TOOLS_ENABLED
-	virtual bool is_processed_on_saving() const override { return true; }
-#endif
-	void set_bone_name(const String &p_bone_name);
-	String get_bone_name() const;
-	void set_bone(int p_bone);
-	int get_bone() const;
-};
+	if (super_type) {
+		for (const StringName &ancestor_name : super_type->name_hierarchy) {
+			name_hierarchy.push_back(StringName(ancestor_name, true));
+		}
+	}
+}
