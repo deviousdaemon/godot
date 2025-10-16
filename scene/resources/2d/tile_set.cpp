@@ -37,6 +37,7 @@
 #include "core/templates/rb_set.h"
 #include "scene/gui/control.h"
 #include "scene/resources/image_texture.h"
+#include "scene/resources/mesh.h"
 //Stardusk
 #include "editor/settings/editor_settings.h"
 
