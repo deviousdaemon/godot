@@ -214,6 +214,15 @@ void EditorLog::_meta_clicked(const String &p_meta) {
 			ScriptEditor::get_singleton()->edit(res, line - 1, 0);
 			InspectorDock::get_singleton()->edit_resource(res);
 		}
+	} else if (p_meta.contains(".cpp") || p_meta.contains(".h")) {
+		// Godot source file. Try to open it in external editor.
+		int colon = p_meta.rfind_char(':');
+		const String path = p_meta.substr(0, colon);
+		int line = p_meta.substr(colon + 1).to_int() - 1;
+
+		if (!ScriptEditorPlugin::open_in_external_editor(path, line, -1, true)) {
+			OS::get_singleton()->shell_open(path);
+		}
 	} else {
 		OS::get_singleton()->shell_open(p_meta);
 	}
