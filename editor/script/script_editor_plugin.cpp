@@ -1158,22 +1158,9 @@ void ScriptEditor::trigger_live_script_reload(const String &p_script_path) {
 	}
 }
 
-void ScriptEditor::trigger_live_script_reload_all() {
-	if (!pending_auto_reload && auto_reload_running_scripts) {
-		call_deferred(SNAME("_live_auto_reload_running_scripts"));
-		pending_auto_reload = true;
-		reload_all_scripts = true;
-	}
-}
-
 void ScriptEditor::_live_auto_reload_running_scripts() {
 	pending_auto_reload = false;
-	if (reload_all_scripts) {
-		EditorDebuggerNode::get_singleton()->reload_all_scripts();
-	} else {
-		EditorDebuggerNode::get_singleton()->reload_scripts(script_paths_to_reload);
-	}
-	reload_all_scripts = false;
+	EditorDebuggerNode::get_singleton()->reload_scripts(script_paths_to_reload);
 	script_paths_to_reload.clear();
 }
 
@@ -4577,7 +4564,7 @@ void ScriptEditorPlugin::_notification(int p_what) {
 	}
 }
 
-bool ScriptEditorPlugin::open_in_external_editor(const String &p_path, int p_line, int p_col, bool ignore_project) {
+bool ScriptEditorPlugin::open_in_external_editor(const String &p_path, int p_line, int p_col, bool p_ignore_project) {
 	const String path = EDITOR_GET("text_editor/external/exec_path");
 	if (path.is_empty()) {
 		return false;
@@ -4611,7 +4598,7 @@ bool ScriptEditorPlugin::open_in_external_editor(const String &p_path, int p_lin
 				}
 
 				// Do path replacement here, else there will be issues with spaces and quotes
-				if (ignore_project) {
+				if (p_ignore_project) {
 					arg = arg.replacen("{project}", String());
 				} else {
 					arg = arg.replacen("{project}", ProjectSettings::get_singleton()->get_resource_path());
