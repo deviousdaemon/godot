@@ -57,8 +57,6 @@ class SceneTreeDock : public EditorDock {
 		TOOL_COPY,
 		TOOL_PASTE,
 		TOOL_PASTE_AS_SIBLING,
-		// Stardusk
-		TOOL_TOGGLE_VISIBILITY,
 		TOOL_RENAME,
 		TOOL_BATCH_RENAME,
 		TOOL_REPLACE,
@@ -67,10 +65,6 @@ class SceneTreeDock : public EditorDock {
 		TOOL_DETACH_SCRIPT,
 		TOOL_MOVE_UP,
 		TOOL_MOVE_DOWN,
-		// Stardusk
-		TOOL_MOVE_TO_TOP,
-		// Stardusk
-		TOOL_MOVE_TO_BOTTOM,
 		TOOL_DUPLICATE,
 		TOOL_REPARENT,
 		TOOL_REPARENT_TO_NEW_NODE,
