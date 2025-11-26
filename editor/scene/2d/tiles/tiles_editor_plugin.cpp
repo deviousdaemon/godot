@@ -280,7 +280,6 @@ bool TilesEditorUtils::SourceNameComparator::operator()(const int &p_a, const in
 }
 
 void TilesEditorUtils::display_tile_set_editor_panel() {
-	tile_map_plugin_singleton->hide_editor();
 	tile_set_plugin_singleton->make_visible(true);
 }
 
@@ -481,13 +480,9 @@ bool TileMapEditorPlugin::handles(Object *p_object) const {
 
 void TileMapEditorPlugin::make_visible(bool p_visible) {
 	if (p_visible) {
-		button->show();
-		EditorNode::get_bottom_panel()->make_item_visible(editor);
+		editor->open();
 	} else {
-		button->hide();
-		if (editor->is_visible_in_tree()) {
-			EditorNode::get_bottom_panel()->hide_bottom_panel();
-		}
+		editor->close();
 	}
 }
 
@@ -497,12 +492,6 @@ bool TileMapEditorPlugin::forward_canvas_gui_input(const Ref<InputEvent> &p_even
 
 void TileMapEditorPlugin::forward_canvas_draw_over_viewport(Control *p_overlay) {
 	editor->forward_canvas_draw_over_viewport(p_overlay);
-}
-
-void TileMapEditorPlugin::hide_editor() {
-	if (editor->is_visible_in_tree()) {
-		EditorNode::get_bottom_panel()->hide_bottom_panel();
-	}
 }
 
 bool TileMapEditorPlugin::is_editor_visible() const {
@@ -530,8 +519,8 @@ TileMapEditorPlugin::TileMapEditorPlugin() {
 	//Stardusk
 	EditorSettings::get_singleton()->connect("settings_changed", callable_mp(this, &TileMapEditorPlugin::_update_editor_size));
 
-	button = EditorNode::get_bottom_panel()->add_item(TTRC("TileMap"), editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_tile_map_bottom_panel", TTRC("Toggle TileMap Bottom Panel")));
-	button->hide();
+	EditorDockManager::get_singleton()->add_dock(editor);
+	editor->close();
 }
 
 TileMapEditorPlugin::~TileMapEditorPlugin() {
@@ -553,15 +542,9 @@ bool TileSetEditorPlugin::handles(Object *p_object) const {
 
 void TileSetEditorPlugin::make_visible(bool p_visible) {
 	if (p_visible) {
-		button->show();
-		if (!tile_map_plugin_singleton->is_editor_visible()) {
-			EditorNode::get_bottom_panel()->make_item_visible(editor);
-		}
+		editor->open();
 	} else {
-		button->hide();
-		if (editor->is_visible_in_tree()) {
-			EditorNode::get_bottom_panel()->hide_bottom_panel();
-		}
+		editor->close();
 	}
 }
 
@@ -589,8 +572,8 @@ TileSetEditorPlugin::TileSetEditorPlugin() {
 	//Stardusk
 	EditorSettings::get_singleton()->connect("settings_changed", callable_mp(this, &TileSetEditorPlugin::_update_editor_size));
 
-	button = EditorNode::get_bottom_panel()->add_item(TTRC("TileSet"), editor, ED_SHORTCUT_AND_COMMAND("bottom_panels/toggle_tile_set_bottom_panel", TTRC("Toggle TileSet Bottom Panel")));
-	button->hide();
+	EditorDockManager::get_singleton()->add_dock(editor);
+	editor->close();
 }
 
 TileSetEditorPlugin::~TileSetEditorPlugin() {

@@ -14,7 +14,7 @@
 			<return type="void" />
 			<param index="0" name="priority_index" type="int" default="0" />
 			<description>
-				Clamps the [member split_offsets] values to not go outside the possible minimum and maximum values, and to not overlap with each other. Use [param priority_index] to prioritize one split offset when there are overlaps.
+				Clamps the [member split_offsets] values to ensure they are within valid ranges and do not overlap with each other. When overlaps occur, this method prioritizes one split offset (at index [param priority_index]) by clamping any overlapping split offsets to it.
 			</description>
 		</method>
 		<method name="get_drag_area_control" deprecated="Use the first element of [method get_drag_area_controls] instead.">
@@ -29,9 +29,9 @@
 			</description>
 		</method>
 		<method name="get_drag_area_controls">
-			<return type="Array" />
+			<return type="Control[]" />
 			<description>
-				Returns an [Array] of the drag area [Control]s. For example, this can be used to add a pre-configured button to a drag area [Control] so that it rides along with the split bar. Try setting the [Button] anchors to [code]center[/code] prior to the [code]reparent()[/code] call.
+				Returns an [Array] of the drag area [Control]s. These are the interactable [Control] nodes between each child. For example, this can be used to add a pre-configured button to a drag area [Control] so that it rides along with the split bar. Try setting the [Button] anchors to [code]center[/code] prior to the [method Node.reparent] call.
 				[codeblock]
 				$BarnacleButton.reparent($SplitContainer.get_drag_area_controls()[0])
 				[/codeblock]

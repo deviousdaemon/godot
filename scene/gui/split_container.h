@@ -104,6 +104,9 @@ private:
 	bool touch_dragger_enabled = false;
 
 	struct ThemeCache {
+		Color touch_dragger_color;
+		Color touch_dragger_pressed_color;
+		Color touch_dragger_hover_color;
 		int separation = 0;
 		int minimum_grab_thickness = 0;
 		bool autohide = false;
@@ -187,7 +190,7 @@ public:
 	void set_show_drag_area_enabled(bool p_enabled);
 	bool is_show_drag_area_enabled() const;
 
-	Array get_drag_area_controls();
+	TypedArray<Control> get_drag_area_controls();
 
 	void set_touch_dragger_enabled(bool p_enabled);
 	bool is_touch_dragger_enabled() const;

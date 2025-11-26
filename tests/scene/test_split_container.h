@@ -37,10 +37,10 @@
 
 namespace TestSplitContainer {
 
-#define CHECK_RECTS(rects, child_rects)                                                                                                               \
-	CHECK(rects.size() == child_rects.size());                                                                                                        \
-	for (int i = 0; i < (int)child_rects.size(); i++) {                                                                                               \
-		CHECK_MESSAGE(child_rects[i] == rects[i], vformat("Child %s is the wrong size. Child rect: %s, expected: %s.", i, child_rects[i], rects[i])); \
+#define CHECK_RECTS(m_rects, m_child_rects)                                                                                                                   \
+	CHECK(m_rects.size() == m_child_rects.size());                                                                                                            \
+	for (int i = 0; i < (int)m_child_rects.size(); i++) {                                                                                                     \
+		CHECK_MESSAGE(m_child_rects[i] == m_rects[i], vformat("Child %s is the wrong size. Child rect: %s, expected: %s.", i, m_child_rects[i], m_rects[i])); \
 	}
 
 static inline Vector<Rect2> get_rects_multi(SplitContainer *p_sc, const Vector<int> &p_positions, int p_sep, bool p_horizontal = true) {
