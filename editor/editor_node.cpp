@@ -1070,6 +1070,7 @@ void EditorNode::_notification(int p_what) {
 			if (EditorSettings::get_singleton()->check_changed_settings_in_group("interface/editor")) {
 				theme->set_constant("dragging_unfold_wait_msec", "Tree", (float)EDITOR_GET("interface/editor/dragging_hover_wait_seconds") * 1000);
 				theme->set_constant("hover_switch_wait_msec", "TabBar", (float)EDITOR_GET("interface/editor/dragging_hover_wait_seconds") * 1000);
+				editor_dock_manager->update_tab_styles();
 			}
 
 			if (EditorSettings::get_singleton()->check_changed_settings_in_group("interface/scene_tabs")) {
@@ -5340,7 +5341,7 @@ void EditorNode::_project_run_started() {
 	if (action_on_play == ACTION_ON_PLAY_OPEN_OUTPUT) {
 		editor_dock_manager->focus_dock(log);
 	} else if (action_on_play == ACTION_ON_PLAY_OPEN_DEBUGGER) {
-		bottom_panel->make_item_visible(EditorDebuggerNode::get_singleton());
+		editor_dock_manager->focus_dock(EditorDebuggerNode::get_singleton());
 	}
 }
 
@@ -5540,7 +5541,13 @@ Ref<Texture2D> EditorNode::_get_class_or_script_icon(const String &p_class, cons
 				}
 			}
 			if (theme.is_valid()) {
-				bool instantiable = !ClassDB::is_virtual(p_class) && ClassDB::can_instantiate(p_class);
+				bool instantiable = false;
+
+				// If the class doesn't exist or isn't global, then it's not instantiable
+				if (ClassDB::class_exists(p_class) || ScriptServer::is_global_class(p_class)) {
+					instantiable = !ClassDB::is_virtual(p_class) && ClassDB::can_instantiate(p_class);
+				}
+
 				return _get_class_or_script_icon(base_type, "", "", false, p_skip_fallback_virtual || instantiable);
 			}
 		}
@@ -7896,6 +7903,7 @@ void EditorNode::notify_settings_overrides_changed() {
 HashMap<String, Variant> EditorNode::get_initial_settings() {
 	HashMap<String, Variant> settings;
 	settings["physics/3d/physics_engine"] = "Jolt Physics";
+	settings["rendering/rendering_device/driver.windows"] = "d3d12";
 	return settings;
 }
 
@@ -8548,8 +8556,8 @@ EditorNode::EditorNode() {
 	project_menu->add_separator();
 	project_menu->add_shortcut(ED_SHORTCUT_AND_COMMAND("editor/export", TTRC("Export..."), Key::NONE, TTRC("Export")), PROJECT_EXPORT);
 	project_menu->add_item(TTRC("Pack Project as ZIP..."), PROJECT_PACK_AS_ZIP);
-#ifndef ANDROID_ENABLED
 	project_menu->add_item(TTRC("Install Android Build Template..."), PROJECT_INSTALL_ANDROID_SOURCE);
+#ifndef ANDROID_ENABLED
 	project_menu->add_item(TTRC("Open User Data Folder"), PROJECT_OPEN_USER_DATA_FOLDER);
 #endif
 
