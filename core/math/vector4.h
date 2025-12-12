@@ -208,7 +208,10 @@ constexpr void Vector4::operator*=(real_t p_s) {
 }
 
 constexpr void Vector4::operator/=(real_t p_s) {
-	*this *= (1 / p_s);
+	x /= p_s;
+	y /= p_s;
+	z /= p_s;
+	w /= p_s;
 }
 
 constexpr Vector4 Vector4::operator+(const Vector4 &p_vec4) const {
@@ -236,7 +239,7 @@ constexpr Vector4 Vector4::operator*(real_t p_s) const {
 }
 
 constexpr Vector4 Vector4::operator/(real_t p_s) const {
-	return *this * (1 / p_s);
+	return Vector4(x / p_s, y / p_s, z / p_s, w / p_s);
 }
 
 constexpr bool Vector4::operator==(const Vector4 &p_vec4) const {

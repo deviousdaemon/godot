@@ -37,7 +37,6 @@
 class MenuButton : public Button {
 	GDCLASS(MenuButton, Button);
 
-	// Unneeded? bool clicked = false;
 	bool switch_on_hover = false;
 	bool disable_shortcuts = false;
 	PopupMenu *popup = nullptr;

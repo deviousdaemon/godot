@@ -85,7 +85,6 @@
 		<member name="available_layouts" type="int" setter="set_available_layouts" getter="get_available_layouts" enum="EditorDock.DockLayout" is_bitfield="true" default="5">
 			The available layouts for this dock, as a bitmask. By default, the dock allows vertical and floating layouts.
 		</member>
-		<member name="clip_contents" type="bool" setter="set_clip_contents" getter="is_clipping_contents" overrides="Control" default="true" />
 		<member name="closable" type="bool" setter="set_closable" getter="is_closable" default="false">
 			If [code]true[/code], the dock can be closed with the Close button in the context popup. Docks with [member global] enabled are always closable.
 		</member>
@@ -97,7 +96,7 @@
 			The icon for the dock, as a texture. If specified, it will override [member icon_name].
 		</member>
 		<member name="dock_shortcut" type="Shortcut" setter="set_dock_shortcut" getter="get_dock_shortcut">
-			The shortcut used to open the dock. This property can only be set before this dock is added via [method EditorPlugin.add_dock].
+			The shortcut used to open the dock.
 		</member>
 		<member name="force_show_icon" type="bool" setter="set_force_show_icon" getter="get_force_show_icon" default="false">
 			If [code]true[/code], the dock will always display an icon, regardless of [member EditorSettings.interface/editor/dock_tab_style] or [member EditorSettings.interface/editor/bottom_dock_tab_style].
