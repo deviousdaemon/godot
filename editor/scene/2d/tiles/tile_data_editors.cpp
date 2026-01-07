@@ -990,7 +990,7 @@ GenericTilePolygonEditor::GenericTilePolygonEditor() {
 
 	Control *root = memnew(Control);
 	root->set_v_size_flags(Control::SIZE_EXPAND_FILL);
-	root->set_custom_minimum_size(Size2(528, 528 * EDSCALE));
+	root->set_custom_minimum_size(Size2(0, 200 * EDSCALE));
 	root->set_mouse_filter(Control::MOUSE_FILTER_IGNORE);
 	add_child(root);
 
@@ -1012,7 +1012,6 @@ GenericTilePolygonEditor::GenericTilePolygonEditor() {
 
 	editor_zoom_widget = memnew(EditorZoomWidget);
 	editor_zoom_widget->setup_zoom_limits(0.125, 128.0);
-	editor_zoom_widget->set_zoom(16.0);
 	editor_zoom_widget->set_position(Vector2(5, 5));
 	editor_zoom_widget->connect("zoom_changed", callable_mp(this, &GenericTilePolygonEditor::_zoom_changed).unbind(1));
 	editor_zoom_widget->set_shortcut_context(this);
@@ -1077,7 +1076,7 @@ void TileDataDefaultEditor::_setup_undo_redo_action(TileSetAtlasSource *p_tile_s
 void TileDataDefaultEditor::forward_draw_over_atlas(TileAtlasView *p_tile_atlas_view, TileSetAtlasSource *p_tile_set_atlas_source, CanvasItem *p_canvas_item, Transform2D p_transform) {
 	if (drag_type == DRAG_TYPE_PAINT_RECT) {
 		Color grid_color = EDITOR_GET("editors/tiles_editor/grid_color");
-		Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), 1.0);
+		Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), grid_color.a);
 
 		p_canvas_item->draw_set_transform_matrix(p_transform);
 
@@ -1310,7 +1309,7 @@ void TileDataDefaultEditor::draw_over_tile(CanvasItem *p_canvas_item, Transform2
 		Color color = Color(1, 1, 1);
 		if (p_selected) {
 			Color grid_color = EDITOR_GET("editors/tiles_editor/grid_color");
-			Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), 1.0);
+			Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), grid_color.a);
 			selection_color.set_v(0.9);
 			color = selection_color;
 		} else if (is_visible_in_tree()) {
@@ -1404,7 +1403,7 @@ void TileDataTextureOriginEditor::draw_over_tile(CanvasItem *p_canvas_item, Tran
 	Color color = Color(1.0, 1.0, 1.0);
 	if (p_selected) {
 		Color grid_color = EDITOR_GET("editors/tiles_editor/grid_color");
-		Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), 1.0);
+		Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), grid_color.a);
 		color = selection_color;
 	}
 
@@ -1442,7 +1441,7 @@ void TileDataPositionEditor::draw_over_tile(CanvasItem *p_canvas_item, Transform
 	Color color = Color(1.0, 1.0, 1.0);
 	if (p_selected) {
 		Color grid_color = EDITOR_GET("editors/tiles_editor/grid_color");
-		Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), 1.0);
+		Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), grid_color.a);
 		color = selection_color;
 	}
 	Ref<Texture2D> position_icon = TileSetEditor::get_singleton()->get_editor_theme_icon(SNAME("EditorPosition"));
@@ -1456,7 +1455,7 @@ void TileDataYSortEditor::draw_over_tile(CanvasItem *p_canvas_item, Transform2D 
 	Color color = Color(1.0, 1.0, 1.0);
 	if (p_selected) {
 		Color grid_color = EDITOR_GET("editors/tiles_editor/grid_color");
-		Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), 1.0);
+		Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), grid_color.a);
 		color = selection_color;
 	}
 	Vector2 texture_origin = tile_data->get_texture_origin();
@@ -1481,7 +1480,7 @@ void TileDataOcclusionShapeEditor::draw_over_tile(CanvasItem *p_canvas_item, Tra
 	ERR_FAIL_NULL(tile_data);
 
 	Color grid_color = EDITOR_GET("editors/tiles_editor/grid_color");
-	Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), 1.0);
+	Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), grid_color.a);
 	Color color = grid_color.darkened(0.2);
 	if (p_selected) {
 		color = selection_color.darkened(0.2);
@@ -1819,7 +1818,7 @@ void TileDataCollisionEditor::draw_over_tile(CanvasItem *p_canvas_item, Transfor
 	Vector<Color> color;
 	if (p_selected) {
 		Color grid_color = EDITOR_GET("editors/tiles_editor/grid_color");
-		Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), 1.0);
+		Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), grid_color.a);
 		selection_color.a = 0.7;
 		color.push_back(selection_color);
 	} else {
@@ -1848,7 +1847,7 @@ void TileDataCollisionEditor::draw_over_tile(CanvasItem *p_canvas_item, Transfor
 			}
 
 			Vector<Color> color2;
-			color2.push_back(Color(1, 1, 1, 0.4));
+			color2.push_back(Color(1, 1, 1, 1.0));
 			p_canvas_item->draw_polygon(polygon, color2, uvs, one_way_icon);
 		}
 	}
@@ -2011,7 +2010,7 @@ void TileDataTerrainsEditor::forward_draw_over_atlas(TileAtlasView *p_tile_atlas
 	if (drag_type == DRAG_TYPE_PAINT_TERRAIN_SET_RECT) {
 		// Draw selection rectangle.
 		Color grid_color = EDITOR_GET("editors/tiles_editor/grid_color");
-		Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), 1.0);
+		Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), grid_color.a);
 
 		p_canvas_item->draw_set_transform_matrix(p_transform);
 
@@ -3011,7 +3010,7 @@ void TileDataNavigationEditor::draw_over_tile(CanvasItem *p_canvas_item, Transfo
 #endif // DEBUG_ENABLED
 		if (p_selected) {
 			Color grid_color = EDITOR_GET("editors/tiles_editor/grid_color");
-			Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), 1.0);
+			Color selection_color = Color::from_hsv(Math::fposmod(grid_color.get_h() + 0.5, 1.0), grid_color.get_s(), grid_color.get_v(), grid_color.a);
 			selection_color.a = 0.7;
 			color = selection_color;
 		}
