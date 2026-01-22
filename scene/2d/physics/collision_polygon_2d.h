@@ -30,13 +30,12 @@
 
 #pragma once
 
-// #include "scene/2d/node_2d.h"
-#include "scene/2d/physics/collision_shape_parent_2d.h"
+#include "scene/2d/node_2d.h"
 
 class CollisionObject2D;
 
-class CollisionPolygon2D : public CollisionShapeParent2D {
-	GDCLASS(CollisionPolygon2D, CollisionShapeParent2D);
+class CollisionPolygon2D : public Node2D {
+	GDCLASS(CollisionPolygon2D, Node2D);
 
 public:
 	enum BuildMode {
@@ -50,15 +49,15 @@ protected:
 	Vector<Point2> polygon;
 	uint32_t owner_id = 0;
 	CollisionObject2D *collision_object = nullptr;
-	// bool disabled = false;
-	// bool one_way_collision = false;
-	// real_t one_way_collision_margin = 1.0;
+	bool disabled = false;
+	bool one_way_collision = false;
+	real_t one_way_collision_margin = 1.0;
 
 	Vector<Vector<Vector2>> _decompose_in_convex();
 
 	void _build_polygon();
 
-	// void _update_in_shape_owner(bool p_xform_only = false);
+	void _update_in_shape_owner(bool p_xform_only = false);
 
 protected:
 	void _notification(int p_what);
@@ -79,14 +78,14 @@ public:
 
 	PackedStringArray get_configuration_warnings() const override;
 
-	// void set_disabled(bool p_disabled);
-	// bool is_disabled() const;
+	void set_disabled(bool p_disabled);
+	bool is_disabled() const;
 
-	// void set_one_way_collision(bool p_enable);
-	// bool is_one_way_collision_enabled() const;
+	void set_one_way_collision(bool p_enable);
+	bool is_one_way_collision_enabled() const;
 
-	// void set_one_way_collision_margin(real_t p_margin);
-	// real_t get_one_way_collision_margin() const;
+	void set_one_way_collision_margin(real_t p_margin);
+	real_t get_one_way_collision_margin() const;
 
 	CollisionPolygon2D();
 };
