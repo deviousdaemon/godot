@@ -2180,6 +2180,8 @@ void TileMapLayer::_bind_methods() {
 	// --- Cells manipulation ---
 	// Generic cells manipulations and access.
 	ClassDB::bind_method(D_METHOD("set_cell", "coords", "source_id", "atlas_coords", "alternative_tile"), &TileMapLayer::set_cell, DEFVAL(TileSet::INVALID_SOURCE), DEFVAL(TileSetSource::INVALID_ATLAS_COORDS), DEFVAL(0));
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("set_cell_region", "rect", "source_id", "atlas_coords", "alternative_tile"), &TileMapLayer::set_cell_region, DEFVAL(TileSet::INVALID_SOURCE), DEFVAL(TileSetSource::INVALID_ATLAS_COORDS), DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("erase_cell", "coords"), &TileMapLayer::erase_cell);
 	ClassDB::bind_method(D_METHOD("fix_invalid_tiles"), &TileMapLayer::fix_invalid_tiles);
 	ClassDB::bind_method(D_METHOD("clear"), &TileMapLayer::clear);
@@ -2203,6 +2205,9 @@ void TileMapLayer::_bind_methods() {
 
 	// Terrains.
 	ClassDB::bind_method(D_METHOD("set_cells_terrain_connect", "cells", "terrain_set", "terrain", "ignore_empty_terrains"), &TileMapLayer::set_cells_terrain_connect, DEFVAL(true));
+	//Stardusk
+	ClassDB::bind_method(D_METHOD("set_cells_terrain_connect_region", "rect", "terrain_set", "terrain", "ignore_empty_terrains"), &TileMapLayer::set_cells_terrain_connect_region, DEFVAL(true));
+	
 	ClassDB::bind_method(D_METHOD("set_cells_terrain_path", "path", "terrain_set", "terrain", "ignore_empty_terrains"), &TileMapLayer::set_cells_terrain_path, DEFVAL(true));
 
 #ifndef PHYSICS_2D_DISABLED
@@ -2819,6 +2824,16 @@ void TileMapLayer::set_cell(const Vector2i &p_coords, int p_source_id, const Vec
 	used_rect_cache_dirty = true;
 }
 
+// Stardusk
+void TileMapLayer::set_cell_region(const Rect2 &p_rect, int p_source_id, const Vector2i &p_atlas_coords, int p_alternative_tile) {
+	for (int y = p_rect.position.x; y < p_rect.get_end().y; y++) {
+		for (int x = p_rect.position.x; x < p_rect.get_end().x; x++) {
+			set_cell(Vector2i(x, y), p_source_id, p_atlas_coords, p_alternative_tile);
+		}
+	}
+}
+// END
+
 void TileMapLayer::erase_cell(const Vector2i &p_coords) {
 	set_cell(p_coords, TileSet::INVALID_SOURCE, TileSetSource::INVALID_ATLAS_COORDS, TileSetSource::INVALID_TILE_ALTERNATIVE);
 }
@@ -3068,6 +3083,50 @@ void TileMapLayer::set_cells_terrain_connect(TypedArray<Vector2i> p_cells, int p
 		}
 	}
 }
+
+//Stardusk
+void TileMapLayer::set_cells_terrain_connect_region(Rect2i p_rect, int p_terrain_set, int p_terrain, bool p_ignore_empty_terrains) {
+	ERR_FAIL_COND(tile_set.is_null());
+	ERR_FAIL_INDEX(p_terrain_set, tile_set->get_terrain_sets_count());
+
+	Vector<Vector2i> cells_vector;
+	HashSet<Vector2i> painted_set;
+	
+	for (int y = p_rect.position.x; y < p_rect.get_end().y; y++) {
+		for (int x = p_rect.position.x; x < p_rect.get_end().x; x++) {
+			cells_vector.push_back(Vector2i(x, y));
+			painted_set.insert(Vector2i(x, y));
+		}
+	}
+	HashMap<Vector2i, TileSet::TerrainsPattern> terrain_fill_output = terrain_fill_connect(cells_vector, p_terrain_set, p_terrain, p_ignore_empty_terrains);
+	for (const KeyValue<Vector2i, TileSet::TerrainsPattern> &kv : terrain_fill_output) {
+		if (painted_set.has(kv.key)) {
+			// Paint a random tile with the correct terrain for the painted path.
+			TileMapCell c = tile_set->get_random_tile_from_terrains_pattern(p_terrain_set, kv.value);
+			set_cell(kv.key, c.source_id, c.get_atlas_coords(), c.alternative_tile);
+		} else {
+			// Avoids updating the painted path from the output if the new pattern is the same as before.
+			TileSet::TerrainsPattern in_map_terrain_pattern = TileSet::TerrainsPattern(*tile_set, p_terrain_set);
+			TileMapCell cell = get_cell(kv.key);
+			if (cell.source_id != TileSet::INVALID_SOURCE) {
+				TileSetSource *source = *tile_set->get_source(cell.source_id);
+				TileSetAtlasSource *atlas_source = Object::cast_to<TileSetAtlasSource>(source);
+				if (atlas_source) {
+					// Get tile data.
+					TileData *tile_data = atlas_source->get_tile_data(cell.get_atlas_coords(), cell.alternative_tile);
+					if (tile_data && tile_data->get_terrain_set() == p_terrain_set) {
+						in_map_terrain_pattern = tile_data->get_terrains_pattern();
+					}
+				}
+			}
+			if (in_map_terrain_pattern != kv.value) {
+				TileMapCell c = tile_set->get_random_tile_from_terrains_pattern(p_terrain_set, kv.value);
+				set_cell(kv.key, c.source_id, c.get_atlas_coords(), c.alternative_tile);
+			}
+		}
+	}
+}
+//END
 
 void TileMapLayer::set_cells_terrain_path(TypedArray<Vector2i> p_path, int p_terrain_set, int p_terrain, bool p_ignore_empty_terrains) {
 	ERR_FAIL_COND(tile_set.is_null());

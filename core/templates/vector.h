@@ -166,6 +166,9 @@ public:
 
 	// Must take a copy instead of a reference (see GH-31736).
 	void append_array(Vector<T> p_other);
+	
+	//Stardusk
+	void append_unique(T p_elem);
 
 	_FORCE_INLINE_ bool has(const T &p_val) const { return find(p_val) != -1; }
 
@@ -347,6 +350,15 @@ void Vector<T>::append_array(Vector<T> p_other) {
 		p[bs + i] = p_other[i];
 	}
 }
+
+//Stardusk
+template <typename T>
+void Vector<T>::append_unique(T p_elem) {
+	if (!has(p_elem)) {
+		append(p_elem);
+	}
+}
+//END
 
 template <typename T>
 void Vector<T>::fill(T p_elem) {

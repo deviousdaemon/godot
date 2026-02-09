@@ -554,6 +554,9 @@ public:
 	// --- Cells manipulation ---
 	// Generic cells manipulations and data access.
 	void set_cell(const Vector2i &p_coords, int p_source_id = TileSet::INVALID_SOURCE, const Vector2i &p_atlas_coords = TileSetSource::INVALID_ATLAS_COORDS, int p_alternative_tile = 0);
+	//Stardusk
+	void set_cell_region(const Rect2 &p_rect, int p_source_id = TileSet::INVALID_SOURCE, const Vector2i &p_atlas_coords = TileSetSource::INVALID_ATLAS_COORDS, int p_alternative_tile = 0);
+	
 	void erase_cell(const Vector2i &p_coords);
 	void fix_invalid_tiles();
 	void clear();
@@ -577,6 +580,7 @@ public:
 
 	// Terrains.
 	void set_cells_terrain_connect(TypedArray<Vector2i> p_cells, int p_terrain_set, int p_terrain, bool p_ignore_empty_terrains = true);
+	void set_cells_terrain_connect_region(Rect2i p_rect, int p_terrain_set, int p_terrain, bool p_ignore_empty_terrains = true);
 	void set_cells_terrain_path(TypedArray<Vector2i> p_path, int p_terrain_set, int p_terrain, bool p_ignore_empty_terrains = true);
 
 #ifndef PHYSICS_2D_DISABLED
