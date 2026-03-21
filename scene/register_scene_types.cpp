@@ -1189,6 +1189,9 @@ void register_scene_types() {
 
 	GDREGISTER_CLASS(SceneTree);
 	GDREGISTER_ABSTRACT_CLASS(SceneTreeTimer); // sorry, you can't create it
+	
+	//Stardusk
+	GDREGISTER_CLASS(ViewPanner);
 
 #ifndef DISABLE_DEPRECATED
 	// Dropped in 4.0, near approximation.

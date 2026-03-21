@@ -87,6 +87,9 @@ private:
 
 	ControlScheme control_scheme = SCROLL_ZOOMS;
 	Viewport *warped_panning_viewport = nullptr;
+	
+protected:
+	static void _bind_methods();
 
 public:
 	void set_callbacks(Callable p_pan_callback, Callable p_zoom_callback);
@@ -110,3 +113,8 @@ public:
 
 	ViewPanner();
 };
+
+VARIANT_ENUM_CAST(ViewPanner::ControlScheme);
+VARIANT_ENUM_CAST(ViewPanner::PanAxis);
+VARIANT_ENUM_CAST(ViewPanner::DragType);
+VARIANT_ENUM_CAST(ViewPanner::ZoomStyle);

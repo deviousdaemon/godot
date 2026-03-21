@@ -260,3 +260,58 @@ ViewPanner::ViewPanner() {
 	pan_view_shortcut.instantiate();
 	pan_view_shortcut->set_events(inputs);
 }
+
+void ViewPanner::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_callbacks", "pan_callbac", "zoom_callback"), &ViewPanner::set_callbacks);
+	
+	ClassDB::bind_method(D_METHOD("set_control_scheme", "scheme"), &ViewPanner::set_control_scheme);
+	ClassDB::bind_method(D_METHOD("set_enable_rmb", "enable"), &ViewPanner::set_enable_rmb);
+	ClassDB::bind_method(D_METHOD("set_pan_shortcut", "shortcut"), &ViewPanner::set_pan_shortcut);
+	ClassDB::bind_method(D_METHOD("set_simple_panning_enabled", "enabled"), &ViewPanner::set_simple_panning_enabled);
+	ClassDB::bind_method(D_METHOD("set_scroll_speed", "scroll_speed"), &ViewPanner::set_scroll_speed);
+	ClassDB::bind_method(D_METHOD("set_scroll_zoom_factor", "scroll_zoom_factor"), &ViewPanner::set_scroll_zoom_factor);
+	ClassDB::bind_method(D_METHOD("set_pan_axis", "pan_axis"), &ViewPanner::set_pan_axis);
+	ClassDB::bind_method(D_METHOD("set_zoom_style", "zoom_style"), &ViewPanner::set_zoom_style);
+	
+	ClassDB::bind_method(D_METHOD("setup", "scheme", "shortcut", "simple_panning"), &ViewPanner::setup);
+	ClassDB::bind_method(D_METHOD("setup_warped_panning", "viewport", "allowed"), &ViewPanner::setup_warped_panning);
+	
+	ClassDB::bind_method(D_METHOD("is_panning"), &ViewPanner::is_panning);
+	ClassDB::bind_method(D_METHOD("set_force_drag", "force"), &ViewPanner::set_force_drag);
+	
+	ClassDB::bind_method(D_METHOD("gui_input", "event", "canvas_rect"), &ViewPanner::gui_input, DEFVAL(Rect2()));
+	ClassDB::bind_method(D_METHOD("release_pan_key"), &ViewPanner::release_pan_key);
+	
+	BIND_ENUM_CONSTANT(SCROLL_ZOOMS);
+	BIND_ENUM_CONSTANT(SCROLL_PANS);
+	
+	BIND_ENUM_CONSTANT(PAN_AXIS_BOTH);
+	BIND_ENUM_CONSTANT(PAN_AXIS_HORIZONTAL);
+	BIND_ENUM_CONSTANT(PAN_AXIS_VERTICAL);
+	
+	BIND_ENUM_CONSTANT(DRAG_TYPE_NONE);
+	BIND_ENUM_CONSTANT(DRAG_TYPE_PAN);
+	BIND_ENUM_CONSTANT(DRAG_TYPE_ZOOM);
+	
+	BIND_ENUM_CONSTANT(ZOOM_VERTICAL);
+	BIND_ENUM_CONSTANT(ZOOM_HORIZONTAL);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
