@@ -2342,6 +2342,51 @@ void GraphEdit::_zoom_callback(float p_zoom_factor, Vector2 p_origin, Ref<InputE
 	// We need to invalidate all connections since we don't know whether
 	// the user is zooming/panning at the same time.
 	_invalidate_connection_line_cache();
+	
+	//Stardusk
+	Ref<InputEventMouseButton> mb = p_event;
+	
+	if (mb.is_valid()) {
+		int scroll_vec = (mb->get_button_index() == MouseButton::WHEEL_DOWN) - (mb->get_button_index() == MouseButton::WHEEL_UP);
+		if (mb->is_alt_pressed() && scroll_vec != 0) {
+			int zoom_percent = static_cast<int>(Math::round(zoom * 100.0));
+			
+			float new_zoom = zoom;
+			
+			if (zoom_percent == 100) {
+				if (scroll_vec < 0) {
+					new_zoom = 2.0;
+				} else {
+					new_zoom = MAX(0.5, zoom_min);
+				}
+			} else if (zoom_percent > 100) {
+				if (zoom_percent % 100 == 0) {
+					if (scroll_vec < 0) {
+						new_zoom += 1.0;
+						print_line("Zoom In, ", zoom, ", ", new_zoom);
+					} else {
+						new_zoom -= 1.0;
+					}
+				} else {
+					if (scroll_vec < 0) {
+						new_zoom = Math::floor(new_zoom) + 1.0;
+					} else {
+						new_zoom = Math::floor(new_zoom);
+					}
+				}
+			} else {
+				if (scroll_vec < 0) {
+					new_zoom = 1.0;
+				} else {
+					set_zoom_custom(zoom * p_zoom_factor, p_origin);
+					return;
+				}
+			}
+		
+			set_zoom_custom(new_zoom, p_origin);
+			return;
+		}
+	}
 
 	set_zoom_custom(zoom * p_zoom_factor, p_origin);
 }
@@ -3172,9 +3217,13 @@ GraphEdit::GraphEdit() {
 	// Allow dezooming 8 times from the default zoom level.
 	// At low zoom levels, text is unreadable due to its small size and poor filtering,
 	// but this is still useful for previewing and navigation.
-	zoom_min = (1 / Math::pow(zoom_step, 8));
+	//Stardusk
+	// zoom_min = (1 / Math::pow(zoom_step, 8));
+	zoom_min = (1.0 / 8.0);
 	// Allow zooming 4 times from the default zoom level.
-	zoom_max = (1 * Math::pow(zoom_step, 4));
+	//Stardusk
+	// zoom_max = (1 * Math::pow(zoom_step, 4));
+	zoom_max = (8.0);
 
 	panner.instantiate();
 	panner->set_callbacks(callable_mp(this, &GraphEdit::_pan_callback), callable_mp(this, &GraphEdit::_zoom_callback));

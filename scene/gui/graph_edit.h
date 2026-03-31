@@ -224,7 +224,9 @@ private:
 	Vector2 drag_accum;
 
 	float zoom = 1.0;
-	float zoom_step = 1.2;
+	//Stardusk
+	// float zoom_step = 1.2;
+	float zoom_step = 2.0;
 	// Proper values set in constructor.
 	float zoom_min = 0.0;
 	float zoom_max = 0.0;
