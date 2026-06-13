@@ -181,6 +181,8 @@ class CodeTextEditor : public VBoxContainer {
 	int code_complete_timer_line = 0;
 
 	float zoom_factor = 1.0f;
+	//Stardusk
+	bool mouse_wheel_zoom = false;
 
 	RichTextLabel *error = nullptr;
 	int error_line;
