@@ -302,7 +302,6 @@ private:
 
 	Transform3D _get_camera_transform() const;
 	int get_selected_count() const;
-	bool _has_unlocked_selection() const;
 	void cancel_transform();
 	void _update_shrink();
 

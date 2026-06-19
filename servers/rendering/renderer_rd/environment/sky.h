@@ -249,7 +249,6 @@ public:
 		static inline const int REAL_TIME_ROUGHNESS_LAYERS = 7;
 
 		RID radiance;
-		RID radiance_first_layer_slice;
 		RID quarter_res_pass;
 		RID quarter_res_framebuffer;
 		Size2i screen_size;
@@ -275,8 +274,6 @@ public:
 		SkyMaterialData *prev_material = nullptr;
 		Vector3 prev_position;
 		float prev_time;
-
-		void free_radiance();
 
 		void free();
 

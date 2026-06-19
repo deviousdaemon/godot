@@ -374,7 +374,6 @@ float AudioDriverPulseAudio::get_latency() {
 	lock();
 
 	if (pa_str == nullptr) {
-		unlock();
 		return 0;
 	}
 

@@ -65,7 +65,6 @@
 #include "editor/run/editor_run_bar.h"
 #include "editor/scene/editor_scene_tabs.h"
 #include "editor/script/find_in_files.h"
-#include "editor/script/script_editor_navigation_marker.h"
 #include "editor/script/script_text_editor.h"
 #include "editor/script/syntax_highlighters.h"
 #include "editor/script/text_editor.h"
@@ -197,9 +196,7 @@ void ScriptEditor::_script_created(Ref<Script> p_script) {
 
 void ScriptEditor::_goto_script_line2(int p_line) {
 	if (TextEditorBase *current = Object::cast_to<TextEditorBase>(_get_current_editor())) {
-		ScriptEditorNavigationMarker::get_singleton()->locate_begin();
 		current->goto_line(p_line);
-		ScriptEditorNavigationMarker::get_singleton()->locate_end();
 	}
 }
 
@@ -310,139 +307,57 @@ void ScriptEditor::_update_history_arrows() {
 	script_forward->set_disabled(history_pos >= history.size() - 1);
 }
 
-// For compatibility with the legacy exposed signal request_save_history.
-void ScriptEditor::_save_history(Control *p_control) {
-	Dictionary nav_state;
-	if (Object::cast_to<TextEditorBase>(p_control)) {
-		nav_state.merge(Object::cast_to<TextEditorBase>(p_control)->get_navigation_state());
-		nav_state["ensure_caret_visible"] = true;
-	} else if (Object::cast_to<EditorHelp>(p_control)) {
-		nav_state.merge(Object::cast_to<EditorHelp>(p_control)->get_state());
-	}
-	if (nav_state.is_empty() || !nav_state.has("row")) {
-		return;
-	}
-	_save_new_history(nav_state, p_control);
-}
+void ScriptEditor::_save_history() {
+	if (history_pos >= 0 && history_pos < history.size() && history[history_pos].control == tab_container->get_current_tab_control()) {
+		Node *n = tab_container->get_current_tab_control();
 
-void ScriptEditor::_save_new_history(const Dictionary &p_state, Control *p_control) {
-	if (restoring_layout) {
-		return;
-	}
-
-	if (history_pos >= 0 && history_pos < history.size()) {
-		if (history[history_pos].control == p_control) {
-			if (history[history_pos].state == p_state) {
-				return;
-			}
-			if (p_state["row"] == history[history_pos].state["row"]) {
-				_save_previous_state(p_state, p_control);
-				return;
-			}
+		if (Object::cast_to<TextEditorBase>(n)) {
+			Dictionary nav_state = Object::cast_to<TextEditorBase>(n)->get_navigation_state();
+			nav_state["ensure_caret_visible"] = true;
+			history.write[history_pos].state = nav_state;
+		}
+		if (Object::cast_to<EditorHelp>(n)) {
+			history.write[history_pos].state = Object::cast_to<EditorHelp>(n)->get_scroll();
 		}
 	}
-
-	ScriptHistory sh;
-	sh.control = p_control;
-	sh.state = p_state;
 
 	history.resize(history_pos + 1);
-	history.push_back(sh);
-	_compress_history_patterns(true);
+	ScriptHistory sh;
+	sh.control = tab_container->get_current_tab_control();
+	sh.state = Variant();
 
-	for (int i = history.size() - 1; i >= 0; i--) {
-		if (history[i].control == tab_container->get_current_tab_control()) {
-			history_pos = i;
-			break;
-		}
-	}
+	history.push_back(sh);
+	history_pos++;
 
 	_update_history_arrows();
 }
 
-void ScriptEditor::_save_previous_state(const Dictionary &p_state, Control *p_control) {
-	if (history_pos < 0 || history_pos >= history.size()) {
+void ScriptEditor::_save_previous_state(Dictionary p_state) {
+	if (lock_history) {
+		// Done as a result of a deferred call triggered by set_edit_state().
 		return;
 	}
-	ScriptHistory sh = history[history_pos];
-	if (sh.control != p_control) {
-		return;
+
+	if (history_pos >= 0 && history_pos < history.size() && history[history_pos].control == tab_container->get_current_tab_control()) {
+		Node *n = tab_container->get_current_tab_control();
+
+		if (Object::cast_to<ScriptTextEditor>(n)) {
+			history.write[history_pos].state = p_state;
+		}
 	}
-	history.write[history_pos].state = p_state;
+
+	history.resize(history_pos + 1);
+	ScriptHistory sh;
+	sh.control = tab_container->get_current_tab_control();
+	sh.state = Variant();
+
+	history.push_back(sh);
+	history_pos++;
+
+	_update_history_arrows();
 }
 
-// Compress the history and remove duplicate patterns.
-// Example 1: If the history is ...ABAB..., it will be compressed to ...AB....
-// Example 2: If the history is ...ABCABC..., it will be compressed to ...ABC....
-void ScriptEditor::_compress_history_patterns(bool p_once) {
-	bool stop = false;
-	bool changed = true;
-	int iterations = 0;
-
-	while (!stop && changed && history.size() > 1 && iterations++ < 100) {
-		changed = false;
-		for (int end_idx = history.size() - 1; end_idx >= 1; end_idx--) {
-			bool found_duplicate = false;
-			int max_possible_len = (end_idx + 1) / 2;
-
-			for (int len = 1; len <= max_possible_len; len++) {
-				// Compare [first_start, first_start + len) and [second_start, second_start + len)
-				int second_start = end_idx - len + 1;
-				int first_start = second_start - len;
-
-				if (first_start < 0) {
-					continue;
-				}
-
-				bool is_match = true;
-
-				for (int k = 0; k < len; k++) {
-					const ScriptHistory &h1 = history[first_start + k];
-					const ScriptHistory &h2 = history[second_start + k];
-
-					if (h1.control != h2.control || h1.state["row"] != h2.state["row"]) {
-						is_match = false;
-						break;
-					}
-				}
-
-				if (is_match) {
-					for (int r = 0; r < len; r++) {
-						history.remove_at(first_start);
-					}
-
-					if (history_pos >= second_start) {
-						history_pos -= len;
-					} else if (first_start <= history_pos && history_pos < second_start) {
-						history_pos = first_start;
-					}
-
-					found_duplicate = true;
-					changed = true;
-					stop = p_once;
-					break;
-				}
-			}
-
-			if (found_duplicate) {
-				break;
-			}
-		}
-	}
-
-	if (history.is_empty()) {
-		history_pos = -1;
-	} else {
-		if (history_pos >= history.size()) {
-			history_pos = history.size() - 1;
-		}
-		if (history_pos < -1) {
-			history_pos = -1;
-		}
-	}
-}
-
-void ScriptEditor::_go_to_tab(int p_idx, bool p_save_history) {
+void ScriptEditor::_go_to_tab(int p_idx) {
 	if (ScriptEditorBase *current = _get_current_editor()) {
 		if (current->is_unsaved()) {
 			current->apply_code();
@@ -454,6 +369,29 @@ void ScriptEditor::_go_to_tab(int p_idx, bool p_save_history) {
 		return;
 	}
 
+	if (history_pos >= 0 && history_pos < history.size() && history[history_pos].control == tab_container->get_current_tab_control()) {
+		Node *n = tab_container->get_current_tab_control();
+
+		if (Object::cast_to<TextEditorBase>(n)) {
+			Dictionary nav_state = Object::cast_to<TextEditorBase>(n)->get_navigation_state();
+			nav_state["ensure_caret_visible"] = true;
+			history.write[history_pos].state = nav_state;
+		}
+		if (Object::cast_to<EditorHelp>(n)) {
+			history.write[history_pos].state = Object::cast_to<EditorHelp>(n)->get_scroll();
+		}
+	}
+
+	history.resize(history_pos + 1);
+	ScriptHistory sh;
+	sh.control = c;
+	sh.state = Variant();
+
+	if (!lock_history && (history.is_empty() || history[history.size() - 1].control != sh.control)) {
+		history.push_back(sh);
+		history_pos++;
+	}
+
 	tab_container->set_current_tab(p_idx);
 
 	c = tab_container->get_current_tab_control();
@@ -462,12 +400,6 @@ void ScriptEditor::_go_to_tab(int p_idx, bool p_save_history) {
 		TextEditorBase *teb = Object::cast_to<TextEditorBase>(seb);
 		if (teb && is_visible_in_tree()) {
 			teb->ensure_focus();
-		}
-
-		if (p_save_history) {
-			ScriptEditorNavigationMarker::get_singleton()->locate_begin();
-			teb->trigger_history_save_on_navigate();
-			ScriptEditorNavigationMarker::get_singleton()->locate_end();
 		}
 
 		Ref<Script> scr = seb->get_edited_resource();
@@ -484,12 +416,6 @@ void ScriptEditor::_go_to_tab(int p_idx, bool p_save_history) {
 
 		if (is_visible_in_tree()) {
 			eh->set_focused();
-		}
-
-		if (p_save_history) {
-			ScriptEditorNavigationMarker::get_singleton()->locate_begin();
-			eh->trigger_history_save_on_navigate();
-			ScriptEditorNavigationMarker::get_singleton()->locate_end();
 		}
 	}
 
@@ -595,7 +521,7 @@ void ScriptEditor::_show_error_dialog(const String &p_path) {
 	error_dialog->popup_centered();
 }
 
-void ScriptEditor::_close_tab(int p_idx, bool p_save) {
+void ScriptEditor::_close_tab(int p_idx, bool p_save, bool p_history_back) {
 	int selected = p_idx;
 	if (selected < 0 || selected >= tab_container->get_tab_count()) {
 		return;
@@ -625,10 +551,14 @@ void ScriptEditor::_close_tab(int p_idx, bool p_save) {
 		}
 	}
 
-	// Roll back to previous tab instead of just previous history state
-	_roll_back_to_pre_tab();
+	// roll back to previous tab
+	if (p_history_back) {
+		_history_back();
+	}
 
-	// Remove all history states related to the closed tab.
+	//remove from history
+	history.resize(history_pos + 1);
+
 	for (int i = 0; i < history.size(); i++) {
 		if (history[i].control == tselected) {
 			history.remove_at(i);
@@ -637,7 +567,9 @@ void ScriptEditor::_close_tab(int p_idx, bool p_save) {
 		}
 	}
 
-	_compress_history_patterns(false);
+	if (history_pos >= history.size()) {
+		history_pos = history.size() - 1;
+	}
 
 	int idx = tab_container->get_current_tab();
 	if (TextEditorBase *current = Object::cast_to<TextEditorBase>(tselected)) {
@@ -653,7 +585,7 @@ void ScriptEditor::_close_tab(int p_idx, bool p_save) {
 			if (history_pos >= 0) {
 				idx = tab_container->get_tab_idx_from_control(history[history_pos].control);
 			}
-			_go_to_tab(idx, true);
+			_go_to_tab(idx);
 		} else {
 			_update_selected_editor_menu();
 			_update_online_doc();
@@ -668,8 +600,8 @@ void ScriptEditor::_close_tab(int p_idx, bool p_save) {
 	}
 }
 
-void ScriptEditor::_close_current_tab(bool p_save) {
-	_close_tab(tab_container->get_current_tab(), p_save);
+void ScriptEditor::_close_current_tab(bool p_save, bool p_history_back) {
+	_close_tab(tab_container->get_current_tab(), p_save, p_history_back);
 }
 
 void ScriptEditor::_close_discard_current_tab(const String &p_str) {
@@ -685,7 +617,7 @@ void ScriptEditor::_close_docs_tab() {
 	int child_count = tab_container->get_tab_count();
 	for (int i = child_count - 1; i >= 0; i--) {
 		if (Object::cast_to<EditorHelp>(tab_container->get_tab_control(i))) {
-			_close_tab(i, true);
+			_close_tab(i, true, false);
 		}
 	}
 }
@@ -720,7 +652,7 @@ void ScriptEditor::_close_tabs_below() {
 	for (int i = tab_container->get_tab_count() - 1; i > current_idx; i--) {
 		script_close_queue.push_back(i);
 	}
-	_go_to_tab(current_idx, true);
+	_go_to_tab(current_idx);
 	_queue_close_tabs();
 }
 
@@ -747,7 +679,7 @@ void ScriptEditor::_queue_close_tabs() {
 			}
 		}
 
-		_close_current_tab(false);
+		_close_current_tab(false, false);
 	}
 	_update_find_replace_bar();
 }
@@ -1731,7 +1663,7 @@ void ScriptEditor::_help_overview_selected(int p_idx) {
 void ScriptEditor::_script_selected(int p_idx) {
 	grab_focus_block = !Input::get_singleton()->is_mouse_button_pressed(MouseButton::LEFT); //amazing hack, simply amazing
 
-	_go_to_tab(script_list->get_item_metadata(p_idx), true);
+	_go_to_tab(script_list->get_item_metadata(p_idx));
 	script_name_button->set_text(script_list->get_item_text(p_idx));
 	_calculate_script_name_button_size();
 	grab_focus_block = false;
@@ -2105,8 +2037,10 @@ void ScriptEditor::_update_script_names() {
 			sedata.set(i, sd);
 		}
 
+		lock_history = true;
 		_go_to_tab(new_prev_tab);
 		_go_to_tab(new_cur_tab);
+		lock_history = false;
 		_sort_list_on_update = false;
 	}
 
@@ -2315,15 +2249,11 @@ bool ScriptEditor::edit(const Ref<Resource> &p_resource, int p_line, int p_col, 
 						teb->ensure_focus();
 					}
 
-					ScriptEditorNavigationMarker::get_singleton()->locate_begin();
 					if (p_line >= 0) {
-						teb->goto_line_and_center_if_necessary(p_line, p_col);
-					} else {
-						teb->trigger_history_save_on_navigate();
+						teb->goto_line_centered(p_line, p_col);
 					}
-					ScriptEditorNavigationMarker::get_singleton()->locate_end();
 				} else if (tab_container->get_current_tab() != i) {
-					_go_to_tab(i, true);
+					_go_to_tab(i);
 				}
 			}
 			_update_script_names();
@@ -2416,9 +2346,8 @@ bool ScriptEditor::edit(const Ref<Resource> &p_resource, int p_line, int p_col, 
 		teb->connect("request_help", callable_mp(this, &ScriptEditor::_help_search));
 		teb->connect("request_open_script_at_line", callable_mp(this, &ScriptEditor::_goto_script_line));
 		teb->connect("go_to_help", callable_mp(this, &ScriptEditor::_help_class_goto));
-		teb->connect("request_save_history", callable_mp(this, &ScriptEditor::_save_history).bind(teb));
-		teb->connect("_request_save_new_history", callable_mp(this, &ScriptEditor::_save_new_history).bind(teb));
-		teb->connect("request_save_previous_state", callable_mp(this, &ScriptEditor::_save_previous_state).bind(teb));
+		teb->connect("request_save_history", callable_mp(this, &ScriptEditor::_save_history));
+		teb->connect("request_save_previous_state", callable_mp(this, &ScriptEditor::_save_previous_state));
 		teb->connect("search_in_files_requested", callable_mp(this, &ScriptEditor::open_find_in_files_dialog).bind(false));
 		teb->connect("replace_in_files_requested", callable_mp(this, &ScriptEditor::open_find_in_files_dialog).bind(true));
 		teb->connect("go_to_method", callable_mp(this, &ScriptEditor::script_goto_method));
@@ -2447,13 +2376,9 @@ bool ScriptEditor::edit(const Ref<Resource> &p_resource, int p_line, int p_col, 
 	_update_modified_scripts_for_external_editor(p_resource);
 
 	if (TextEditorBase *teb = Object::cast_to<TextEditorBase>(seb)) {
-		ScriptEditorNavigationMarker::get_singleton()->locate_begin();
 		if (p_line >= 0) {
-			teb->goto_line_and_center_if_necessary(p_line, p_col);
-		} else {
-			teb->trigger_history_save_on_navigate();
+			teb->goto_line_centered(p_line, p_col);
 		}
-		ScriptEditorNavigationMarker::get_singleton()->locate_end();
 	}
 
 	notify_script_changed(p_resource);
@@ -2725,7 +2650,7 @@ Error ScriptEditor::close_file(const String &p_file) {
 			if (seb->is_unsaved()) {
 				seb->get_edited_resource()->reload_from_file();
 			}
-			_close_tab(i, false);
+			_close_tab(i, false, _get_current_editor() == seb);
 			return OK;
 		}
 	}
@@ -2751,7 +2676,7 @@ void ScriptEditor::_add_callback(Object *p_obj, const String &p_function, const 
 
 		ste->add_callback(p_function, p_args);
 
-		_go_to_tab(i, true);
+		_go_to_tab(i);
 
 		script_list->select(script_list->find_metadata(i));
 
@@ -2863,7 +2788,7 @@ void ScriptEditor::_file_removed(const String &p_removed_file) {
 		ScriptEditorBase *seb = Object::cast_to<ScriptEditorBase>(tab_container->get_tab_control(i));
 		if (seb && seb->edited_file_data.path == p_removed_file) {
 			// The script is deleted with no undo, so just close the tab.
-			_close_tab(i, false);
+			_close_tab(i, false, false);
 		}
 	}
 
@@ -3153,7 +3078,7 @@ void ScriptEditor::shortcut_input(const Ref<InputEvent> &p_event) {
 		if (script_list->get_item_count() > 1) {
 			int next_tab = script_list->get_current() + 1;
 			next_tab %= script_list->get_item_count();
-			_go_to_tab(script_list->get_item_metadata(next_tab), true);
+			_go_to_tab(script_list->get_item_metadata(next_tab));
 			_update_script_names();
 		}
 		accept_event();
@@ -3162,7 +3087,7 @@ void ScriptEditor::shortcut_input(const Ref<InputEvent> &p_event) {
 		if (script_list->get_item_count() > 1) {
 			int next_tab = script_list->get_current() - 1;
 			next_tab = next_tab >= 0 ? next_tab : script_list->get_item_count() - 1;
-			_go_to_tab(script_list->get_item_metadata(next_tab), true);
+			_go_to_tab(script_list->get_item_metadata(next_tab));
 			_update_script_names();
 		}
 		accept_event();
@@ -3286,7 +3211,6 @@ void ScriptEditor::set_window_layout(Ref<ConfigFile> p_layout) {
 	HashSet<String> loaded_scripts;
 	List<String> extensions = _get_recognized_extensions();
 
-	ScriptEditorNavigationMarker::get_singleton()->init_begin();
 	for (const Variant &v : scripts) {
 		String path = v;
 
@@ -3387,35 +3311,17 @@ void ScriptEditor::set_window_layout(Ref<ConfigFile> p_layout) {
 	restoring_layout = false;
 
 	_update_script_names();
-	ScriptEditorNavigationMarker::get_singleton()->init_end();
 
-	bool selected_saved_history = false;
 	if (p_layout->has_section_key("ScriptEditor", "selected_script")) {
 		String selected_script = p_layout->get_value("ScriptEditor", "selected_script");
 		// If the selected script is not in the list of open scripts, select nothing.
-		for (int i = 0; i < tab_container->get_tab_count() && !selected_script.is_empty(); i++) {
+		for (int i = 0; i < tab_container->get_tab_count(); i++) {
 			ScriptEditorBase *seb = Object::cast_to<ScriptEditorBase>(tab_container->get_tab_control(i));
 			if (seb && seb->get_edited_resource()->get_path() == selected_script) {
-				_go_to_tab(i, true);
-				selected_saved_history = true;
+				_go_to_tab(i);
 				break;
 			}
 		}
-	}
-
-	if (!selected_saved_history && tab_container->get_child_count() > 0) {
-		ScriptEditorNavigationMarker::get_singleton()->locate_begin();
-		Control *tselected = tab_container->get_current_tab_control();
-		TextEditorBase *teb = Object::cast_to<TextEditorBase>(tselected);
-		if (teb && teb->get_code_editor()) {
-			teb->get_code_editor()->trigger_history_save_on_navigate();
-		}
-
-		EditorHelp *eh = Object::cast_to<EditorHelp>(tselected);
-		if (eh) {
-			eh->trigger_history_save_on_navigate();
-		}
-		ScriptEditorNavigationMarker::get_singleton()->locate_end();
 	}
 }
 
@@ -3463,7 +3369,7 @@ void ScriptEditor::_help_class_open(const String &p_class) {
 		EditorHelp *eh = Object::cast_to<EditorHelp>(tab_container->get_tab_control(i));
 
 		if (eh && eh->get_class() == p_class) {
-			_go_to_tab(i, true);
+			_go_to_tab(i);
 			_update_script_names();
 			return;
 		}
@@ -3472,13 +3378,11 @@ void ScriptEditor::_help_class_open(const String &p_class) {
 	EditorHelp *eh = memnew(EditorHelp);
 
 	eh->set_name(p_class);
-	eh->connect("go_to_help", callable_mp(this, &ScriptEditor::_help_class_goto));
-	eh->connect("_request_save_new_history", callable_mp(this, &ScriptEditor::_save_new_history).bind(eh));
 	tab_container->add_child(eh);
 	_go_to_tab(tab_container->get_tab_count() - 1);
-	ScriptEditorNavigationMarker::get_singleton()->locate_begin();
 	eh->go_to_class(p_class);
-	ScriptEditorNavigationMarker::get_singleton()->locate_end();
+	eh->connect("go_to_help", callable_mp(this, &ScriptEditor::_help_class_goto));
+	eh->connect("request_save_history", callable_mp(this, &ScriptEditor::_save_history));
 	_add_recent_script(p_class);
 	_sort_list_on_update = true;
 	_update_script_names();
@@ -3495,13 +3399,10 @@ void ScriptEditor::_help_class_goto(const String &p_desc) {
 	EditorHelp *eh = memnew(EditorHelp);
 
 	eh->set_name(cname);
-	eh->connect("go_to_help", callable_mp(this, &ScriptEditor::_help_class_goto));
-	eh->connect("_request_save_new_history", callable_mp(this, &ScriptEditor::_save_new_history).bind(eh));
 	tab_container->add_child(eh);
 	_go_to_tab(tab_container->get_tab_count() - 1);
-	ScriptEditorNavigationMarker::get_singleton()->locate_begin();
 	eh->go_to_help(p_desc);
-	ScriptEditorNavigationMarker::get_singleton()->locate_end();
+	eh->connect("go_to_help", callable_mp(this, &ScriptEditor::_help_class_goto));
 	_add_recent_script(eh->get_class());
 	_sort_list_on_update = true;
 	_update_script_names();
@@ -3514,9 +3415,7 @@ bool ScriptEditor::_help_tab_goto(const String &p_name, const String &p_desc) {
 
 		if (eh && eh->get_class() == p_name) {
 			_go_to_tab(i);
-			ScriptEditorNavigationMarker::get_singleton()->locate_begin();
 			eh->go_to_help(p_desc);
-			ScriptEditorNavigationMarker::get_singleton()->locate_end();
 			_update_script_names();
 			return true;
 		}
@@ -3580,8 +3479,22 @@ void ScriptEditor::_update_selected_editor_menu() {
 	}
 }
 
+void ScriptEditor::_unlock_history() {
+	lock_history = false;
+}
+
 void ScriptEditor::_update_history_pos(int p_new_pos) {
 	Node *n = tab_container->get_current_tab_control();
+
+	if (Object::cast_to<TextEditorBase>(n)) {
+		Dictionary nav_state = Object::cast_to<TextEditorBase>(n)->get_navigation_state();
+		nav_state["ensure_caret_visible"] = true;
+		history.write[history_pos].state = nav_state;
+	}
+	if (Object::cast_to<EditorHelp>(n)) {
+		history.write[history_pos].state = Object::cast_to<EditorHelp>(n)->get_scroll();
+	}
+
 	history_pos = p_new_pos;
 	tab_container->set_current_tab(tab_container->get_tab_idx_from_control(history[history_pos].control));
 
@@ -3590,7 +3503,12 @@ void ScriptEditor::_update_history_pos(int p_new_pos) {
 	ScriptEditorBase *seb = Object::cast_to<ScriptEditorBase>(n);
 	if (seb) {
 		if (TextEditorBase *teb = Object::cast_to<TextEditorBase>(n)) {
+			lock_history = true;
 			teb->set_edit_state(history[history_pos].state);
+			// `set_edit_state()` can modify the caret position which might trigger a
+			// request to save the history. Since `TextEdit::caret_changed` is emitted
+			// deferred, we need to defer unlocking of the history as well.
+			callable_mp(this, &ScriptEditor::_unlock_history).call_deferred();
 			teb->ensure_focus();
 		}
 
@@ -3603,7 +3521,7 @@ void ScriptEditor::_update_history_pos(int p_new_pos) {
 	}
 
 	if (EditorHelp *eh = Object::cast_to<EditorHelp>(n)) {
-		eh->set_scroll(history[history_pos].state["row"]);
+		eh->set_scroll(history[history_pos].state);
 		eh->set_focused();
 	}
 
@@ -3615,40 +3533,13 @@ void ScriptEditor::_update_history_pos(int p_new_pos) {
 
 void ScriptEditor::_history_forward() {
 	if (history_pos < history.size() - 1) {
-		ScriptEditorNavigationMarker::get_singleton()->traverse_begin();
 		_update_history_pos(history_pos + 1);
-		ScriptEditorNavigationMarker::get_singleton()->traverse_end();
 	}
 }
 
 void ScriptEditor::_history_back() {
 	if (history_pos > 0) {
-		ScriptEditorNavigationMarker::get_singleton()->traverse_begin();
 		_update_history_pos(history_pos - 1);
-		ScriptEditorNavigationMarker::get_singleton()->traverse_end();
-	}
-}
-
-void ScriptEditor::_roll_back_to_pre_tab() {
-	Control *tselected = tab_container->get_current_tab_control();
-	if (history[history_pos].control != tselected) {
-		return;
-	}
-
-	int pos = -1;
-	for (int i = history_pos - 1; i >= 0; i--) {
-		if (history[i].control != tselected) {
-			pos = i;
-			break;
-		}
-	}
-
-	if (pos == -1) {
-		history_pos = -1;
-		history.clear();
-	} else {
-		_update_history_pos(pos);
-		history.resize(history_pos + 1);
 	}
 }
 
@@ -3768,7 +3659,6 @@ void ScriptEditor::_script_changed() {
 }
 
 void ScriptEditor::_on_find_in_files_result_selected(const String &fpath, int line_number, int begin, int end) {
-	ScriptEditorNavigationMarker::get_singleton()->locate_begin();
 	if (ResourceLoader::exists(fpath)) {
 		Ref<Resource> res = ResourceLoader::load(fpath);
 
@@ -3780,12 +3670,10 @@ void ScriptEditor::_on_find_in_files_result_selected(const String &fpath, int li
 			if (text_shader_editor) {
 				text_shader_editor->goto_line_selection(line_number - 1, begin, end);
 			}
-			ScriptEditorNavigationMarker::get_singleton()->locate_end();
 			return;
 		} else if (fpath.has_extension("tscn")) {
 			const PackedStringArray lines = FileAccess::get_file_as_string(fpath).split("\n");
 			if (line_number > lines.size()) {
-				ScriptEditorNavigationMarker::get_singleton()->locate_end();
 				return;
 			}
 
@@ -3826,7 +3714,6 @@ void ScriptEditor::_on_find_in_files_result_selected(const String &fpath, int li
 				}
 			}
 
-			ScriptEditorNavigationMarker::get_singleton()->locate_end();
 			return;
 		} else {
 			Ref<Script> scr = res;
@@ -3839,7 +3726,6 @@ void ScriptEditor::_on_find_in_files_result_selected(const String &fpath, int li
 					EditorInterface::get_singleton()->set_main_screen_editor("Script");
 					ste->goto_line_selection(line_number - 1, begin, end);
 				}
-				ScriptEditorNavigationMarker::get_singleton()->locate_end();
 				return;
 			}
 		}
@@ -3856,7 +3742,6 @@ void ScriptEditor::_on_find_in_files_result_selected(const String &fpath, int li
 			te->goto_line_selection(line_number - 1, begin, end);
 		}
 	}
-	ScriptEditorNavigationMarker::get_singleton()->locate_end();
 }
 
 void ScriptEditor::_on_find_in_files_modified_files() {
@@ -4206,7 +4091,6 @@ ScriptEditor::ScriptEditor(WindowWrapper *p_wrapper) {
 	tab_container->connect("tab_changed", callable_mp(this, &ScriptEditor::_tab_changed));
 
 	erase_tab_confirm = memnew(ConfirmationDialog);
-	erase_tab_confirm->set_flag(Window::FLAG_RESIZE_DISABLED, true);
 	erase_tab_confirm->set_ok_button_text(TTRC("Save"));
 	erase_tab_confirm->add_button(TTRC("Discard"), DisplayServer::get_singleton()->get_swap_cancel_ok(), "discard");
 	erase_tab_confirm->connect(SceneStringName(confirmed), callable_mp(this, &ScriptEditor::_close_current_tab).bind(true, true));
@@ -4299,7 +4183,6 @@ ScriptEditor::ScriptEditor(WindowWrapper *p_wrapper) {
 
 ScriptEditor::~ScriptEditor() {
 	memdelete(find_in_files);
-	ScriptEditorNavigationMarker::release_singleton();
 }
 
 void ScriptEditorPlugin::_focus_another_editor() {

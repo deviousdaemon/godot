@@ -1482,11 +1482,6 @@ void GDScript::clear() {
 		memdelete(E);
 	}
 	functions_to_clear.clear();
-
-#ifdef TOOLS_ENABLED
-	base_cache = Ref<GDScript>();
-#endif
-	base = Ref<GDScript>();
 }
 
 void GDScript::cancel_pending_functions(bool warn) {
@@ -2150,7 +2145,7 @@ void GDScriptLanguage::remove_named_global_constant(const StringName &p_name) {
 }
 
 void GDScriptLanguage::init() {
-	// Populate core constants.
+	//populate global constants
 	int gcc = CoreConstants::get_global_constant_count();
 	for (int i = 0; i < gcc; i++) {
 		_add_global(StringName(CoreConstants::get_global_constant_name(i)), CoreConstants::get_global_constant_value(i));
@@ -2161,19 +2156,19 @@ void GDScriptLanguage::init() {
 	_add_global(StringName("INF"), Math::INF);
 	_add_global(StringName("NAN"), Math::NaN);
 
-	// Populate native classes.
+	//populate native classes
 
 	LocalVector<StringName> class_list;
 	ClassDB::get_class_list(class_list);
 	for (const StringName &class_name : class_list) {
-		if (globals.has(class_name) || !GDScriptAnalyzer::class_exists(class_name)) {
+		if (globals.has(class_name)) {
 			continue;
 		}
 		Ref<GDScriptNativeClass> nc = memnew(GDScriptNativeClass(class_name));
 		_add_global(class_name, nc);
 	}
 
-	// Populate singletons (overriding the native class registered under the same name).
+	//populate singletons
 
 	List<Engine::Singleton> singletons;
 	Engine::get_singleton()->get_singletons(&singletons);
@@ -2763,19 +2758,15 @@ String GDScriptLanguage::_get_global_class_name(const String &p_path, String *r_
 		while (subclass) {
 			if (subclass->extends_used) {
 				if (!subclass->extends_path.is_empty()) {
-					String subpath = subclass->extends_path;
-					if (subpath.is_relative_path()) {
-						subpath = path.get_base_dir().path_join(subpath).simplify_path();
-					}
 					if (subclass->extends.is_empty()) {
 						// We only care about the referenced class_name.
-						_ALLOW_DISCARD_ _get_global_class_name(subpath, r_base_type, nullptr, nullptr, nullptr, r_visited);
+						_ALLOW_DISCARD_ _get_global_class_name(subclass->extends_path, r_base_type, nullptr, nullptr, nullptr, r_visited);
 						subclass = nullptr;
 						break;
 					} else {
 						Vector<GDScriptParser::IdentifierNode *> extend_classes = subclass->extends;
 
-						Ref<FileAccess> subfile = FileAccess::open(subpath, FileAccess::READ);
+						Ref<FileAccess> subfile = FileAccess::open(subclass->extends_path, FileAccess::READ);
 						if (subfile.is_null()) {
 							break;
 						}
@@ -2783,6 +2774,10 @@ String GDScriptLanguage::_get_global_class_name(const String &p_path, String *r_
 
 						if (subsource.is_empty()) {
 							break;
+						}
+						String subpath = subclass->extends_path;
+						if (subpath.is_relative_path()) {
+							subpath = path.get_base_dir().path_join(subpath).simplify_path();
 						}
 
 						if (OK != subparser.parse(subsource, subpath, false)) {

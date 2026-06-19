@@ -178,7 +178,8 @@ namespace Godot.SourceGenerators
 
                 // Generate SetGodotClassPropertyValue
 
-                bool allPropertiesAreReadOnly = godotClassFields.All(fi => fi.IsReadOnly) && godotClassProperties.All(pi => pi.IsReadOnly);
+                bool allPropertiesAreReadOnly = godotClassFields.All(fi => fi.FieldSymbol.IsReadOnly) &&
+                                                godotClassProperties.All(pi => pi.PropertySymbol.IsReadOnly || pi.PropertySymbol.SetMethod!.IsInitOnly);
 
                 if (!allPropertiesAreReadOnly)
                 {
@@ -189,7 +190,7 @@ namespace Godot.SourceGenerators
 
                     foreach (var property in godotClassProperties)
                     {
-                        if (property.IsReadOnly)
+                        if (property.PropertySymbol.IsReadOnly || property.PropertySymbol.SetMethod!.IsInitOnly)
                             continue;
 
                         GeneratePropertySetter(property.PropertySymbol.Name,
@@ -198,7 +199,7 @@ namespace Godot.SourceGenerators
 
                     foreach (var field in godotClassFields)
                     {
-                        if (field.IsReadOnly)
+                        if (field.FieldSymbol.IsReadOnly)
                             continue;
 
                         GeneratePropertySetter(field.FieldSymbol.Name,
@@ -211,7 +212,7 @@ namespace Godot.SourceGenerators
                 }
 
                 // Generate GetGodotClassPropertyValue
-                bool allPropertiesAreWriteOnly = godotClassFields.Length == 0 && godotClassProperties.All(pi => pi.IsWriteOnly);
+                bool allPropertiesAreWriteOnly = godotClassFields.Length == 0 && godotClassProperties.All(pi => pi.PropertySymbol.IsWriteOnly);
 
                 if (!allPropertiesAreWriteOnly)
                 {
@@ -447,7 +448,7 @@ namespace Godot.SourceGenerators
 
             if (exportAttr != null && propertySymbol != null)
             {
-                if (propertySymbol.GetMethodOrBaseGetMethod() is null || propertySymbol.SetMethodOrBaseSetMethod() is not { IsInitOnly: false })
+                if (propertySymbol.GetMethod == null || propertySymbol.SetMethod == null || propertySymbol.SetMethod.IsInitOnly)
                 {
                     // Exports can be neither read-only nor write-only but the diagnostic errors for properties are already
                     // reported by ScriptPropertyDefValGenerator.cs so just quit early here.
