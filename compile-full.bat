@@ -2,7 +2,7 @@
 setlocal EnableDelayedExpansion
 
 set main_batch_folder=B:\SourceControl\_BATCH
-set threads=16
+set threads=12
 set threads_max=32
 
 if not [%1] == [] (

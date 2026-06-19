@@ -2,6 +2,6 @@
 setlocal EnableDelayedExpansion
 
 set main_batch_folder="B:\SourceControl\_BATCH"
-set threads=12
+set threads=16
 
 CALL %main_batch_folder%\compile.bat  --clean=true --compile_path="%cd%" --threads=!threads! --program=true --templates=true
