@@ -77,7 +77,7 @@ struct [[nodiscard]] Vector3i {
 
 	Vector3i::Axis min_axis_index() const;
 	Vector3i::Axis max_axis_index() const;
-
+	
 	Vector3i min(const Vector3i &p_vector3i) const {
 		return Vector3i(MIN(x, p_vector3i.x), MIN(y, p_vector3i.y), MIN(z, p_vector3i.z));
 	}
@@ -108,7 +108,12 @@ struct [[nodiscard]] Vector3i {
 
 	_FORCE_INLINE_ double distance_to(const Vector3i &p_to) const;
 	_FORCE_INLINE_ int64_t distance_squared_to(const Vector3i &p_to) const;
-
+	//Stardusk
+	_FORCE_INLINE_ real_t angle_to(const Vector3i &p_to) const;
+	_FORCE_INLINE_ Vector3i cross(const Vector3i &p_with) const;
+	_FORCE_INLINE_ int64_t dot(const Vector3i &p_with) const;
+	//END
+	
 	/* Operators */
 
 	constexpr Vector3i &operator+=(const Vector3i &p_v);
@@ -161,6 +166,20 @@ inline constexpr Vector3i Vector3i::DOWN = { 0, -1, 0 };
 inline constexpr Vector3i Vector3i::FORWARD = { 0, 0, -1 };
 inline constexpr Vector3i Vector3i::BACK = { 0, 0, 1 };
 
+//Stardusk
+Vector3i Vector3i::cross(const Vector3i &p_with) const {
+	Vector3i ret(
+			(y * p_with.z) - (z * p_with.y),
+			(z * p_with.x) - (x * p_with.z),
+			(x * p_with.y) - (y * p_with.x));
+
+	return ret;
+}
+int64_t Vector3i::dot(const Vector3i &p_with) const {
+	return x * p_with.x + y * p_with.y + z * p_with.z;
+}
+//END
+
 int64_t Vector3i::length_squared() const {
 	return x * (int64_t)x + y * (int64_t)y + z * (int64_t)z;
 }
@@ -184,6 +203,12 @@ double Vector3i::distance_to(const Vector3i &p_to) const {
 int64_t Vector3i::distance_squared_to(const Vector3i &p_to) const {
 	return (p_to - *this).length_squared();
 }
+
+//Stardusk
+real_t Vector3i::angle_to(const Vector3i &p_to) const {
+	return Math::atan2(cross(p_to).length(), dot(p_to));
+}
+//END
 
 /* Operators */
 

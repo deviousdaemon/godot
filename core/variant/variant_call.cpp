@@ -2319,6 +2319,11 @@ static void _register_variant_builtin_methods_math() {
 	bind_method(Vector3i, mini, sarray("with"), varray());
 	bind_method(Vector3i, max, sarray("with"), varray());
 	bind_method(Vector3i, maxi, sarray("with"), varray());
+	//Stardusk
+	bind_method(Vector3i, dot, sarray("with"), varray());
+	bind_method(Vector3i, cross, sarray("with"), varray());
+	bind_method(Vector3i, angle_to, sarray("to"), varray());
+	//END
 
 	/* Vector4 */
 

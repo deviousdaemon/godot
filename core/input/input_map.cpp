@@ -57,6 +57,7 @@ void InputMap::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("load_from_project_settings"), &InputMap::load_from_project_settings);
 
 	ADD_SIGNAL(MethodInfo("project_settings_loaded"));
+	ADD_SIGNAL(MethodInfo("actions_changed"));
 }
 
 /**
@@ -122,12 +123,14 @@ void InputMap::add_action(const StringName &p_action, float p_deadzone) {
 	input_map[p_action].id = last_id;
 	input_map[p_action].deadzone = p_deadzone;
 	last_id++;
+	emit_signal("actions_changed");
 }
 
 void InputMap::erase_action(const StringName &p_action) {
 	ERR_FAIL_COND_MSG(!input_map.has(p_action), suggest_actions(p_action));
 
 	input_map.erase(p_action);
+	emit_signal("actions_changed");
 }
 
 TypedArray<StringName> InputMap::get_actions() {
@@ -223,6 +226,7 @@ void InputMap::action_add_event(const StringName &p_action, RequiredParam<InputE
 	}
 
 	input_map[p_action].inputs.push_back(p_event);
+	emit_signal("actions_changed");
 }
 
 bool InputMap::action_has_event(const StringName &p_action, RequiredParam<InputEvent> rp_event) {
@@ -243,6 +247,7 @@ void InputMap::action_erase_event(const StringName &p_action, RequiredParam<Inpu
 			Input::get_singleton()->action_release(p_action);
 		}
 	}
+	emit_signal("actions_changed");
 }
 
 void InputMap::action_erase_events(const StringName &p_action) {
@@ -253,6 +258,7 @@ void InputMap::action_erase_events(const StringName &p_action) {
 	}
 
 	input_map[p_action].inputs.clear();
+	emit_signal("actions_changed");
 }
 
 TypedArray<InputEvent> InputMap::_action_get_events(const StringName &p_action) {
