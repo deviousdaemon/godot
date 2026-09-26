@@ -50,7 +50,9 @@
 #include "scene/2d/tile_map_layer.h"
 #include "scene/gui/grid_container.h"
 #include "scene/gui/split_container.h"
+#include "scene/main/canvas_item.h"
 #include "scene/main/scene_tree.h"
+#include "scene/main/viewport.h"
 
 void SwitchSeparator::set_vertical(bool p_vertical) {
 	h_separator->set_visible(p_vertical);
@@ -3733,7 +3735,14 @@ void TileMapLayerEditor::_notification(int p_what) {
 
 				const TileMapLayer *edited_layer = _get_edited_layer();
 				if (edited_layer && custom_overlay) {
-					custom_overlay->set_texture_filter(edited_layer->get_texture_filter_in_tree());
+					TextureFilter filter = edited_layer->get_texture_filter_in_tree();
+					if (filter == TextureFilter::TEXTURE_FILTER_PARENT_NODE) {
+						Viewport* edited_layer_vp = edited_layer->get_viewport();
+						if (edited_layer_vp) {
+							filter = (CanvasItem::TextureFilter)edited_layer_vp->get_texture_filter_in_tree();
+						}
+					}
+					custom_overlay->set_texture_filter(filter);
 				}
 
 				CanvasItemEditor::get_singleton()->update_viewport();
